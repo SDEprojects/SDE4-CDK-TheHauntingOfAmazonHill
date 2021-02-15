@@ -1,6 +1,7 @@
 package com.intelligents.haunting;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 
 public class CombatEngine {
@@ -13,7 +14,7 @@ public class CombatEngine {
                 String fightResult = mortalCombat(game, result);
                 if (fightResult.contains("invalid") || fightResult.contains("hoping")) {
                     //output result message and loop again
-                    game.narrateNoNewLine(fightResult + "\n");
+                    game.narrateNoNewLine(fightResult + "\n", Color.white);
                 } else if (fightResult.contains("dissipates") || fightResult.contains("whence")) {
                     game.getWorld().getCurrentRoom().setRoomMiniGhost(null);
                     result = fightResult;
@@ -39,7 +40,7 @@ public class CombatEngine {
     }
 
     private static void showStatus(Game game) {
-        game.narrateNoNewLine("Combat commencing...");
+        game.narrateNoNewLine("Combat commencing...", Color.WHITE);
     }
 
     private static String processChoice(Game game, String result) {
@@ -49,7 +50,7 @@ public class CombatEngine {
                 "2 - Sweat on it!\n" +
                 "3 - Punch it!\n" +
                 "4 - Run!\n");
-        game.narrateNoNewLine(choices + ">>");
+        game.narrateNoNewLine(choices + ">>", Color.white);
 //        String input = userInput.getText().strip().toLowerCase();
         switch (choices) {
             case "1":
