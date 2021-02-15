@@ -123,112 +123,116 @@ public class Game implements java.io.Serializable {
     void processInput(boolean isValidInput, String[] input, int attempt) {
         updateCurrentRoom();
         checkIfRoomVisited();
-        try {
-            switch (input[0]) {
-                /* Case for original developer easter egg, disabled for security. Uncomment to enable
-                and also related function at the bottom of Game.java
-                case "chris":
-                    chrisIsCool();
-                    break;
-                 */
-                //Allows for volume to be increased or decreased
-                case "volume":
-                    if (input[1].equals("up")) {
-                        mp.setVolume(5.0f);
-                    } else if (input[1].equals("down")) {
-                        mp.setVolume(-5.0f);
-                    }
-                    break;
-                //Prints journal and plays page turning sound effect
-                case "read":
-                    printJournal();
-                    if (isSound) {
-                        soundEffect.playSoundEffect();
-                    }
-                    break;
-                //Creates a save file that can be loaded
-                case "save":
-                    SaveGame.save();
-                    break;
-                //Reads the loaded usr.save file
-                case "load":
-                    SaveGame.loadGame();
-                    break;
-                //
-                case "?":
-                case "help":
-                    jFrame.textDisplayGameWindow.setForeground(Color.PINK);
-                    quickNarrateFormatted(Files.readString(Paths.get(resourcePath + "Rules"), StandardCharsets.UTF_8));
-                    break;
-                case "open":
-                    openMap();
-                    break;
-                //Displays room contents/evidence
-                case "look":
-                case "view":
-                case "show":
-                    narrateNoNewLine(divider + "\n");
-
-                    String formatted = String.format("%46s%n", currentLoc);
-                    simpleOutputInlineSetting(formatted);
-
-                    if (world.getCurrentRoom().getRoomEvidence().isEmpty()) {
-                        narrateNoNewLine("Currently there are no items in "
-                                + world.getCurrentRoom().getRoomTitle() + "\n\n");
-                    } else {
-                        addEvidenceToJournal();
-                        narrateNoNewLine("You look and notice: " + world.getCurrentRoom().getRoomEvidence() + "\n\n");
-                        narrateNoNewLine("Evidence logged into your journal.\n");
-                    }
-                    narrateNoNewLine(divider + "\n");
-                    break;
-                case "write":
-                    jFrame.textDisplayGameWindow.setForeground(Color.white);
-                    quickNarrateFormatted("Would you like to document anything in your journal? [Yes/No]\n");
-                    break;
-                //Allows user to leave if more than one room has been input into RoomsVisted
-                case "exit":
-                    if (userAbleToExit()) {
-                        // In order to win, user has to have correct evidence and guessed right ghost
-                        if (!checkIfHasAllEvidenceIsInJournal()) {
-                            jFrame.textDisplayGameWindow.setForeground(Color.green);
-                            quickNarrateFormatted("It seems your journal does not have all of the evidence needed to determine the ghost." +
-                                    " Would you like to GUESS the ghost anyway or go back INSIDE?\n>>");
-                        } else {
-                            jFrame.textDisplayGameWindow.setForeground(Color.green);
-                            quickNarrateFormatted("It seems like you could be ready to determine the ghost." +
-                                    " Would you like to GUESS the ghost or go back INSIDE to continue exploring?\n>>");
+        if (input.length > 2) {
+            simpleOutputInlineSetting("You cannot type more than 2 commands!Try again:\n>> ");
+        }else {
+            try {
+                switch (input[0]) {
+                    /* Case for original developer easter egg, disabled for security. Uncomment to enable
+                    and also related function at the bottom of Game.java
+                    case "chris":
+                        chrisIsCool();
+                        break;
+                     */
+                    //Allows for volume to be increased or decreased
+                    case "volume":
+                        if (input[1].equals("up")) {
+                            mp.setVolume(5.0f);
+                        } else if (input[1].equals("down")) {
+                            mp.setVolume(-5.0f);
                         }
-                    }
-                    break;
-                case "quit":
-                case "q":
-                    mp.quitMusic();
-                    isGameRunning = false;
-                    break;
-                case "pause":
-                    mp.pauseMusic();
-                    break;
-                case "stop":
-                    stopSound();
-                    break;
-                case "play":
-                    mp.startMusic();
-                    break;
-                case "move":
-                case "go":
-                    changeRoom(isValidInput, input, attempt);
-                    break;
-//                case "fight":
-//                case "run":
-//                    narrateNoNewLine(runCombat(input, this) + "\n");
-//                    break;
+                        break;
+                    //Prints journal and plays page turning sound effect
+                    case "read":
+                        printJournal();
+                        if (isSound) {
+                            soundEffect.playSoundEffect();
+                        }
+                        break;
+                    //Creates a save file that can be loaded
+                    case "save":
+                        SaveGame.save();
+                        break;
+                    //Reads the loaded usr.save file
+                    case "load":
+                        SaveGame.loadGame();
+                        break;
+                    //
+                    case "?":
+                    case "help":
+                        jFrame.textDisplayGameWindow.setForeground(Color.PINK);
+                        quickNarrateFormatted(Files.readString(Paths.get(resourcePath + "Rules"), StandardCharsets.UTF_8));
+                        break;
+                    case "open":
+                        openMap();
+                        break;
+                    //Displays room contents/evidence
+                    case "look":
+                    case "view":
+                    case "show":
+                        narrateNoNewLine(divider + "\n");
 
+                        String formatted = String.format("%46s%n", currentLoc);
+                        simpleOutputInlineSetting(formatted);
+
+                        if (world.getCurrentRoom().getRoomEvidence().isEmpty()) {
+                            narrateNoNewLine("Currently there are no items in "
+                                    + world.getCurrentRoom().getRoomTitle() + "\n\n");
+                        } else {
+                            addEvidenceToJournal();
+                            narrateNoNewLine("You look and notice: " + world.getCurrentRoom().getRoomEvidence() + "\n\n");
+                            narrateNoNewLine("Evidence logged into your journal.\n");
+                        }
+                        narrateNoNewLine(divider + "\n");
+                        break;
+                    case "write":
+                        jFrame.textDisplayGameWindow.setForeground(Color.white);
+                        quickNarrateFormatted("Would you like to document anything in your journal? [Yes/No]\n");
+                        break;
+                    //Allows user to leave if more than one room has been input into RoomsVisited
+                    case "exit":
+                        if (userAbleToExit()) {
+                            // In order to win, user has to have correct evidence and guessed right ghost
+                            if (!checkIfHasAllEvidenceIsInJournal()) {
+                                jFrame.textDisplayGameWindow.setForeground(Color.green);
+                                quickNarrateFormatted("It seems your journal does not have all of the evidence needed to determine the ghost." +
+                                        " Would you like to GUESS the ghost anyway or go back INSIDE?\n>>");
+                            } else {
+                                jFrame.textDisplayGameWindow.setForeground(Color.green);
+                                quickNarrateFormatted("It seems like you could be ready to determine the ghost." +
+                                        " Would you like to GUESS the ghost or go back INSIDE to continue exploring?\n>>");
+                            }
+                        }
+                        break;
+                    case "quit":
+                    case "q":
+                        mp.quitMusic();
+                        isGameRunning = false;
+                        break;
+                    case "pause":
+                        mp.pauseMusic();
+                        break;
+                    case "stop":
+                        stopSound();
+                        break;
+                    case "play":
+                        mp.startMusic();
+                        break;
+                    case "move":
+                    case "go":
+                        changeRoom(isValidInput, input, attempt);
+                        break;
+                    //                case "fight":
+                    //                case "run":
+                    //                    narrateNoNewLine(runCombat(input, this) + "\n");
+                    //                    break;
+
+                }
+            } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
+                narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then a noun e.g. 'north', 'map', 'journal'.\n");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-            narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then a noun e.g. 'north', 'map', 'journal'.\n");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
