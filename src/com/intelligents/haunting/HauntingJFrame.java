@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.Objects;
 
-public class HauntingJFrame extends JWindow implements ActionListener{
+public class HauntingJFrame extends JWindow implements ActionListener {
 
     JWindow window = new JWindow();
 
@@ -18,11 +18,13 @@ public class HauntingJFrame extends JWindow implements ActionListener{
     JButton showMap = new JButton("Map");
     JTextArea textDisplayGameWindow = new JTextArea();
     JTextArea textDisplayJournal = new JTextArea();
+    JTextArea playerLocationArea = new JTextArea();
     JFrame frame;
-    JPanel panel_00;
-    JPanel panel_01;
-    JPanel panel_02;
-    boolean calledOnce=false;
+    JPanel textDisplayPanel;
+    JPanel userInputPanel;
+    JPanel buttonsAndInfoPanel;
+    private JPanel playerLocationPanel;
+    boolean calledOnce = false;
     String currentRoom;
     Game game;
     Controller controller;
@@ -43,20 +45,24 @@ public class HauntingJFrame extends JWindow implements ActionListener{
     }
 
 
-     private void gameWindow() {
+    private void gameWindow() {
         frame = new JFrame("The Haunting of Amazon Hill");
         frame.setSize(700, 700);
 
-        panel_00 = new JPanel();
-        panel_01 = new JPanel();
-        panel_02 = new JPanel();
+        textDisplayPanel = new JPanel();
+        userInputPanel = new JPanel();
+        buttonsAndInfoPanel = new JPanel();
+        playerLocationPanel = new JPanel();
 
 
-        panel_00.setBackground(Color.black);
-        panel_02.setBackground(Color.DARK_GRAY);
-        panel_02.add(showJournal);
-        panel_02.add(Box.createHorizontalGlue());
-        panel_02.add(showMap);
+        textDisplayPanel.setBackground(Color.black);
+        buttonsAndInfoPanel.setBackground(Color.DARK_GRAY);
+        buttonsAndInfoPanel.setLayout(new FlowLayout());
+        buttonsAndInfoPanel.add(showJournal);
+        buttonsAndInfoPanel.add(Box.createHorizontalGlue());
+        buttonsAndInfoPanel.add(showMap);
+        buttonsAndInfoPanel.add(Box.createHorizontalGlue());
+        buttonsAndInfoPanel.add(playerLocationPanel);
 
         showJournal.addActionListener(this);
         showMap.addActionListener(this);
@@ -75,30 +81,36 @@ public class HauntingJFrame extends JWindow implements ActionListener{
         textDisplayGameWindow.setWrapStyleWord(true);
         textDisplayGameWindow.setBorder(BorderFactory.createBevelBorder(1));
         textDisplayGameWindow.setForeground(Color.white);
-        textDisplayGameWindow.setFont(new Font("Comic Sans",Font.BOLD, 15));
+        textDisplayGameWindow.setFont(new Font("Comic Sans", Font.BOLD, 15));
         textDisplayGameWindow.setEditable(false);
         textDisplayGameWindow.setBackground(Color.DARK_GRAY);
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayGameWindow);
-        scrollPane.setPreferredSize(new Dimension(700,500));
+        scrollPane.setPreferredSize(new Dimension(700, 500));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Text field for user to input
-        userInput.setSize(new Dimension(500,100));
+        userInput.setSize(new Dimension(500, 100));
         userInput.setFont(new Font("Consolas", Font.CENTER_BASELINE, 15));
         userInput.setForeground(Color.white);
         userInput.setBackground(Color.DARK_GRAY);
         userInput.setCaretColor(Color.BLACK);
 
-        panel_01.setBackground(Color.BLACK);
-        panel_00.add(scrollPane);
-        panel_01.setLayout(new GridLayout(1,2));
-        panel_01.add(userInput);
+        userInputPanel.setBackground(Color.BLACK);
+        textDisplayPanel.add(scrollPane);
+        userInputPanel.setLayout(new GridLayout(1, 2));
+        userInputPanel.add(userInput);
 
-        frame.add(panel_00, BorderLayout.NORTH);
-        frame.add(panel_01, BorderLayout.CENTER);
-        frame.add(panel_02, BorderLayout.SOUTH);
+        playerLocationPanel.setBackground(Color.white);
+        playerLocationArea.setSize(200,75);
+        playerLocationArea.setForeground(Color.blue);
+        playerLocationPanel.add(playerLocationArea);
+
+        frame.add(textDisplayPanel, BorderLayout.NORTH);
+        frame.add(userInputPanel, BorderLayout.CENTER);
+        frame.add(buttonsAndInfoPanel, BorderLayout.SOUTH);
+
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -134,7 +146,7 @@ public class HauntingJFrame extends JWindow implements ActionListener{
         textDisplayGameWindow.setText(text);
     }
 
-    public  void appendToTextBox(String text) {
+    public void appendToTextBox(String text) {
         textDisplayGameWindow.append(text);
     }
 
@@ -152,13 +164,13 @@ public class HauntingJFrame extends JWindow implements ActionListener{
         textDisplayJournal.setWrapStyleWord(true);
         textDisplayJournal.setBorder(BorderFactory.createBevelBorder(1));
         textDisplayJournal.setForeground(new Color(0, 60, 70));
-        textDisplayJournal.setFont(new Font("Comic Sans",Font.BOLD, 15));
+        textDisplayJournal.setFont(new Font("Comic Sans", Font.BOLD, 15));
         textDisplayJournal.setEditable(false);
         textDisplayJournal.setBackground(new Color(196, 223, 230));
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayJournal);
-        scrollPane.setPreferredSize(new Dimension(700,500));
+        scrollPane.setPreferredSize(new Dimension(700, 500));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         frame.add(scrollPane, BorderLayout.CENTER);
