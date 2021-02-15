@@ -625,11 +625,7 @@ public class Game implements java.io.Serializable {
         if (isSound) {
             paperFalling.playSoundEffect();
         }
-        try {
-            jFrame.setTextColorAndDisplay(input, color);
-        } catch (BadLocationException exc) {
-            exc.printStackTrace();
-        }
+        jFrame.setTextBox(input, color);
         paperFalling.stopSoundEffect();
     }
 
