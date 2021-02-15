@@ -70,7 +70,7 @@ public class Game implements java.io.Serializable {
         paperFalling = new MusicPlayer(pathStart + "paper flutter (2).wav",cl );
     }
 
-    public void intro(String[] gameType) throws IOException, InterruptedException {
+    public void intro(String[] gameType) throws IOException {
         if (gameType[0].matches("1")) {
             jFrame.textDisplayGameWindow.setForeground(Color.green);
             quickNarrateFormatted(p.print(resourcePath, "introText", cl));
