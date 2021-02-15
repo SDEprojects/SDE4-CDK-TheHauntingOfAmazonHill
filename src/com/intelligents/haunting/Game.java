@@ -72,8 +72,7 @@ public class Game implements java.io.Serializable {
     public void intro(String[] gameType) throws IOException {
         if (gameType[0].matches("1")) {
             jFrame.textDisplayGameWindow.setForeground(Color.green);
-            quickNarrateFormatted(Files.readString(Paths.get("resources/settingTheScene"), StandardCharsets.UTF_8));
-
+            quickNarrateFormatted(p.print(resourcePath, "settingTheScene", cl));
             simpleOutputInlineSetting("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
                     "What would you like your name to be?\n" + ">>");
 
@@ -115,6 +114,7 @@ public class Game implements java.io.Serializable {
     private void updateCurrentRoom() {
         currentRoom = world.getCurrentRoom().getRoomTitle();
         currentLoc = "Your location is " + currentRoom;
+        jFrame.playerLocationArea.setText(currentLoc);
     }
 
 
@@ -159,7 +159,7 @@ public class Game implements java.io.Serializable {
                     case "?":
                     case "help":
                         jFrame.textDisplayGameWindow.setForeground(Color.PINK);
-                        quickNarrateFormatted(Files.readString(Paths.get(resourcePath + "Rules"), StandardCharsets.UTF_8));
+                        quickNarrateFormatted(p.print(resourcePath, "Rules", cl));
                         break;
                     case "open":
                         openMap();
@@ -169,9 +169,8 @@ public class Game implements java.io.Serializable {
                     case "view":
                     case "show":
                         narrateNoNewLine(divider + "\n");
-
-                        String formatted = String.format("%46s%n", currentLoc);
-                        simpleOutputInlineSetting(formatted);
+                        updateCurrentRoom();
+//                    simpleOutputInlineSetting(formatted);
 
                         if (world.getCurrentRoom().getRoomEvidence().isEmpty()) {
                             narrateNoNewLine("Currently there are no items in "
@@ -317,6 +316,7 @@ public class Game implements java.io.Serializable {
                     Thread.sleep(1800);
                     jFrame.textDisplayGameWindow.setForeground(Color.red);
                     narrateRooms(world.getCurrentRoom().getDescription());
+                    updateCurrentRoom();
                     break;
                 } else {
                     jFrame.textDisplayGameWindow.setForeground(Color.red);
