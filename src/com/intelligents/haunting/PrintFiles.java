@@ -1,10 +1,6 @@
 package com.intelligents.haunting;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -20,16 +16,24 @@ class PrintFiles {
 
 
 
-    void print(String path, String fileToRead, ClassLoader cl) throws IOException {
+    String print(String path, String fileToRead, ClassLoader cl) throws IOException {
         if (fileToRead != null) {
-            InputStream results = null;
-            results = cl.getResourceAsStream(path + fileToRead);
+            InputStream results = cl.getResourceAsStream(path + fileToRead);
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(results));
+            while ((line = br.readLine()) != null){
+                sb.append(line + "\n");
+            }
+            br.close();
 //            String results = "";
 //                results = Files.readString(Path.of(path, fileToRead));
-            System.out.println(ConsoleColors.BLACK_BACKGROUND + results.transferTo(System.out) + ConsoleColors.RESET);
+            return sb.toString();
         } else {
             System.out.println("Sorry that file is not in the Path.");
         }
+        return null;
     }
 
     void printAlternateColor(String path, String fileToRead, ClassLoader cl) {
