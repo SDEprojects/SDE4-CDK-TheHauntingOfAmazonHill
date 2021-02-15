@@ -332,14 +332,9 @@ public class Game implements java.io.Serializable {
             }
         }
         if (world.getCurrentRoom().getRoomMiniGhost() != null) {
-            String fightChoice = JOptionPane.showInputDialog("You have run into a " + world.getCurrentRoom().getRoomMiniGhost().getName() +
-                    ". What will you do? [Fight/Run]\n>>").strip().toLowerCase();
-            switch (fightChoice) {
-                case "fight":
-                case "run":
-                    simpleOutputInlineSetting(runCombat(fightChoice, this));
-                    break;
-            }
+            // displays the fight dialog as an option pane, with yes(0) = fight, no(1) = run, close (-1) = run
+            int fightChoice = JOptionPane.showOptionDialog(new JFrame(), "You have run into a " + world.getCurrentRoom().getRoomMiniGhost().getName() + ". What will you do? [Fight/Run]\n>>", "Combat!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Fight", "Run"}, JOptionPane.YES_OPTION);
+            simpleOutputInlineSetting(runCombat(Integer.toString(fightChoice), this));
         }
     }
 

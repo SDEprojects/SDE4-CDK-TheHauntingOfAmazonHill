@@ -7,6 +7,16 @@ public class CombatEngine {
 
     public static String runCombat(String userChoice, Game game) throws IOException {
         String result = "";
+        switch (userChoice) {
+            case "0":
+                userChoice = "fight";
+                break;
+            case "1": case "-1":
+                userChoice = "run";
+                break;
+            default:
+                System.out.println("UserChoice= " + userChoice);
+        }
         if (userChoice.equals("fight")) {
             boolean inFight = true;
             while (inFight) {
