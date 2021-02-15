@@ -54,14 +54,22 @@ public class CombatEngine {
 
     private static String processChoice(Game game, String result) {
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
-        String choices = JOptionPane.showInputDialog("Choose your action: \n" +
-                "1 - Swing Iron Bar!\n" +
-                "2 - Sweat on it!\n" +
-                "3 - Punch it!\n" +
-                "4 - Run!\n");
-        game.narrateNoNewLine(choices + ">>");
-//        String input = userInput.getText().strip().toLowerCase();
-        switch (choices) {
+        String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
+                "Choose your action: \n" +
+                        "1 - Swing Iron Bar!\n" +
+                        "2 - Sweat on it!\n" +
+                        "3 - Punch it!\n" +
+                        "4 - Run!\n",
+                "Combat!",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"1", "2", "3", "4"},
+                "1");
+        // This catches cancel and close buttons
+        if (fightChoice == null) {
+            fightChoice = "4";
+        }
+        switch (fightChoice) {
             case "1":
                 result = "You swing the iron bar, and the " + battleGhost.getName() + " dissipates.";
                 break;
