@@ -36,7 +36,7 @@ public class HauntingJFrame extends JWindow implements ActionListener{
     public HauntingJFrame() throws IOException {
         cl = getClass().getClassLoader();
         themeSong = new MusicPlayer(pathStartSounds + "VIKINGS THEME SONG.wav", cl);
-        splashWindow();
+        splashWindow(cl);
         gameWindow();
         game = new Game(this, pathStartSounds, pathStartResources, cl, p);
         controller = new Controller(game);
@@ -183,7 +183,7 @@ public class HauntingJFrame extends JWindow implements ActionListener{
         frame.setVisible(true);
     }
 
-    private void splashWindow() throws IOException {
+    private void splashWindow(ClassLoader cl) throws IOException {
         themeSong.playSoundEffect();
         themeSong.setVolume((float) -10.69);
 

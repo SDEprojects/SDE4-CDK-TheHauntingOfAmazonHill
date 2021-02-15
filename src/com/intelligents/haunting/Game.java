@@ -5,14 +5,12 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 import static com.intelligents.haunting.CombatEngine.runCombat;
@@ -55,8 +53,8 @@ public class Game implements java.io.Serializable {
         currentRoom = world.getCurrentRoom().getRoomTitle();
         currentLoc = ConsoleColors.BLUE_BOLD + "Your location is " + currentRoom + ConsoleColors.RESET;
         setMusic(pathStartSounds);
-        populateGhostList();
-        populateMiniGhostList();
+        populateGhostList(cl);
+        populateMiniGhostList(cl);
         setCurrentGhost(getRandomGhost());
         assignRandomEvidenceToMap();
         assignRandomMiniGhostToMap();
@@ -332,14 +330,9 @@ public class Game implements java.io.Serializable {
             }
         }
         if (world.getCurrentRoom().getRoomMiniGhost() != null) {
-            String fightChoice = JOptionPane.showInputDialog("You have run into a " + world.getCurrentRoom().getRoomMiniGhost().getName() +
-                    ". What will you do? [Fight/Run]\n>>").strip().toLowerCase();
-            switch (fightChoice) {
-                case "fight":
-                case "run":
-                    simpleOutputInlineSetting(runCombat(fightChoice, this));
-                    break;
-            }
+            // displays the fight dialog as an option pane, with yes(0) = fight, no(1) = run, close (-1) = run
+            int fightChoice = JOptionPane.showOptionDialog(new JFrame(), "You have run into a " + world.getCurrentRoom().getRoomMiniGhost().getName() + ". What will you do? [Fight/Run]\n>>", "Combat!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Fight", "Run"}, JOptionPane.YES_OPTION);
+            simpleOutputInlineSetting(runCombat(Integer.toString(fightChoice), this));
         }
     }
 
@@ -398,12 +391,12 @@ public class Game implements java.io.Serializable {
         );
     }
 
-    void populateGhostList() {
+    void populateGhostList(ClassLoader cl) {
         this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts",cl ), "ghost"));
     }
 
-    void populateMiniGhostList() {
-        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts",cl ), "minighost"));
+    void populateMiniGhostList(ClassLoader cl) {
+        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts", this.cl), "minighost"));
     }
 
     void printGhosts() {
