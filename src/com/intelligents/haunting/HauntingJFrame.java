@@ -1,16 +1,11 @@
 package com.intelligents.haunting;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
 import java.util.Objects;
 
 public class HauntingJFrame extends JWindow implements ActionListener{
