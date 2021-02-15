@@ -1,16 +1,12 @@
 package com.intelligents.haunting;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
+import java.util.Objects;
 
 public class HauntingJFrame extends JWindow implements ActionListener{
 
@@ -174,13 +170,11 @@ public class HauntingJFrame extends JWindow implements ActionListener{
     void showMap() throws IOException {
         currentRoom = game.currentRoom.replaceAll("\\s", "");
 
-        InputStream currentRoomMap = new FileInputStream(String.valueOf(cl.getResourceAsStream(pathStartImages + "Map(" + currentRoom + ").png")));
         frame = new JFrame("Map");
         frame.setSize(500, 500);
 
-        ImageInputStream mapImage = ImageIO.createImageInputStream(currentRoomMap);
-        BufferedImage bufferedImage = ImageIO.read(mapImage);
-        JLabel picLabel = new JLabel(new ImageIcon(bufferedImage));
+        JLabel picLabel = new JLabel();
+        picLabel.setIcon(new ImageIcon(Objects.requireNonNull(cl.getResource(pathStartImages + "Map(" + currentRoom + ").png"))));
 
 
         frame.add(picLabel, BorderLayout.CENTER);
@@ -190,15 +184,12 @@ public class HauntingJFrame extends JWindow implements ActionListener{
     }
 
     private void splashWindow(ClassLoader cl) throws IOException {
-//        themeSong.playSoundEffect();
-//        themeSong.setVolume((float) -10.69);
+        themeSong.playSoundEffect();
+        themeSong.setVolume((float) -10.69);
 
-        System.out.println(pathStartImages + "asciiSplashScreen.png");
-        InputStream splashScreenImage = cl.getResourceAsStream(pathStartImages + "asciiSplashScreen.png");
-//        ImageIcon splashScreenImage = new ImageIcon(pathStartImages + "asciiSplashScreen");
-        ImageInputStream mapImage = ImageIO.createImageInputStream(splashScreenImage);
-        BufferedImage bufferedImage = ImageIO.read(mapImage);
-        JLabel image = new JLabel(new ImageIcon(bufferedImage));
+        JLabel image = new JLabel();
+        image.setIcon(new ImageIcon(Objects.requireNonNull(cl.getResource(pathStartImages + "asciiSplashScreen.png"))));
+
 
         window.getContentPane().add(image);
         window.setBounds(500, 150, 300, 200);
