@@ -40,7 +40,7 @@ public class HauntingJFrame extends JWindow implements ActionListener{
     public HauntingJFrame() throws IOException {
         cl = getClass().getClassLoader();
         themeSong = new MusicPlayer(pathStartSounds + "VIKINGS THEME SONG.wav", cl);
-//        splashWindow();
+        splashWindow(cl);
         gameWindow();
         game = new Game(this, pathStartSounds, pathStartResources, cl, p);
         controller = new Controller(game);
@@ -189,16 +189,16 @@ public class HauntingJFrame extends JWindow implements ActionListener{
         frame.setVisible(true);
     }
 
-    private void splashWindow() throws IOException {
+    private void splashWindow(ClassLoader cl) throws IOException {
 //        themeSong.playSoundEffect();
 //        themeSong.setVolume((float) -10.69);
 
         System.out.println(pathStartImages + "asciiSplashScreen.png");
-        URL splashScreenImage = cl.getResource(pathStartImages + "asciiSplashScreen.png");
+        InputStream splashScreenImage = cl.getResourceAsStream(pathStartImages + "asciiSplashScreen.png");
 //        ImageIcon splashScreenImage = new ImageIcon(pathStartImages + "asciiSplashScreen");
-//        ImageInputStream mapImage = ImageIO.createImageInputStream(splashScreenImage);
-//        BufferedImage bufferedImage = ImageIO.read(mapImage);
-        JLabel image = new JLabel((Icon) ImageIO.read(splashScreenImage));
+        ImageInputStream mapImage = ImageIO.createImageInputStream(splashScreenImage);
+        BufferedImage bufferedImage = ImageIO.read(mapImage);
+        JLabel image = new JLabel(new ImageIcon(bufferedImage));
 
         window.getContentPane().add(image);
         window.setBounds(500, 150, 300, 200);

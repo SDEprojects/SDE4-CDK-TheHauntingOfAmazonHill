@@ -5,14 +5,12 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 import static com.intelligents.haunting.CombatEngine.runCombat;
@@ -55,8 +53,8 @@ public class Game implements java.io.Serializable {
         currentRoom = world.getCurrentRoom().getRoomTitle();
         currentLoc = ConsoleColors.BLUE_BOLD + "Your location is " + currentRoom + ConsoleColors.RESET;
         setMusic(pathStartSounds);
-        populateGhostList();
-        populateMiniGhostList();
+        populateGhostList(cl);
+        populateMiniGhostList(cl);
         setCurrentGhost(getRandomGhost());
         assignRandomEvidenceToMap();
         assignRandomMiniGhostToMap();
@@ -393,12 +391,12 @@ public class Game implements java.io.Serializable {
         );
     }
 
-    void populateGhostList() {
+    void populateGhostList(ClassLoader cl) {
         this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts",cl ), "ghost"));
     }
 
-    void populateMiniGhostList() {
-        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts",cl ), "minighost"));
+    void populateMiniGhostList(ClassLoader cl) {
+        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts", this.cl), "minighost"));
     }
 
     void printGhosts() {
