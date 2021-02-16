@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class HauntingJFrame extends JWindow implements ActionListener {
 
@@ -17,10 +18,9 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private JTextField userInput = new JTextField();
     private JButton showJournal = new JButton("Journal");
     private JButton showMap = new JButton("Map");
-//    JTextArea textDisplayGameWindow = new JTextArea();
     private JTextPane textDisplayGameWindow = new JTextPane();
     JTextArea textDisplayJournal = new JTextArea();
-    private JFrame frame;
+    private JFrame gameFrame;
     private boolean calledOnce=false;
     private String currentRoom;
     private Game game;
@@ -31,9 +31,9 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private String pathStartSounds = pathStartResources + "Sounds/";
     private String pathStartImages = pathStartResources + "Images/";
     JTextArea playerLocationArea = new JTextArea();
-    JPanel textDisplayPanel;
-    JPanel userInputPanel;
-    JPanel buttonsAndInfoPanel;
+    private JPanel textDisplayPanel;
+    private JPanel userInputPanel;
+    private JPanel buttonsAndInfoPanel;
     private JPanel playerLocationPanel;
     private MusicPlayer themeSong;
     private JFrame mapFrame;
@@ -50,8 +50,8 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
 
     private void gameWindow() {
-        frame = new JFrame("The Haunting of Amazon Hill");
-        frame.setSize(800, 700);
+        gameFrame = new JFrame("The Haunting of Amazon Hill");
+        gameFrame.setSize(800, 700);
 
         textDisplayPanel = new JPanel();
         userInputPanel = new JPanel();
@@ -110,20 +110,20 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         playerLocationArea.setEditable(false);
         playerLocationPanel.add(playerLocationArea);
 
-        frame.add(textDisplayPanel, BorderLayout.NORTH);
-        frame.add(userInputPanel, BorderLayout.CENTER);
-        frame.add(buttonsAndInfoPanel, BorderLayout.SOUTH);
+        gameFrame.add(textDisplayPanel, BorderLayout.NORTH);
+        gameFrame.add(userInputPanel, BorderLayout.CENTER);
+        gameFrame.add(buttonsAndInfoPanel, BorderLayout.SOUTH);
 
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setLocationRelativeTo(null);
         if (!calledOnce) {
             userInput.addActionListener(this);
             calledOnce = true;
         }
         userInput.requestFocusInWindow();
 
-        frame.setVisible(true);
+        gameFrame.setVisible(true);
     }
 
     @Override
@@ -148,12 +148,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     public void setTextBox(String text, Color color) {
         textDisplayGameWindow.setForeground(color);
         textDisplayGameWindow.setText(text);
-    }
-
-    public  void appendToTextBox(String text) throws BadLocationException {
-//        textDisplayGameWindow.append(text);
-        Document doc = textDisplayGameWindow.getDocument();
-        doc.insertString(doc.getLength(), text, null);
     }
 
     public void setTextColorAndDisplay(String textToDisplay, Color color) throws BadLocationException {
@@ -241,6 +235,34 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
     public void stopThemeSong() {
         themeSong.stopSoundEffect();
+    }
+
+    boolean quitGame() throws InterruptedException {
+        int result = JOptionPane.showConfirmDialog(null,
+                "Are you sure you would like to quit?\n" +
+                        "Click yes to quit and close game.\n" +
+                        "Click no to return to game.",
+                "QUIT GAME?",
+                JOptionPane.YES_NO_OPTION);
+
+        if (JOptionPane.YES_OPTION == result) {
+            // Disable from continuing the game
+            userInput.setEditable(false);
+            // Set a timer before closing windows
+            TimeUnit.SECONDS.sleep(3);
+            closeWindows();
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+   private void closeWindows() {
+        // Close outside windows
+        if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
+        if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
+        // Close main game window
+        if (gameFrame != null) gameFrame.dispatchEvent(new WindowEvent(gameFrame, WindowEvent.WINDOW_CLOSING));
     }
 
 }
