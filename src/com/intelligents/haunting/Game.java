@@ -252,10 +252,17 @@ public class Game implements java.io.Serializable {
                         else {
 //                            if (!checkStringSouth(input)) {
 //                                simpleOutputInlineSetting("Did you mean to say South?");
-                            }
-                            changeRoom(isValidInput, input, attempt);
-                            break;
                         }
+                        changeRoom(isValidInput, input, attempt);
+                        break;
+                    case "weapons":
+                        quickNarrateFormatted("", Color.white);
+                        List<Weapon> weapons = player.getAllWeapons();
+                        for (int itr = 0; itr < weapons.size(); itr++) {
+                            simpleOutputInlineSetting(weapons.get(itr).getName(), Color.WHITE);
+                        }
+                        break;
+                }
 //                }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then " +
