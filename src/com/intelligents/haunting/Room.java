@@ -14,14 +14,6 @@ class Room implements java.io.Serializable {
     private List<String> roomItems = new ArrayList<>();
     public Map<String, String> directionList = new HashMap<>();
 
-    Room() {
-
-    }
-
-    Room(String title) {
-        this.roomTitle = title;
-    }
-
     Room(String title, String description) {
         this.roomTitle = title;
         this.description = description;
@@ -39,16 +31,8 @@ class Room implements java.io.Serializable {
         return roomTitle;
     }
 
-    void setRoomTitle(String roomTitle) {
-        this.roomTitle = roomTitle;
-    }
-
     String getDescription() {
         return description;
-    }
-
-    void setDescription(String description) {
-        this.description = description;
     }
 
     String getRoomEvidence() {
@@ -62,7 +46,6 @@ class Room implements java.io.Serializable {
     void setRoomEvidence(String roomEvidence) {
         this.roomEvidence = roomEvidence;
     }
-
 
     void addItemToRoom(String item) {
         roomItems.add(item);

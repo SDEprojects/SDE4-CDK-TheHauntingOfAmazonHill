@@ -1,62 +1,72 @@
 package com.intelligents.haunting;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-public class HauntingJFrame extends JWindow implements ActionListener{
+public class HauntingJFrame extends JWindow implements ActionListener {
 
-    JWindow window = new JWindow();
+    private JWindow window = new JWindow();
 
-    String[] userResponse;
-    JTextField userInput = new JTextField();
-    JButton showJournal = new JButton("Journal");
-    JButton showMap = new JButton("Map");
-    JTextArea textDisplayGameWindow = new JTextArea();
+    private String[] userResponse;
+    private JTextField userInput = new JTextField();
+    private JButton showJournal = new JButton("Journal");
+    private JButton showMap = new JButton("Map");
+    private JTextPane textDisplayGameWindow = new JTextPane();
     JTextArea textDisplayJournal = new JTextArea();
-    JFrame frame;
-    JPanel panel_00;
-    JPanel panel_01;
-    JPanel panel_02;
-    boolean calledOnce=false;
-    String currentRoom;
-    Game game;
-    Controller controller;
-    PrintFiles p = new PrintFiles();
-    ClassLoader cl;
-    String pathStartResources = "com/intelligents/resources/";
-    String pathStartSounds = pathStartResources + "Sounds/";
-    String pathStartImages = pathStartResources + "Images/";
+    private JFrame gameFrame;
+    private boolean calledOnce=false;
+    private String currentRoom;
+    private Game game;
+    private Controller controller;
+    private FileReader p = new FileReader();
+    private ClassLoader cl;
+    private final String pathStartResources = "com/intelligents/resources/";
+    private final String pathStartSounds = pathStartResources + "Sounds/";
+    private final String pathStartImages = pathStartResources + "Images/";
+    JTextArea playerLocationArea = new JTextArea();
+    private JPanel textDisplayPanel;
+    private JPanel userInputPanel;
+    private JPanel buttonsAndInfoPanel;
+    private JPanel playerLocationPanel;
     private MusicPlayer themeSong;
+    private JFrame mapFrame;
+    private JFrame journalFrame;
 
     public HauntingJFrame() throws IOException {
         cl = getClass().getClassLoader();
         themeSong = new MusicPlayer(pathStartSounds + "VIKINGS THEME SONG.wav", cl);
         splashWindow(cl);
         gameWindow();
-        game = new Game(this, pathStartSounds, pathStartResources, cl, p);
+        game = new Game(this, pathStartSounds, pathStartResources, cl);
         controller = new Controller(game);
     }
 
 
-     private void gameWindow() {
-        frame = new JFrame("The Haunting of Amazon Hill");
-        frame.setSize(700, 700);
+    private void gameWindow() {
+        gameFrame = new JFrame("The Haunting of Amazon Hill");
+        gameFrame.setSize(800, 700);
 
-        panel_00 = new JPanel();
-        panel_01 = new JPanel();
-        panel_02 = new JPanel();
+        textDisplayPanel = new JPanel();
+        userInputPanel = new JPanel();
+        buttonsAndInfoPanel = new JPanel();
+        playerLocationPanel = new JPanel();
 
 
-        panel_00.setBackground(Color.black);
-        panel_02.setBackground(Color.DARK_GRAY);
-        panel_02.add(showJournal);
-        panel_02.add(Box.createHorizontalGlue());
-        panel_02.add(showMap);
+        textDisplayPanel.setBackground(Color.black);
+        buttonsAndInfoPanel.setBackground(Color.DARK_GRAY);
+        buttonsAndInfoPanel.setLayout(new FlowLayout());
+        buttonsAndInfoPanel.add(showJournal);
+        buttonsAndInfoPanel.add(Box.createHorizontalGlue());
+        buttonsAndInfoPanel.add(showMap);
+        buttonsAndInfoPanel.add(Box.createHorizontalGlue());
+        buttonsAndInfoPanel.add(playerLocationPanel);
 
         showJournal.addActionListener(this);
         showMap.addActionListener(this);
@@ -71,44 +81,49 @@ public class HauntingJFrame extends JWindow implements ActionListener{
                 "Chapter 3. Hangman's Gallows (COMING SOON!)\n " +
                 "Press 4. to load saved game\n" +
                 "Please enter a number for Chapter: ");
-        textDisplayGameWindow.setLineWrap(true);
-        textDisplayGameWindow.setWrapStyleWord(true);
         textDisplayGameWindow.setBorder(BorderFactory.createBevelBorder(1));
         textDisplayGameWindow.setForeground(Color.white);
-        textDisplayGameWindow.setFont(new Font("Comic Sans",Font.BOLD, 15));
+        textDisplayGameWindow.setFont(new Font("Comic Sans", Font.BOLD, 15));
         textDisplayGameWindow.setEditable(false);
         textDisplayGameWindow.setBackground(Color.DARK_GRAY);
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayGameWindow);
-        scrollPane.setPreferredSize(new Dimension(700,500));
+        scrollPane.setPreferredSize(new Dimension(700, 500));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Text field for user to input
-        userInput.setSize(new Dimension(500,100));
+        userInput.setSize(new Dimension(500, 100));
         userInput.setFont(new Font("Consolas", Font.CENTER_BASELINE, 15));
         userInput.setForeground(Color.white);
         userInput.setBackground(Color.DARK_GRAY);
         userInput.setCaretColor(Color.BLACK);
 
-        panel_01.setBackground(Color.BLACK);
-        panel_00.add(scrollPane);
-        panel_01.setLayout(new GridLayout(1,2));
-        panel_01.add(userInput);
+        userInputPanel.setBackground(Color.BLACK);
+        textDisplayPanel.add(scrollPane);
+        userInputPanel.setLayout(new GridLayout(1, 2));
+        userInputPanel.add(userInput);
 
-        frame.add(panel_00, BorderLayout.NORTH);
-        frame.add(panel_01, BorderLayout.CENTER);
-        frame.add(panel_02, BorderLayout.SOUTH);
+        playerLocationPanel.setBackground(Color.white);
+        playerLocationArea.setSize(200,75);
+        playerLocationArea.setForeground(Color.blue);
+        playerLocationArea.setEditable(false);
+        playerLocationPanel.add(playerLocationArea);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        gameFrame.add(textDisplayPanel, BorderLayout.NORTH);
+        gameFrame.add(userInputPanel, BorderLayout.CENTER);
+        gameFrame.add(buttonsAndInfoPanel, BorderLayout.SOUTH);
+
+
+        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setLocationRelativeTo(null);
         if (!calledOnce) {
             userInput.addActionListener(this);
             calledOnce = true;
         }
         userInput.requestFocusInWindow();
 
-        frame.setVisible(true);
+        gameFrame.setVisible(true);
     }
 
     @Override
@@ -130,60 +145,70 @@ public class HauntingJFrame extends JWindow implements ActionListener{
         }
     }
 
-    public void setTextBox(String text) {
+    public void setTextBox(String text, Color color) {
+        textDisplayGameWindow.setForeground(color);
         textDisplayGameWindow.setText(text);
     }
 
-    public  void appendToTextBox(String text) {
-        textDisplayGameWindow.append(text);
+    public void setTextColorAndDisplay(String textToDisplay, Color color) throws BadLocationException {
+        StyledDocument doc = textDisplayGameWindow.getStyledDocument();
+        Style style = textDisplayGameWindow.addStyle("", null);
+        StyleConstants.setForeground(style, color);
+        doc.insertString(doc.getLength(), textToDisplay, style);
     }
 
     private void showJournal() {
-        frame = new JFrame("Journal");
-        frame.setSize(500, 500);
+        // Closes old window if opened before
+        if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
+        // Opens new window at current room
+
+        journalFrame = new JFrame("Journal");
+        journalFrame.setSize(500, 500);
 
         textDisplayJournal = new JTextArea();
         DefaultCaret caret = (DefaultCaret) textDisplayJournal.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         textDisplayJournal.setCaretPosition(0);
-//        textDisplayJournal.setText("This is your journal! There is text added here... blah blah blah");
         game.openNewWindowJournalWithUpdatedInfo();
         textDisplayJournal.setLineWrap(true);
         textDisplayJournal.setWrapStyleWord(true);
         textDisplayJournal.setBorder(BorderFactory.createBevelBorder(1));
         textDisplayJournal.setForeground(new Color(0, 60, 70));
-        textDisplayJournal.setFont(new Font("Comic Sans",Font.BOLD, 15));
+        textDisplayJournal.setFont(new Font("Comic Sans", Font.BOLD, 15));
         textDisplayJournal.setEditable(false);
         textDisplayJournal.setBackground(new Color(196, 223, 230));
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayJournal);
-        scrollPane.setPreferredSize(new Dimension(700,500));
+        scrollPane.setPreferredSize(new Dimension(700, 500));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        frame.add(scrollPane, BorderLayout.CENTER);
+        journalFrame.add(scrollPane, BorderLayout.CENTER);
 
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        journalFrame.setLocationRelativeTo(null);
+        journalFrame.setVisible(true);
     }
 
-    void showMap() throws IOException {
+    void showMap() {
         currentRoom = game.currentRoom.replaceAll("\\s", "");
 
-        frame = new JFrame("Map");
-        frame.setSize(500, 500);
+        // Closes old window if opened before
+        if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
+        // Opens new window at current room
+        mapFrame = new JFrame("Map");
+        mapFrame.setSize(500, 500);
 
         JLabel picLabel = new JLabel();
         picLabel.setIcon(new ImageIcon(Objects.requireNonNull(cl.getResource(pathStartImages + "Map(" + currentRoom + ").png"))));
 
 
-        frame.add(picLabel, BorderLayout.CENTER);
+        mapFrame.add(picLabel, BorderLayout.CENTER);
 
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        mapFrame.setLocationRelativeTo(null);
+        mapFrame.setVisible(true);
     }
 
-    private void splashWindow(ClassLoader cl) throws IOException {
+    private void splashWindow(ClassLoader cl) {
         themeSong.playSoundEffect();
         themeSong.setVolume((float) -10.69);
 
@@ -211,5 +236,32 @@ public class HauntingJFrame extends JWindow implements ActionListener{
         themeSong.stopSoundEffect();
     }
 
-}
+    boolean quitGame() throws InterruptedException {
+        int result = JOptionPane.showConfirmDialog(null,
+                "Are you sure you would like to quit?\n" +
+                        "Click yes to quit and close game.\n" +
+                        "Click no to return to game.",
+                "QUIT GAME?",
+                JOptionPane.YES_NO_OPTION);
 
+        if (JOptionPane.YES_OPTION == result) {
+            // Disable from continuing the game
+            userInput.setEditable(false);
+            // Set a timer before closing windows
+            TimeUnit.SECONDS.sleep(3);
+            closeWindows();
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+   private void closeWindows() {
+        // Close outside windows
+        if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
+        if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
+        // Close main game window
+        if (gameFrame != null) gameFrame.dispatchEvent(new WindowEvent(gameFrame, WindowEvent.WINDOW_CLOSING));
+    }
+
+}

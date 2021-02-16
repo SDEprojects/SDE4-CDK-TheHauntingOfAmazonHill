@@ -2,6 +2,7 @@ package com.intelligents.haunting;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
+import java.util.Objects;
 
 class MusicPlayer {
 
@@ -16,7 +17,7 @@ class MusicPlayer {
      *                 For short clips i.e. books falling, walking, laughter: make sure to use the appropriate method.
      *                 <p>
      *                 The controller field allows for volume adjustment and is best utilized when attached to a GUI slider.
-     * @param cl
+     * @param cl    The class loader, passed in to eliminate multiple class loaders
      */
 
 
@@ -25,7 +26,7 @@ class MusicPlayer {
         {
             try {
 
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(cl.getResource(filepath));
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(Objects.requireNonNull(cl.getResource(filepath)));
                 clip = AudioSystem.getClip();
                 clip.open(audioStream);
                 controller = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
