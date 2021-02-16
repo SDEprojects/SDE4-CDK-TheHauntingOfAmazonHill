@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
 class SaveGame {
@@ -13,7 +14,7 @@ class SaveGame {
     SaveGame() {
     }
 
-    void save() {
+    void save(Game game) {
         // NOTE: classes you want to be able to save must implement java.io.Serializable. Without implementing, you will be
         // hit with exception type NotSerializableException.
 
@@ -55,13 +56,15 @@ class SaveGame {
 
             World world = (World) ois.readObject();
             Ghost ghost = (Ghost) ois.readObject();
-            ArrayList<Ghost> ghosts = (ArrayList<Ghost>) ois.readObject();
+            List<Ghost> ghosts = (ArrayList<Ghost>) ois.readObject();
+            List<MiniGhost> miniGhosts = (ArrayList<MiniGhost>) ois.readObject();
             Player player = (Player) ois.readObject();
             game.setPlayer(player);
             game.setWorld(world);
             game.setCurrentGhost(ghost);
             // // TODO: 2/10/2021 next line throws an exception cannot cast an arraylist to a player - need to troubleshoot 
             game.setGhosts(ghosts);
+            game.setMiniGhosts(miniGhosts);
             ois.close();
         } catch (Exception e) {
             System.out.println("Could not load saved game");
@@ -71,6 +74,4 @@ class SaveGame {
     void setGame(Game game) {
         this.game = game;
     }
-
-
 }

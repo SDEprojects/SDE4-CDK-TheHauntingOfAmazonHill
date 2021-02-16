@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class World implements java.io.Serializable {
-
-    private final transient ReadFiles r = new ReadFiles();
-
     List<Room> gameMap = new ArrayList<>();
     private List<Room> rooms = new ArrayList<>();
-    private Room currentRoom = null;
+    private Room currentRoom;
 
     Room getCurrentRoom() {
         return currentRoom;
@@ -45,12 +42,7 @@ public class World implements java.io.Serializable {
         this.setRooms(XMLParser.populateRooms(XMLParser.readXML(resourcePath + "Rooms",cl) , "room"));
     }
 
-    List<Room> getRooms() {
-        return rooms;
-    }
-
     void setRooms(List<Room> rooms) {
         this.rooms = rooms;
     }
-
 }

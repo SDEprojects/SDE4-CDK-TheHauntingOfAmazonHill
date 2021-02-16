@@ -16,7 +16,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private JTextField userInput = new JTextField();
     private JButton showJournal = new JButton("Journal");
     private JButton showMap = new JButton("Map");
-//    JTextArea textDisplayGameWindow = new JTextArea();
     private JTextPane textDisplayGameWindow = new JTextPane();
     JTextArea textDisplayJournal = new JTextArea();
     private JFrame frame;
@@ -24,11 +23,11 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private String currentRoom;
     private Game game;
     private Controller controller;
-    private PrintFiles p = new PrintFiles();
+    private FileReader p = new FileReader();
     private ClassLoader cl;
-    private String pathStartResources = "com/intelligents/resources/";
-    private String pathStartSounds = pathStartResources + "Sounds/";
-    private String pathStartImages = pathStartResources + "Images/";
+    private final String pathStartResources = "com/intelligents/resources/";
+    private final String pathStartSounds = pathStartResources + "Sounds/";
+    private final String pathStartImages = pathStartResources + "Images/";
     JTextArea playerLocationArea = new JTextArea();
     JPanel textDisplayPanel;
     JPanel userInputPanel;
@@ -41,7 +40,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         themeSong = new MusicPlayer(pathStartSounds + "VIKINGS THEME SONG.wav", cl);
         splashWindow(cl);
         gameWindow();
-        game = new Game(this, pathStartSounds, pathStartResources, cl, p);
+        game = new Game(this, pathStartSounds, pathStartResources, cl);
         controller = new Controller(game);
     }
 
@@ -148,7 +147,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     }
 
     public  void appendToTextBox(String text) throws BadLocationException {
-//        textDisplayGameWindow.append(text);
         Document doc = textDisplayGameWindow.getDocument();
         doc.insertString(doc.getLength(), text, null);
     }
@@ -168,7 +166,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         DefaultCaret caret = (DefaultCaret) textDisplayJournal.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         textDisplayJournal.setCaretPosition(0);
-//        textDisplayJournal.setText("This is your journal! There is text added here... blah blah blah");
         game.openNewWindowJournalWithUpdatedInfo();
         textDisplayJournal.setLineWrap(true);
         textDisplayJournal.setWrapStyleWord(true);
@@ -189,7 +186,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         frame.setVisible(true);
     }
 
-    void showMap() throws IOException {
+    void showMap() {
         currentRoom = game.currentRoom.replaceAll("\\s", "");
 
         frame = new JFrame("Map");
@@ -205,7 +202,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         frame.setVisible(true);
     }
 
-    private void splashWindow(ClassLoader cl) throws IOException {
+    private void splashWindow(ClassLoader cl) {
         themeSong.playSoundEffect();
         themeSong.setVolume((float) -10.69);
 
@@ -232,6 +229,4 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     public void stopThemeSong() {
         themeSong.stopSoundEffect();
     }
-
 }
-
