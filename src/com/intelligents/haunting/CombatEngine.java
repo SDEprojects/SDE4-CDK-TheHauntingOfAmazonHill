@@ -1,19 +1,30 @@
 package com.intelligents.haunting;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 
 public class CombatEngine {
 
     public static String runCombat(String userChoice, Game game) throws IOException {
         String result = "";
+        switch (userChoice) {
+            case "0":
+                userChoice = "fight";
+                break;
+            case "1": case "-1":
+                userChoice = "run";
+                break;
+            default:
+                System.out.println("UserChoice= " + userChoice);
+        }
         if (userChoice.equals("fight")) {
             boolean inFight = true;
             while (inFight) {
                 String fightResult = mortalCombat(game, result);
                 if (fightResult.contains("invalid") || fightResult.contains("hoping")) {
                     //output result message and loop again
-                    game.narrateNoNewLine(fightResult + "\n");
+                    game.narrateNoNewLine(fightResult + "\n", Color.white);
                 } else if (fightResult.contains("dissipates") || fightResult.contains("whence")) {
                     game.getWorld().getCurrentRoom().setRoomMiniGhost(null);
                     result = fightResult;
@@ -39,19 +50,27 @@ public class CombatEngine {
     }
 
     private static void showStatus(Game game) {
-        game.narrateNoNewLine("Combat commencing...");
+        game.narrateNoNewLine("Combat commencing...", Color.WHITE);
     }
 
     private static String processChoice(Game game, String result) {
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
-        String choices = JOptionPane.showInputDialog("Choose your action: \n" +
-                "1 - Swing Iron Bar!\n" +
-                "2 - Sweat on it!\n" +
-                "3 - Punch it!\n" +
-                "4 - Run!\n");
-        game.narrateNoNewLine(choices + ">>");
-//        String input = userInput.getText().strip().toLowerCase();
-        switch (choices) {
+        String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
+                "Choose your action: \n" +
+                        "1 - Swing Iron Bar!\n" +
+                        "2 - Sweat on it!\n" +
+                        "3 - Punch it!\n" +
+                        "4 - Run!\n",
+                "Combat!",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"1", "2", "3", "4"},
+                "1");
+        // This catches cancel and close buttons
+        if (fightChoice == null) {
+            fightChoice = "4";
+        }
+        switch (fightChoice) {
             case "1":
                 result = "You swing the iron bar, and the " + battleGhost.getName() + " dissipates.";
                 break;
