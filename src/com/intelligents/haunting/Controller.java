@@ -8,6 +8,7 @@ public class Controller {
     private boolean introScreen;
     private boolean nameSet;
     private boolean readyToGuess;
+    private boolean loadedGame = false;
     private Game game;
 
     public Controller(Game game) {
@@ -23,9 +24,10 @@ public class Controller {
             game.intro(response);
             if (response[0].equals("1") || response[0].equals("4")) {
                 introScreen = false;
+                if (response[0].equals("4")) loadedGame = true;
             }
         // Gain the users name
-        } else if (!introScreen && !nameSet) {
+        } else if (!introScreen && !nameSet && !loadedGame) {
             game.createPlayer(response);
             nameSet = true;
         // If the user is trying to exit, get if they want to guess or stay inside
