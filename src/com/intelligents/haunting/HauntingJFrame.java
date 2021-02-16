@@ -5,6 +5,7 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.Objects;
 
@@ -35,6 +36,8 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     JPanel buttonsAndInfoPanel;
     private JPanel playerLocationPanel;
     private MusicPlayer themeSong;
+    private JFrame mapFrame;
+    private JFrame journalFrame;
 
     public HauntingJFrame() throws IOException {
         cl = getClass().getClassLoader();
@@ -161,8 +164,12 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     }
 
     private void showJournal() {
-        frame = new JFrame("Journal");
-        frame.setSize(500, 500);
+        // Closes old window if opened before
+        if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
+        // Opens new window at current room
+
+        journalFrame = new JFrame("Journal");
+        journalFrame.setSize(500, 500);
 
         textDisplayJournal = new JTextArea();
         DefaultCaret caret = (DefaultCaret) textDisplayJournal.getCaret();
@@ -183,26 +190,29 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         scrollPane.setPreferredSize(new Dimension(700, 500));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        frame.add(scrollPane, BorderLayout.CENTER);
+        journalFrame.add(scrollPane, BorderLayout.CENTER);
 
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        journalFrame.setLocationRelativeTo(null);
+        journalFrame.setVisible(true);
     }
 
     void showMap() throws IOException {
         currentRoom = game.currentRoom.replaceAll("\\s", "");
 
-        frame = new JFrame("Map");
-        frame.setSize(500, 500);
+        // Closes old window if opened before
+        if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
+        // Opens new window at current room
+        mapFrame = new JFrame("Map");
+        mapFrame.setSize(500, 500);
 
         JLabel picLabel = new JLabel();
         picLabel.setIcon(new ImageIcon(Objects.requireNonNull(cl.getResource(pathStartImages + "Map(" + currentRoom + ").png"))));
 
 
-        frame.add(picLabel, BorderLayout.CENTER);
+        mapFrame.add(picLabel, BorderLayout.CENTER);
 
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        mapFrame.setLocationRelativeTo(null);
+        mapFrame.setVisible(true);
     }
 
     private void splashWindow(ClassLoader cl) throws IOException {
