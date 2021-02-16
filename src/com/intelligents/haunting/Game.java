@@ -223,9 +223,7 @@ public class Game implements java.io.Serializable {
                 }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -256,10 +254,8 @@ public class Game implements java.io.Serializable {
             if (guessCounter < 1) {
                 narrateNoNewLine("Unfortunately, the ghost you determined was incorrect. The correct ghost was \n"
                         + currentGhost.toString() + "\nYou have been loaded into a new world. Good luck trying again.\n", Color.WHITE);
-                resetWorld();
-            } else {
-                resetWorld();
             }
+            resetWorld();
         }
     }
 
@@ -308,7 +304,6 @@ public class Game implements java.io.Serializable {
                     Thread.sleep(1800);
                     narrateRooms(world.getCurrentRoom().getDescription(), Color.red);
                     updateCurrentRoom();
-                    break;
                 } else {
                     quickNarrateFormatted("You hit a wall. Try again:\n ", Color.RED);
                     attemptCount++;
@@ -317,8 +312,8 @@ public class Game implements java.io.Serializable {
                         openMap();
                         simpleOutputInlineSetting("Where would you like to go?\n ", Color.WHITE);
                     }
-                    break;
                 }
+                break;
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
