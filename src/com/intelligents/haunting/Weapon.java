@@ -12,4 +12,13 @@ public class Weapon {
         this.damagePoints = damagePoints;
     }
 
+    public String getName() {
+        return this.name;
+    }
+    public String getDescription() {
+        return this.description;
+    }
+    public int getDamagePoints() {
+        return this.damagePoints;
+    }
 }
