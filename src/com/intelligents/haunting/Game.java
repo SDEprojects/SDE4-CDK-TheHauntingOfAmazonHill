@@ -205,8 +205,7 @@ public class Game implements java.io.Serializable {
                         }
                     case "quit":
                     case "q":
-                        mp.quitMusic();
-                        isGameRunning = false;
+                        if (jFrame.quitGame()) mp.quitMusic();
                         break;
                     case "pause":
                         mp.pauseMusic();
@@ -226,6 +225,8 @@ public class Game implements java.io.Serializable {
                 narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -237,8 +238,7 @@ public class Game implements java.io.Serializable {
                     "ghost is haunting Amazon Hill?\n" +
                     "Here are all the possible ghosts:\n", Color.WHITE);
             ghosts.forEach(ghost -> simpleOutputInlineSetting(ghost.getType() + "\n", Color.GREEN));
-            simpleOutputInlineSetting("Which Ghost do you think it is?\n" +
-                    "", Color.WHITE);
+            simpleOutputInlineSetting("Which Ghost do you think it is?\n", Color.WHITE);
         } else if (ans.contains("inside")) {
             quickNarrateFormatted("You are back inside", Color.WHITE);
         } else {
