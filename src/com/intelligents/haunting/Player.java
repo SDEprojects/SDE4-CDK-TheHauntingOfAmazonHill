@@ -12,12 +12,14 @@ class Player implements java.io.Serializable {
     private String mostRecentExit;
     private final List<String> journal = new ArrayList<>();
     private final List<String> roomsVisited = new ArrayList<>();
+    private List<Weapon> weapons = new ArrayList<>();
 
 
     private Player() {
         if (playerSingleton != null) {
             throw new RuntimeException("Need to use getInstance()");
         }
+        addWeapon(new Weapon("Sword", "Long and heavy; with a point that can pierce through any solid object!", 100));
     }
 
 
@@ -80,5 +82,17 @@ class Player implements java.io.Serializable {
         return getName() + "'s"
                 + " journal currently shows these items: " + "\uD83D\uDCD6" + "\n\n"
                 + getJournal();
+    }
+
+    public void addWeapon(Weapon weapon) {
+        weapons.add(weapon);
+    }
+
+    public void removeWeapon(Weapon weapon) {
+        weapons.remove(weapon);
+    }
+
+    public List getAllWeapons() {
+        return weapons;
     }
 }
