@@ -88,12 +88,9 @@ public class Game implements java.io.Serializable {
                 jFrame.stopThemeSong();
                 mp.startMusic();
                 SaveGame.setGame(this);
-                narrateNoNewLine("\nLoading game!!!", Color.YELLOW);
-                simpleOutputInlineSetting("\n" + "Please enter your name for this " +
-                        "play through (can be the same as before or a new name, only " +
-                        "affects what you see in the journal)", Color.YELLOW);
-                simpleOutputInlineSetting("\nYour previous name was: " +
-                        player.getName(), Color.YELLOW);
+                quickNarrateFormatted("Loading game!!!", Color.YELLOW);
+                simpleOutputInlineSetting("\n\nWelcome back, " + player.getName() + "!" +
+                        "\nYou are currently in the " + currentRoom + ".", Color.GREEN);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
