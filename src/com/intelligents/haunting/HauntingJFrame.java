@@ -1,7 +1,7 @@
 package com.intelligents.haunting;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,29 +10,30 @@ import java.util.Objects;
 
 public class HauntingJFrame extends JWindow implements ActionListener {
 
-    JWindow window = new JWindow();
+    private JWindow window = new JWindow();
 
-    String[] userResponse;
-    JTextField userInput = new JTextField();
-    JButton showJournal = new JButton("Journal");
-    JButton showMap = new JButton("Map");
-    JTextArea textDisplayGameWindow = new JTextArea();
+    private String[] userResponse;
+    private JTextField userInput = new JTextField();
+    private JButton showJournal = new JButton("Journal");
+    private JButton showMap = new JButton("Map");
+//    JTextArea textDisplayGameWindow = new JTextArea();
+    private JTextPane textDisplayGameWindow = new JTextPane();
     JTextArea textDisplayJournal = new JTextArea();
+    private JFrame frame;
+    private boolean calledOnce=false;
+    private String currentRoom;
+    private Game game;
+    private Controller controller;
+    private PrintFiles p = new PrintFiles();
+    private ClassLoader cl;
+    private String pathStartResources = "com/intelligents/resources/";
+    private String pathStartSounds = pathStartResources + "Sounds/";
+    private String pathStartImages = pathStartResources + "Images/";
     JTextArea playerLocationArea = new JTextArea();
-    JFrame frame;
     JPanel textDisplayPanel;
     JPanel userInputPanel;
     JPanel buttonsAndInfoPanel;
     private JPanel playerLocationPanel;
-    boolean calledOnce = false;
-    String currentRoom;
-    Game game;
-    Controller controller;
-    PrintFiles p = new PrintFiles();
-    ClassLoader cl;
-    String pathStartResources = "com/intelligents/resources/";
-    String pathStartSounds = pathStartResources + "Sounds/";
-    String pathStartImages = pathStartResources + "Images/";
     private MusicPlayer themeSong;
 
     public HauntingJFrame() throws IOException {
@@ -77,8 +78,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
                 "Chapter 3. Hangman's Gallows (COMING SOON!)\n " +
                 "Press 4. to load saved game\n" +
                 "Please enter a number for Chapter: ");
-        textDisplayGameWindow.setLineWrap(true);
-        textDisplayGameWindow.setWrapStyleWord(true);
         textDisplayGameWindow.setBorder(BorderFactory.createBevelBorder(1));
         textDisplayGameWindow.setForeground(Color.white);
         textDisplayGameWindow.setFont(new Font("Comic Sans", Font.BOLD, 15));
@@ -105,6 +104,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         playerLocationPanel.setBackground(Color.white);
         playerLocationArea.setSize(200,75);
         playerLocationArea.setForeground(Color.blue);
+        playerLocationArea.setEditable(false);
         playerLocationPanel.add(playerLocationArea);
 
         frame.add(textDisplayPanel, BorderLayout.NORTH);
@@ -142,12 +142,22 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         }
     }
 
-    public void setTextBox(String text) {
+    public void setTextBox(String text, Color color) {
+        textDisplayGameWindow.setForeground(color);
         textDisplayGameWindow.setText(text);
     }
 
-    public void appendToTextBox(String text) {
-        textDisplayGameWindow.append(text);
+    public  void appendToTextBox(String text) throws BadLocationException {
+//        textDisplayGameWindow.append(text);
+        Document doc = textDisplayGameWindow.getDocument();
+        doc.insertString(doc.getLength(), text, null);
+    }
+
+    public void setTextColorAndDisplay(String textToDisplay, Color color) throws BadLocationException {
+        StyledDocument doc = textDisplayGameWindow.getStyledDocument();
+        Style style = textDisplayGameWindow.addStyle("", null);
+        StyleConstants.setForeground(style, color);
+        doc.insertString(doc.getLength(), textToDisplay, style);
     }
 
     private void showJournal() {
