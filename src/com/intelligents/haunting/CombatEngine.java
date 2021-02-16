@@ -1,18 +1,32 @@
 package com.intelligents.haunting;
 
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 
 public class CombatEngine {
 
-    public static String runCombat(String[] userCommands, Game game, Scanner scanner) {
+    public static String runCombat(String userChoice, Game game) throws IOException {
         String result = "";
-        if (userCommands[0].equals("fight")) {
+        // Switches based on button - yes button value is 0, no is 1, close window is -1
+        switch (userChoice) {
+            case "0":
+                userChoice = "fight";
+                break;
+            case "1": case "-1":
+                userChoice = "run";
+                break;
+            default:
+                userChoice = "run";
+                break;
+        }
+        if (userChoice.equals("fight")) {
             boolean inFight = true;
             while (inFight) {
-                String fightResult = mortalCombat(game, result, scanner);
+                String fightResult = mortalCombat(game);
                 if (fightResult.contains("invalid") || fightResult.contains("hoping")) {
                     //output result message and loop again
-                    game.narrateNoNewLine(fightResult + "\n");
+                    game.narrateNoNewLine(fightResult + "\n", Color.white);
                 } else if (fightResult.contains("dissipates") || fightResult.contains("whence")) {
                     game.getWorld().getCurrentRoom().setRoomMiniGhost(null);
                     result = fightResult;
@@ -24,32 +38,41 @@ public class CombatEngine {
                 }
             }
         }
-        if (userCommands[0].equals("run")) {
+        if (userChoice.equals("run")) {
             result = "Frightened to the point of tears, you flee back the way you came.";
             game.changeRoom(true, invertPlayerRoom(game.getPlayer().getMostRecentExit()), 0);
         }
         return result;
     }
 
-    private static String mortalCombat(Game game, String result, Scanner scanner) {
+    private static String mortalCombat(Game game) {
         showStatus(game);
-        return processChoice(game, result, scanner);
+        return processChoice(game);
     }
 
     private static void showStatus(Game game) {
-        game.narrateNoNewLine("Combat commencing...");
+        game.narrateNoNewLine("Combat commencing...", Color.WHITE);
     }
 
-    private static String processChoice(Game game, String result, Scanner scanner) {
+    private static String processChoice(Game game) {
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
-        String choices = "Choose your action: \n" +
-                "1 - Swing Iron Bar!\n" +
-                "2 - Sweat on it!\n" +
-                "3 - Punch it!\n" +
-                "4 - Run!\n";
-        game.narrateNoNewLine(choices + ">>");
-        String input = scanner.nextLine().strip().toLowerCase();
-        switch (input) {
+        String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
+                "Choose your action: \n" +
+                        "1 - Swing Iron Bar!\n" +
+                        "2 - Sweat on it!\n" +
+                        "3 - Punch it!\n" +
+                        "4 - Run!\n",
+                "Combat!",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"1", "2", "3", "4"},
+                "1");
+        // This catches cancel and close buttons
+        if (fightChoice == null) {
+            fightChoice = "4";
+        }
+        String result;
+        switch (fightChoice) {
             case "1":
                 result = "You swing the iron bar, and the " + battleGhost.getName() + " dissipates.";
                 break;
