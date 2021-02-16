@@ -50,18 +50,22 @@
         <minighost>
             <name>Angry Grandma</name>
             <type>Apparition</type>
+            <hp>100</hp>
         </minighost>
         <minighost>
             <name>Cranky Boss</name>
             <type>Haunt</type>
+            <hp>100</hp>
         </minighost>
         <minighost>
             <name>Sultry Maiden</name>
             <type>Shade</type>
+            <hp>100</hp>
         </minighost>
         <minighost>
             <name>Saucy Ferret</name>
             <type>Specter</type>
+            <hp>100</hp>
         </minighost>
     </minighosts>
 </ghosts>
