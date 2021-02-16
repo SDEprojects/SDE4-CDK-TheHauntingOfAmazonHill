@@ -10,6 +10,7 @@ import java.util.Random;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.intelligents.haunting.CombatEngine.runCombat;
 
@@ -120,6 +121,22 @@ public class Game implements java.io.Serializable {
         jFrame.playerLocationArea.setText(currentLoc);
     }
 
+    public boolean checkStringNorth(String[] input) {
+        return Pattern.compile("(?i)^no.*").matcher(input[1]).find();
+    }
+
+    public boolean checkStringSouth(String[] input) {
+        return Pattern.compile("(?i)^so.*").matcher(input[1]).find();
+    }
+
+    public boolean checkStringEast(String[] input) {
+        return Pattern.compile("(?i)^e(a|s).*").matcher(input[1]).find();
+    }
+
+    public boolean checkStringWest(String[] input) {
+        return Pattern.compile("(?i)^w(e|s).*").matcher(input[1]).find();
+    }
+
 
     void processInput(boolean isValidInput, String[] input, int attempt) {
         updateCurrentRoom();
@@ -129,12 +146,12 @@ public class Game implements java.io.Serializable {
         } else {
             try {
                 switch (input[0]) {
-                    /* Case for original developer easter egg, disabled for security. Uncomment to enable
-                    and also related function at the bottom of Game.java
-                    case "chris":
-                        chrisIsCool();
-                        break;
-                     */
+                        /* Case for original developer easter egg, disabled for security. Uncomment to enable
+                        and also related function at the bottom of Game.java
+                        case "chris":
+                            chrisIsCool();
+                            break;
+                         */
                     //Allows for volume to be increased or decreased
                     case "volume":
                         if (input[1].equals("up")) {
@@ -215,8 +232,23 @@ public class Game implements java.io.Serializable {
                         break;
                     case "move":
                     case "go":
-                        changeRoom(isValidInput, input, attempt);
-                        break;
+                        if (!checkStringNorth(input)) {
+                            int dirChoice = JOptionPane.showOptionDialog(new JFrame(), "Did you mean to say north? ", "Going north?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Yes", "No"}, JOptionPane.YES_OPTION);
+                            switch (dirChoice) {
+                                case 0:
+                                    input[1] = "north";
+                                    break;
+                                case 1:
+                                case -1:
+                                    break;
+                            }
+                        } else {
+//                            if (!checkStringSouth(input)) {
+//                                simpleOutputInlineSetting("Did you mean to say South?");
+//                            }
+                            changeRoom(isValidInput, input, attempt);
+                            break;
+                        }
                 }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
@@ -263,29 +295,29 @@ public class Game implements java.io.Serializable {
         walkEffect.stopSoundEffect();
         keyboardEffect.stopSoundEffect();
         paperFalling.stopSoundEffect();
-        isSound = false;
-    }
+        isSound=false;
+        }
 
 
-    public String normalizeText(String input) {
-        List<String> northOptions = Arrays.asList("north", "up");
-        List<String> southOptions = Arrays.asList("south", "down");
-        List<String> eastOptions = Arrays.asList("east", "right");
-        List<String> westOptions = Arrays.asList("west", "left");
-        if (northOptions.contains(input.toLowerCase())) {
-            return "north";
+public String normalizeText(String input){
+        List<String> northOptions=Arrays.asList("north","up","n");
+        List<String> southOptions=Arrays.asList("south","down","s");
+        List<String> eastOptions=Arrays.asList("east","right","e");
+        List<String> westOptions=Arrays.asList("west","left","w");
+        if(northOptions.contains(input.toLowerCase())){
+        return"north";
         }
-        if (southOptions.contains(input.toLowerCase())) {
-            return "south";
+        if(southOptions.contains(input.toLowerCase())){
+        return"south";
         }
-        if (eastOptions.contains(input.toLowerCase())) {
-            return "east";
+        if(eastOptions.contains(input.toLowerCase())){
+        return"east";
         }
-        if (westOptions.contains(input.toLowerCase())) {
-            return "west";
+        if(westOptions.contains(input.toLowerCase())){
+        return"west";
         }
-        return "";
-    }
+        return"";
+        }
 
     public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws IOException {
         while (isValidInput) {
