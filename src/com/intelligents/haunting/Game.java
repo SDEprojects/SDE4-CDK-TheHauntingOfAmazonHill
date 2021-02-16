@@ -243,9 +243,9 @@ public class Game implements java.io.Serializable {
                                     break;
                             }
                         } else {
-                            if (!checkStringSouth(input)) {
-                                simpleOutputInlineSetting("Did you mean to say South?");
-                            }
+//                            if (!checkStringSouth(input)) {
+//                                simpleOutputInlineSetting("Did you mean to say South?");
+//                            }
                             changeRoom(isValidInput, input, attempt);
                             break;
                         }
