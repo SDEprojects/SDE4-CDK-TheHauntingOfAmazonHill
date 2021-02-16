@@ -232,8 +232,14 @@ public class Game implements java.io.Serializable {
                         break;
                     case "move":
                     case "go":
-                        if (!checkStringNorth(input)) {
-                            int dirChoice = JOptionPane.showOptionDialog(new JFrame(), "Did you mean to say north? ", "Going north?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Yes", "No"}, JOptionPane.YES_OPTION);
+                        if (checkStringNorth(input)) {
+                            int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
+                                    "Did you mean to say north? ",
+                                    "Going north?",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE,
+                                    null, new Object[]{"Yes", "No"},
+                                    JOptionPane.YES_OPTION);
                             switch (dirChoice) {
                                 case 0:
                                     input[1] = "north";
@@ -242,16 +248,18 @@ public class Game implements java.io.Serializable {
                                 case -1:
                                     break;
                             }
-                        } else {
+                        }
+                        else {
 //                            if (!checkStringSouth(input)) {
 //                                simpleOutputInlineSetting("Did you mean to say South?");
-//                            }
+                            }
                             changeRoom(isValidInput, input, attempt);
                             break;
                         }
-                }
+//                }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-                narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
+                narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then " +
+                        "a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -269,20 +277,23 @@ public class Game implements java.io.Serializable {
         } else if (ans.contains("inside")) {
             quickNarrateFormatted("You are back inside", Color.WHITE);
         } else {
-            quickNarrateFormatted("Invalid input, please decide whether you want to GUESS or go back INSIDE.\n", Color.WHITE);
+            quickNarrateFormatted("Invalid input, please decide whether you want to GUESS or go " +
+                    "back INSIDE.\n", Color.WHITE);
         }
     }
 
     void userGuess(String ans) {
-        quickNarrateFormatted("Good job gathering evidence, " + player.getName() + ".\nYou guessed: " + ans + "\n", Color.WHITE);
+        quickNarrateFormatted("Good job gathering evidence, " + player.getName() + ".\nYou " +
+                "guessed: " + ans + "\n", Color.WHITE);
         if (ans.equalsIgnoreCase(currentGhost.getType())) {
             narrateNoNewLine("You won!\n", Color.RED);
             narrateNoNewLine(getGhostBackstory() + "\n", Color.WHITE);
             isGameRunning = false;
         } else {
             if (guessCounter < 1) {
-                narrateNoNewLine("Unfortunately, the ghost you determined was incorrect. The correct ghost was \n"
-                        + currentGhost.toString() + "\nYou have been loaded into a new world. Good luck trying again.\n", Color.WHITE);
+                narrateNoNewLine("Unfortunately, the ghost you determined was incorrect. The correct " +
+                        "ghost was \n" + currentGhost.toString() + "\nYou have been loaded into a new " +
+                        "world. Good luck trying again.\n", Color.WHITE);
             }
             resetWorld();
         }
@@ -349,7 +360,15 @@ public String normalizeText(String input){
         }
         if (world.getCurrentRoom().getRoomMiniGhost() != null) {
             // displays the fight dialog as an option pane, with yes(0) = fight, no(1) = run, close (-1) = run
-            int fightChoice = JOptionPane.showOptionDialog(new JFrame(), "You have run into a " + world.getCurrentRoom().getRoomMiniGhost().getName() + ". What will you do? [Fight/Run]\n", "Combat!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Fight", "Run"}, JOptionPane.YES_OPTION);
+            int fightChoice = JOptionPane.showOptionDialog(new JFrame(),
+                    "You have run into a " + world.getCurrentRoom().getRoomMiniGhost().getName() +
+                            ". What will you do? [Fight/Run]\n",
+                    "Combat!",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new Object[]{"Fight", "Run"},
+                    JOptionPane.YES_OPTION);
             simpleOutputInlineSetting(runCombat(Integer.toString(fightChoice), this), Color.WHITE);
         }
     }
@@ -361,7 +380,8 @@ public String normalizeText(String input){
 
     private void addEvidenceToJournal() {
         if (!world.getCurrentRoom().getRoomEvidence().isEmpty()) {
-            String journalEntry = (world.getCurrentRoom().getRoomTitle() + ": " + world.getCurrentRoom().getRoomEvidence() + "(Automatically Logged)");
+            String journalEntry = (world.getCurrentRoom().getRoomTitle() + ": " +
+                    world.getCurrentRoom().getRoomEvidence() + "(Automatically Logged)");
             player.setJournal(journalEntry);
         }
     }
