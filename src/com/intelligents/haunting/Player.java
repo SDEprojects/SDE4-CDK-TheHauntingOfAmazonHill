@@ -10,6 +10,7 @@ class Player implements java.io.Serializable {
     private static Player playerSingleton;
     private String name;
     private String mostRecentExit;
+    private int hitPoints = 1000;
     private final List<String> journal = new ArrayList<>();
     private final List<String> roomsVisited = new ArrayList<>();
     private List<Weapon> weapons = new ArrayList<>();
@@ -94,5 +95,17 @@ class Player implements java.io.Serializable {
 
     public List getAllWeapons() {
         return weapons;
+    }
+
+    public void playerTakesDamage(int damagePoints) {
+        hitPoints -= damagePoints;
+    }
+
+    public void playerGainsHealth(int healthPoints) {
+        hitPoints += healthPoints;
+    }
+
+    public int getPlayerHitPoints() {
+        return hitPoints;
     }
 }
