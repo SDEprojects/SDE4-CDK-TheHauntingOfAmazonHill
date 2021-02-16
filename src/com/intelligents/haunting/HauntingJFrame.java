@@ -48,7 +48,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
     private void gameWindow() {
         frame = new JFrame("The Haunting of Amazon Hill");
-        frame.setSize(700, 700);
+        frame.setSize(800, 700);
 
         textDisplayPanel = new JPanel();
         userInputPanel = new JPanel();

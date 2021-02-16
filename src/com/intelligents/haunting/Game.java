@@ -3,6 +3,7 @@ package com.intelligents.haunting;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -72,7 +73,8 @@ public class Game implements java.io.Serializable {
 
     public void intro(String[] gameType) throws IOException {
         if (gameType[0].matches("1")) {
-            quickNarrateFormatted(p.print(resourcePath, "settingTheScene", cl), Color.WHITE);
+            quickNarrateFormatted(p.print(resourcePath, "introText", cl), Color.RED);
+            simpleOutputInlineSetting(p.print(resourcePath, "settingTheScene", cl), Color.WHITE);
             simpleOutputInlineSetting("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
                     "What would you like your name to be?\n" + ">>", Color.GREEN);
 
