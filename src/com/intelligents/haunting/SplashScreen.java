@@ -9,7 +9,7 @@
 //    ClassLoader cl = getClass().getClassLoader();
 //    String pathStartResources = "com/intelligents/resources/";
 //    String pathStartSounds = pathStartResources + "Sounds/";
-//    PrintFiles p = new PrintFiles();
+//    FileReader p = new FileReader();
 //    SaveGame save = new SaveGame();
 //    private final MusicPlayer themeSong = new MusicPlayer(pathStartSounds + "VIKINGS THEME SONG.wav", cl);
 //
@@ -27,7 +27,7 @@
 //                "Chapter 3. Hangman's Gallows (COMING SOON!)\n " +
 //                "Press 4. to load saved game\n" +
 //                "Please enter a number for Chapter:\n" +
-//                ConsoleColors.RESET + ">>");
+//                ConsoleColors.RESET );
 //        String gameType = getUserInput();
 //        // If 1 was selected then a new game is loaded
 //        if (gameType.matches("1")) {
