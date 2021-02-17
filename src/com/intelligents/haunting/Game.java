@@ -187,7 +187,7 @@ public class Game implements java.io.Serializable {
                     case "look":
                     case "view":
                     case "show":
-                        narrateNoNewLine(divider + "\n", Color.WHITE);
+                        narrateNoNewLine("\n\n" + divider + "\n", Color.WHITE);
                         updateCurrentRoom();
 
                         if (world.getCurrentRoom().getRoomEvidence().isEmpty()) {
