@@ -15,6 +15,7 @@ class Player implements java.io.Serializable {
     private final List<String> roomsVisited = new ArrayList<>();
     private List<Items> weapons = new ArrayList<>();
     private List<Items> items = new ArrayList<>();
+    private List<Weapon> inventory = new ArrayList<>();
 
 
     private Player() {
@@ -88,6 +89,9 @@ class Player implements java.io.Serializable {
 
     public void addWeapon(Items weapon) {
         weapons.add(weapon);
+    // For now these are set exclusive to weapons, but once items are formed, this can be changed to items and weapon can be made an item
+    public void addWeapon(Weapon weapon) {
+        inventory.add(weapon);
     }
 
     public void addItem(Items item) {
@@ -95,11 +99,13 @@ class Player implements java.io.Serializable {
     }
 
     public void removeWeapon(Weapon weapon) {
-        weapons.remove(weapon);
+        inventory.remove(weapon);
     }
 
     public List<Items> getAllWeapons() {
         return weapons;
+    public List getAllWeapons() {
+        return inventory;
     }
 
     public List<Items> getItems() {

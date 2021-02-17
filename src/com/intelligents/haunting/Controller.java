@@ -31,10 +31,7 @@ public class Controller {
             game.createPlayer(response);
             nameSet = true;
         // If the user is trying to exit, get if they want to guess or stay inside
-        } else if (promptToUser.equals("It seems your journal does not have all of the evidence needed to determine the ghost." +
-                " Would you like to GUESS the ghost anyway or go back INSIDE?\n") || promptToUser.equals("Invalid input, please decide whether you want to GUESS or go back INSIDE.\n")
-                || promptToUser.equals("It seems like you could be ready to determine the ghost." +
-                " Would you like to GUESS the ghost or go back INSIDE to continue exploring?\n")){
+        } else if (promptToUser.contains("GUESS")){
             if (response[0].contains("guess")) {
                 readyToGuess = true;
             }

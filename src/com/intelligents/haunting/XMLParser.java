@@ -55,8 +55,9 @@ class XMLParser implements java.io.Serializable {
                 Element minighost = (Element) nNode;
                 String name = minighost.getElementsByTagName("name").item(0).getTextContent();
                 String type = minighost.getElementsByTagName("type").item(0).getTextContent();
+                String hp = minighost.getElementsByTagName("hp").item(0).getTextContent();
                 // Construct new MiniGhost and add to MiniGhost list
-                miniGhosts.add(new MiniGhost(name, type));
+                miniGhosts.add(new MiniGhost(name, type, Integer.parseInt(hp)));
             }
         }
         return miniGhosts;

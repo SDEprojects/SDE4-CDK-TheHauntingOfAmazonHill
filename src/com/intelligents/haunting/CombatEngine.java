@@ -51,7 +51,7 @@ public class CombatEngine {
     }
 
     private static void showStatus(Game game) {
-        game.appendWithColoredText("Combat commencing...\n", Color.WHITE);
+        game.appendWithColoredText("\n\nCombat commencing...\n", Color.WHITE);
     }
 
     private static String processChoice(Game game) {
@@ -74,23 +74,23 @@ public class CombatEngine {
         String result;
         switch (fightChoice) {
             case "1":
-                result = "You swing the iron bar, and the " + battleGhost.getName() + " dissipates.\n";
+                result = "\n\nYou swing the iron bar, and the " + battleGhost.getName() + " dissipates.\n";
                 break;
             case "2":
-                result = "You collect an impressive amount of sweat from your body " +
+                result = "\n\nYou collect an impressive amount of sweat from your body " +
                         "and throw it at the " + battleGhost.getName() + ".\nWhile gross, the " +
                         "extreme salt content in your perspiration banishes the " +
                         battleGhost.getName() + " back to whence it came.\n";
                 break;
             case "3":
-                result = "You punch at the " + battleGhost.getName() + " , but your hand passes right through.\n" +
+                result = "\n\nYou punch at the " + battleGhost.getName() + " , but your hand passes right through.\n" +
                         "What were you hoping to achieve?\n";
                 break;
             case "4":
-                result = "You think better about your choices, and decide to flee back the way you came.\n";
+                result = "\n\nYou think better about your choices, and decide to flee back the way you came.\n";
                 break;
             default:
-                result = "That is an invalid option, please pick 1-4.\n";
+                result = "\n\nThat is an invalid option, please pick 1-4.\n";
                 break;
         }
         return result;

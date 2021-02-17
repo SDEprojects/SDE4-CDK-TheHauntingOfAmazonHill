@@ -24,6 +24,8 @@ Happy hunting!!
 
 - look/view/show = displays any evidence located in your current room
 
+- inventory = displays a list of items and weapons in your inventory
+
 - move/go + direction e.g. "move north" or "go west"
 
 - save = save game progress
