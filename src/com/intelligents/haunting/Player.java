@@ -13,7 +13,8 @@ class Player implements java.io.Serializable {
     private int hitPoints = 1000;
     private final List<String> journal = new ArrayList<>();
     private final List<String> roomsVisited = new ArrayList<>();
-    private List<Weapon> weapons = new ArrayList<>();
+    private List<Items> weapons = new ArrayList<>();
+    private List<Items> items = new ArrayList<>();
 
 
     private Player() {
@@ -85,16 +86,24 @@ class Player implements java.io.Serializable {
                 + getJournal();
     }
 
-    public void addWeapon(Weapon weapon) {
+    public void addWeapon(Items weapon) {
         weapons.add(weapon);
+    }
+
+    public void addItem(Items item) {
+        items.add(item);
     }
 
     public void removeWeapon(Weapon weapon) {
         weapons.remove(weapon);
     }
 
-    public List getAllWeapons() {
+    public List<Items> getAllWeapons() {
         return weapons;
+    }
+
+    public List<Items> getItems() {
+        return items;
     }
 
     public void playerTakesDamage(int damagePoints) {
@@ -108,4 +117,7 @@ class Player implements java.io.Serializable {
     public int getPlayerHitPoints() {
         return hitPoints;
     }
+
+
+
 }

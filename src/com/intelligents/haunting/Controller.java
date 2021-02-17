@@ -48,7 +48,7 @@ public class Controller {
         } else if (promptToUser.equals("Your entry:\n ")) {
             game.inputEntryInJournal(response[0]);
         } else {
-            game.processInput(true, response, game.attemptCount);
+            game.processInput(true, response, game.getAttemptCount());
         }
     }
 

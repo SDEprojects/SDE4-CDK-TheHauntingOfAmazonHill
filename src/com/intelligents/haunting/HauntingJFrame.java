@@ -161,7 +161,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         textDisplayGameWindow.setText(text);
     }
 
-    public void setTextColorAndDisplay(String textToDisplay, Color color) throws BadLocationException {
+    public void appendTextColorAndDisplay(String textToDisplay, Color color) throws BadLocationException {
         StyledDocument doc = textDisplayGameWindow.getStyledDocument();
         Style style = textDisplayGameWindow.addStyle("", null);
         StyleConstants.setForeground(style, color);
