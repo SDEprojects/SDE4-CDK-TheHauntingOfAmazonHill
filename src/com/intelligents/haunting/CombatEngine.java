@@ -26,7 +26,7 @@ public class CombatEngine {
                 String fightResult = mortalCombat(game);
                 if (fightResult.contains("invalid") || fightResult.contains("hoping")) {
                     //output result message and loop again
-                    game.narrateNoNewLine(fightResult + "\n", Color.white);
+                    game.appendWithColoredText(fightResult + "\n", Color.white);
                 } else if (fightResult.contains("dissipates") || fightResult.contains("whence")) {
                     game.getWorld().getCurrentRoom().setRoomMiniGhost(null);
                     result = fightResult;
@@ -51,7 +51,7 @@ public class CombatEngine {
     }
 
     private static void showStatus(Game game) {
-        game.narrateNoNewLine("\n\nCombat commencing...", Color.WHITE);
+        game.appendWithColoredText("\n\nCombat commencing...\n", Color.WHITE);
     }
 
     private static String processChoice(Game game) {
@@ -74,23 +74,23 @@ public class CombatEngine {
         String result;
         switch (fightChoice) {
             case "1":
-                result = "\n\nYou swing the iron bar, and the " + battleGhost.getName() + " dissipates.";
+                result = "\n\nYou swing the iron bar, and the " + battleGhost.getName() + " dissipates.\n";
                 break;
             case "2":
                 result = "\n\nYou collect an impressive amount of sweat from your body " +
-                        "and throw it at the " + battleGhost.getName() + ". While gross, the " +
+                        "and throw it at the " + battleGhost.getName() + ".\nWhile gross, the " +
                         "extreme salt content in your perspiration banishes the " +
-                        battleGhost.getName() + " back to whence it came.";
+                        battleGhost.getName() + " back to whence it came.\n";
                 break;
             case "3":
-                result = "\n\nYou punch at the " + battleGhost.getName() + " , but your hand passes right through. " +
-                        "What were you hoping to achieve?";
+                result = "\n\nYou punch at the " + battleGhost.getName() + " , but your hand passes right through.\n" +
+                        "What were you hoping to achieve?\n";
                 break;
             case "4":
-                result = "\n\nYou think better about your choices, and decide to flee back the way you came.";
+                result = "\n\nYou think better about your choices, and decide to flee back the way you came.\n";
                 break;
             default:
-                result = "\n\nThat is an invalid option, please pick 1-4.";
+                result = "\n\nThat is an invalid option, please pick 1-4.\n";
                 break;
         }
         return result;

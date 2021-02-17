@@ -9,6 +9,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class XMLParser implements java.io.Serializable {
 
@@ -90,6 +93,36 @@ class XMLParser implements java.io.Serializable {
             }
         }
         return rooms;
+    }
+
+    static Map<String, List<? extends Items>> populateItems(Document document, String element) {
+        NodeList nList = document.getElementsByTagName(element);
+        //Instantiate new Items list
+        Map<String, List<? extends Items>> allItems = new HashMap<>();
+        ArrayList<Items> items = new ArrayList<>();
+        ArrayList<Weapon> weapons = new ArrayList<>();
+        // With node list find each element and construct Items object
+        for (int i = 0; i < nList.getLength(); i++) {
+            // Iterate through each node in nodeList
+            Node nNode = nList.item(i);
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                // Generate local variables from each "minighost" element in XML
+                Element item = (Element) nNode;
+                String name = item.getElementsByTagName("name").item(0).getTextContent();
+                String type = item.getElementsByTagName("type").item(0).getTextContent();
+                String description = item.getElementsByTagName("description").item(0).getTextContent();
+                if (type.equals("weapon")) {
+                    int damagePoints = Integer.parseInt(item.
+                            getElementsByTagName("damagepoints").item(0).getTextContent());
+                    weapons.add(new Weapon(name, description, damagePoints));
+                } else {
+                    items.add(new Items(name, type, description));
+                }
+            }
+        }
+        allItems.put("items", items);
+        allItems.put("weapons", weapons);
+        return allItems;
     }
 
     // XML reader, returns the document based on the passed in String which is the filename before the extension
