@@ -79,7 +79,7 @@ public class Game implements java.io.Serializable {
             replaceGameWindowWithColorText(fileReader.fileReader(resourcePath, "introText", cl), Color.RED);
             appendToGameWindowsWithColorNoSound(fileReader.fileReader(resourcePath, "settingTheScene", cl), Color.WHITE);
             appendToGameWindowsWithColorNoSound("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
-                    "What would you like your name to be?\n" , Color.GREEN);
+                    "What would you like your name to be?\n", Color.GREEN);
 
             jFrame.stopThemeSong();
             mp.startMusic();
@@ -109,8 +109,8 @@ public class Game implements java.io.Serializable {
 
         player.setName(nameInput[0]);
         // // TODO: 2/17/2021 Remove these two lines once world interaction is possible
-        player.addWeapon(items.get("weapons").get(0));
-        player.addItem(items.get("items").get(0));
+//        player.addWeapon(items.get("weapons").get(0));
+//        player.addItem(items.get("items").get(0));
 
         String formatted = "If you're new to the game type help for assistance.";
         replaceGameWindowWithColorText(formatted, Color.CYAN);
@@ -204,10 +204,9 @@ public class Game implements java.io.Serializable {
                     case "show":
                         replaceGameWindowWithColorText("\n\n" + divider + "\n", Color.WHITE);
                         updateCurrentRoom();
-                        if (world.getCurrentRoom().getRoomItems().isEmpty()){
+                        if (world.getCurrentRoom().getRoomItems().isEmpty()) {
                             appendWithColoredText("You see no useful items.\n\n", Color.WHITE);
-                        }
-                        else{
+                        } else {
                             appendWithColoredText("You see some useful items: " +
                                     world.getCurrentRoom().getRoomItems().toString() + "\n\n", Color.ORANGE);
                         }
@@ -264,8 +263,11 @@ public class Game implements java.io.Serializable {
                                     item.getName() + " - " + item.getDescription() + "\n", Color.WHITE);
                         }
                         break;
+                    case "get":
+                        String result = addToInventory(input);
+                        appendToGameWindowsWithColorNoSound(result, result.contains("pickup") ? Color.GREEN :
+                                Color.RED);
                 }
-//                }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 appendWithColoredText("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then " +
                         "a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
@@ -273,6 +275,31 @@ public class Game implements java.io.Serializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String addToInventory(String[] input) {
+        List<Items> currentItems = world.getCurrentRoom().getRoomItems();
+        List<Items> newList = new ArrayList<>();
+        String result = "";
+        for (Items item : currentItems) {
+            if (item.getName().equalsIgnoreCase(input[1])) {
+                if (item.getType().equalsIgnoreCase("weapon")) {
+                    player.addWeapon(item);
+                    newList.add(item);
+                } else {
+                    player.addItem(item);
+                    newList.add(item);
+                }
+                result = "You pickup the " + item.getName() +
+                        " and place it in your inventory.";
+                break;
+            } else {
+                result = "I don't see what you're trying to get.";
+                break;
+            }
+        }
+        currentItems.removeAll(newList);
+        return result;
     }
 
     private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws IOException {
@@ -344,6 +371,7 @@ public class Game implements java.io.Serializable {
         changeRoom(isValidInput, input, attempt);
         return;
     }
+
     void guessOrGoBackInside(String ans) {
         if (ans.contains("guess")) {
             replaceGameWindowWithColorText("You've collected all the evidence you could find.\n" +
@@ -384,8 +412,8 @@ public class Game implements java.io.Serializable {
         walkEffect.stopSoundEffect();
         keyboardEffect.stopSoundEffect();
         paperFalling.stopSoundEffect();
-        isSound=false;
-        }
+        isSound = false;
+    }
 
 
     public String normalizeText(String input) {
@@ -396,17 +424,17 @@ public class Game implements java.io.Serializable {
         if (northOptions.contains(input.toLowerCase())) {
             return "north";
         }
-        if(southOptions.contains(input.toLowerCase())){
-        return"south";
+        if (southOptions.contains(input.toLowerCase())) {
+            return "south";
         }
-        if(eastOptions.contains(input.toLowerCase())){
-        return"east";
+        if (eastOptions.contains(input.toLowerCase())) {
+            return "east";
         }
-        if(westOptions.contains(input.toLowerCase())){
-        return"west";
+        if (westOptions.contains(input.toLowerCase())) {
+            return "west";
         }
-        return"";
-        }
+        return "";
+    }
 
     public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws IOException {
         while (isValidInput) {
