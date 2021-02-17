@@ -112,10 +112,11 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
 
         playerLocationPanel.setBackground(Color.white);
+        playerLocationPanel.setLayout(new GridBagLayout());
         playerLocationArea.setPreferredSize(new Dimension(200, 75));
         playerLocationArea.setForeground(Color.blue);
         playerLocationArea.setEditable(false);
-        playerLocationPanel.add(playerLocationArea, BorderLayout.CENTER);
+        playerLocationPanel.add(playerLocationArea);
 
 
         gamePanel.add(textDisplayPanel);
