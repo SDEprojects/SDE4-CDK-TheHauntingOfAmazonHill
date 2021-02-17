@@ -448,7 +448,7 @@ public class Game implements java.io.Serializable {
                     null,
                     new Object[]{"Fight", "Run"},
                     JOptionPane.YES_OPTION);
-            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this), Color.WHITE);
+            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this, player), Color.WHITE);
         }
     }
 
