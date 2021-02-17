@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<items>
+    <item>
+        <name>Iron Bar</name>
+        <type>weapon</type>
+        <description>A short and sturdy piece, this should disperse most minor ghosts with ease.</description>
+        <damagepoints>50</damagepoints>
+    </item>
+    <item>
+        <name>Sword</name>
+        <type>weapon</type>
+        <description>Long and heavy; with a point that can pierce through any solid object!</description>
+        <damagepoints>100</damagepoints>
+    </item>
+    <item>
+        <name>Basket</name>
+        <type>container</type>
+        <description>A sturdy wicker basket, capable of carrying three small things.</description>
+    </item>
+    <item>
+        <name>Health Potion</name>
+        <type>consumable</type>
+        <description>Looks gross, smells worse, probably medicine.</description>
+    </item>
+</items>

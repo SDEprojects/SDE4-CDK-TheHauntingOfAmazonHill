@@ -20,6 +20,8 @@ public class Game implements java.io.Serializable {
     private World world;
     private List<Ghost> ghosts = new ArrayList<>();
     private List<MiniGhost> miniGhosts = new ArrayList<>();
+    private Map<String, List<? extends Items>> items = new HashMap<>();
+    private List<Weapon> weapons;
     private final SaveGame SaveGame = new SaveGame();
     private Ghost currentGhost;
     private final Random r = new Random();
@@ -56,9 +58,11 @@ public class Game implements java.io.Serializable {
         setMusic(pathStartSounds);
         populateGhostList(cl);
         populateMiniGhostList(cl);
+        populateItemsList(cl);
         setCurrentGhost(getRandomGhost());
         assignRandomEvidenceToMap();
         assignRandomMiniGhostToMap();
+        assignRandomItemsToMap();
         this.jFrame = jFrame;
     }
 
@@ -72,9 +76,9 @@ public class Game implements java.io.Serializable {
 
     public void intro(String[] gameType) throws IOException {
         if (gameType[0].matches("1")) {
-            quickNarrateFormatted(fileReader.fileReader(resourcePath, "introText", cl), Color.RED);
-            simpleOutputInlineSetting(fileReader.fileReader(resourcePath, "settingTheScene", cl), Color.WHITE);
-            simpleOutputInlineSetting("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
+            replaceGameWindowWithColorText(fileReader.fileReader(resourcePath, "introText", cl), Color.RED);
+            appendToGameWindowsWithColorNoSound(fileReader.fileReader(resourcePath, "settingTheScene", cl), Color.WHITE);
+            appendToGameWindowsWithColorNoSound("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
                     "What would you like your name to be?\n" , Color.GREEN);
 
             jFrame.stopThemeSong();
@@ -88,15 +92,15 @@ public class Game implements java.io.Serializable {
                 jFrame.stopThemeSong();
                 mp.startMusic();
                 SaveGame.setGame(this);
-                quickNarrateFormatted("Loading game!!!", Color.YELLOW);
-                simpleOutputInlineSetting("\n\nWelcome back, " + player.getName() + "!" +
+                replaceGameWindowWithColorText("Loading game!!!", Color.YELLOW);
+                appendToGameWindowsWithColorNoSound("\n\nWelcome back, " + player.getName() + "!" +
                         "\nYou are currently in the " + currentRoom + ".", Color.GREEN);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
 
         } else {
-            simpleOutputInlineSetting("Invalid selection , please enter 1.", Color.pink);
+            appendToGameWindowsWithColorNoSound("Invalid selection , please enter 1.", Color.pink);
         }
     }
 
@@ -104,14 +108,17 @@ public class Game implements java.io.Serializable {
         updateCurrentRoom();
 
         player.setName(nameInput[0]);
+        // // TODO: 2/17/2021 Remove these two lines once world interaction is possible
+        player.addWeapon(items.get("weapons").get(0));
+        player.addItem(items.get("items").get(0));
 
         String formatted = "If you're new to the game type help for assistance.";
-        quickNarrateFormatted(formatted, Color.CYAN);
+        replaceGameWindowWithColorText(formatted, Color.CYAN);
 
         formatted = "\nGood luck to you, " + player.getName() + "!";
-        narrateNoNewLine(formatted, Color.white);
-        simpleOutputInlineSetting("\n\n" + currentLoc, Color.YELLOW);
-        simpleOutputInlineSetting("\n" + moveGuide, Color.YELLOW);
+        appendWithColoredText(formatted, Color.white);
+        appendToGameWindowsWithColorNoSound("\n\n" + currentLoc, Color.YELLOW);
+        appendToGameWindowsWithColorNoSound("\n" + moveGuide, Color.YELLOW);
 
     }
 
@@ -138,11 +145,19 @@ public class Game implements java.io.Serializable {
     }
 
 
+    public int getAttemptCount() {
+        return attemptCount;
+    }
+
+    public void setAttemptCount(int attemptCount) {
+        this.attemptCount = attemptCount;
+    }
+
     void processInput(boolean isValidInput, String[] input, int attempt) {
         updateCurrentRoom();
         checkIfRoomVisited();
         if (input.length > 2) {
-            simpleOutputInlineSetting("You cannot type more than 2 commands!Try again:\n ", Color.WHITE);
+            appendToGameWindowsWithColorNoSound("You cannot type more than 2 commands!Try again:\n ", Color.WHITE);
         } else {
             try {
                 switch (input[0]) {
@@ -178,7 +193,7 @@ public class Game implements java.io.Serializable {
                     //
                     case "?":
                     case "help":
-                        quickNarrateFormatted(fileReader.fileReader(resourcePath, "Rules", cl), Color.white);
+                        replaceGameWindowWithColorText(fileReader.fileReader(resourcePath, "Rules", cl), Color.white);
                         break;
                     case "open":
                         openMap();
@@ -187,34 +202,40 @@ public class Game implements java.io.Serializable {
                     case "look":
                     case "view":
                     case "show":
-                        narrateNoNewLine("\n\n" + divider + "\n", Color.WHITE);
+                        replaceGameWindowWithColorText("\n\n" + divider + "\n", Color.WHITE);
                         updateCurrentRoom();
-
+                        if (world.getCurrentRoom().getRoomItems().isEmpty()){
+                            appendWithColoredText("You see no useful items.\n\n", Color.WHITE);
+                        }
+                        else{
+                            appendWithColoredText("You see some useful items: " +
+                                    world.getCurrentRoom().getRoomItems().toString() + "\n\n", Color.ORANGE);
+                        }
                         if (world.getCurrentRoom().getRoomEvidence().isEmpty()) {
-                            narrateNoNewLine("Currently there are no items in "
-                                    + world.getCurrentRoom().getRoomTitle() + "\n\n", Color.WHITE);
+                            appendWithColoredText("You see no useful evidence." + "\n\n", Color.WHITE);
                         } else {
                             addEvidenceToJournal();
-                            narrateNoNewLine("You look and notice: " + world.getCurrentRoom().getRoomEvidence() + "\n\n", Color.WHITE);
-                            narrateNoNewLine("Evidence logged into your journal.\n", Color.WHITE);
+                            appendWithColoredText("You've found some useful evidence: " +
+                                    world.getCurrentRoom().getRoomEvidence() + "\n\n", Color.WHITE);
+                            appendWithColoredText("Evidence logged into your journal.\n", Color.WHITE);
                         }
-                        narrateNoNewLine(divider + "\n", Color.WHITE);
+                        appendWithColoredText(divider + "\n", Color.WHITE);
                         break;
                     case "write":
-                        quickNarrateFormatted("Would you like to document anything in your journal? [Yes/No]\n", Color.WHITE);
+                        replaceGameWindowWithColorText("Would you like to document anything in your journal? [Yes/No]\n", Color.WHITE);
                         break;
                     //Allows user to leave if more than one room has been input into RoomsVisited
                     case "exit":
                         if (userAbleToExit()) {
                             // In order to win, user has to have correct evidence and guessed right ghost
                             if (!checkIfHasAllEvidenceIsInJournal()) {
-                                quickNarrateFormatted("It seems your journal does not have all of the evidence needed to determine the ghost." +
+                                replaceGameWindowWithColorText("It seems your journal does not have all of the evidence needed to determine the ghost." +
                                         " Would you like to GUESS the ghost anyway or go back INSIDE?\n", Color.WHITE);
                             } else {
-                                quickNarrateFormatted("It seems like you could be ready to determine the ghost." +
+                                replaceGameWindowWithColorText("It seems like you could be ready to determine the ghost." +
                                         " Would you like to GUESS the ghost or go back INSIDE to continue exploring?\n", Color.WHITE);
                             }
-                            narrateNoNewLine(divider + "\n", Color.WHITE);
+                            appendWithColoredText(divider + "\n", Color.WHITE);
                             break;
                         }
                     case "quit":
@@ -235,17 +256,18 @@ public class Game implements java.io.Serializable {
                         CheckCommand(isValidInput, input, attempt);
                         break;
                     case "inventory":
-                        quickNarrateFormatted("Inventory:\n\n", Color.white);
+                        replaceGameWindowWithColorText("Inventory:\n\n", Color.white);
                         // This will need to be refactored to match Player once items exist in the game.
-                        List<Weapon> weapons = player.getAllWeapons();
-                        for (int itr = 0; itr < weapons.size(); itr++) {
-                            simpleOutputInlineSetting(weapons.get(itr).getName(), Color.WHITE);
+                        List<Items> playerInventory = player.getPlayerInventory();
+                        for (Items item : playerInventory) {
+                            appendToGameWindowsWithColorNoSound(item.getType() + " - " +
+                                    item.getName() + " - " + item.getDescription() + "\n", Color.WHITE);
                         }
                         break;
                 }
 //                }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
-                narrateNoNewLine("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then " +
+                appendWithColoredText("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then " +
                         "a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -322,33 +344,32 @@ public class Game implements java.io.Serializable {
         changeRoom(isValidInput, input, attempt);
         return;
     }
-
     void guessOrGoBackInside(String ans) {
         if (ans.contains("guess")) {
-            quickNarrateFormatted("You've collected all the evidence you could find.\n" +
+            replaceGameWindowWithColorText("You've collected all the evidence you could find.\n" +
                     "Based on your expertise, make an informed decision on what type of " +
                     "ghost is haunting Amazon Hill?\n" +
                     "Here are all the possible ghosts:\n", Color.WHITE);
-            ghosts.forEach(ghost -> simpleOutputInlineSetting(ghost.getType() + "\n", Color.GREEN));
-            simpleOutputInlineSetting("Which Ghost do you think it is?\n", Color.WHITE);
+            ghosts.forEach(ghost -> appendToGameWindowsWithColorNoSound(ghost.getType() + "\n", Color.GREEN));
+            appendToGameWindowsWithColorNoSound("Which Ghost do you think it is?\n", Color.WHITE);
         } else if (ans.contains("inside")) {
-            quickNarrateFormatted("You are back inside", Color.WHITE);
+            replaceGameWindowWithColorText("You are back inside", Color.WHITE);
         } else {
-            quickNarrateFormatted("Invalid input, please decide whether you want to GUESS or go " +
+            replaceGameWindowWithColorText("Invalid input, please decide whether you want to GUESS or go " +
                     "back INSIDE.\n", Color.WHITE);
         }
     }
 
     void userGuess(String ans) {
-        quickNarrateFormatted("Good job gathering evidence, " + player.getName() + ".\nYou " +
+        replaceGameWindowWithColorText("Good job gathering evidence, " + player.getName() + ".\nYou " +
                 "guessed: " + ans + "\n", Color.WHITE);
         if (ans.equalsIgnoreCase(currentGhost.getType())) {
-            narrateNoNewLine("You won!\n", Color.RED);
-            narrateNoNewLine(getGhostBackstory() + "\n", Color.WHITE);
+            appendWithColoredText("You won!\n", Color.RED);
+            appendWithColoredText(getGhostBackstory() + "\n", Color.WHITE);
             isGameRunning = false;
         } else {
             if (guessCounter < 1) {
-                narrateNoNewLine("Unfortunately, the ghost you determined was incorrect. The correct " +
+                appendWithColoredText("Unfortunately, the ghost you determined was incorrect. The correct " +
                         "ghost was \n" + currentGhost.toString() + "\nYou have been loaded into a new " +
                         "world. Good luck trying again.\n", Color.WHITE);
             }
@@ -402,12 +423,13 @@ public class Game implements java.io.Serializable {
                     narrateRooms(world.getCurrentRoom().getDescription(), Color.red);
                     updateCurrentRoom();
                 } else {
-                    quickNarrateFormatted("You hit a wall. Try again:\n ", Color.RED);
+                    replaceGameWindowWithColorText("You hit a wall. Try again.\n ", Color.RED);
                     attemptCount++;
                     if (attemptCount >= 2) {
-                        simpleOutputInlineSetting("\n", Color.WHITE);
+                        appendToGameWindowsWithColorNoSound("\n", Color.WHITE);
                         openMap();
-                        simpleOutputInlineSetting("Where would you like to go?\n ", Color.WHITE);
+                        appendToGameWindowsWithColorNoSound("Where would you like to go?\n ", Color.WHITE);
+                        setAttemptCount(0);
                     }
                 }
                 break;
@@ -426,7 +448,7 @@ public class Game implements java.io.Serializable {
                     null,
                     new Object[]{"Fight", "Run"},
                     JOptionPane.YES_OPTION);
-            simpleOutputInlineSetting(runCombat(Integer.toString(fightChoice), this), Color.WHITE);
+            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this), Color.WHITE);
         }
     }
 
@@ -446,29 +468,29 @@ public class Game implements java.io.Serializable {
 
     void writeEntryInJournal(String journalEntry) {
         if (journalEntry.equals("no")) {
-            narrateNoNewLine("Journal Closed.\n", Color.WHITE);
+            appendWithColoredText("Journal Closed.\n", Color.WHITE);
         } else if (journalEntry.equalsIgnoreCase("yes")) {
-            quickNarrateFormatted("Your entry:\n ", Color.WHITE);
+            replaceGameWindowWithColorText("Your entry:\n ", Color.WHITE);
         } else {
-            narrateNoNewLine("Invalid Journal entry. Please look/show again to document again.\n", Color.WHITE);
+            appendWithColoredText("Invalid Journal entry. Please look/show again to document again.\n", Color.WHITE);
         }
     }
 
     void inputEntryInJournal(String journalEntry) {
         player.setJournal(journalEntry);
-        quickNarrateFormatted("Entry Saved!", Color.YELLOW);
+        replaceGameWindowWithColorText("Entry Saved!", Color.YELLOW);
     }
 
     private void printJournal() {
-        quickNarrateFormatted(divider + "\n", Color.WHITE);
-        narrateNoNewLine(player + "\n", Color.PINK);
+        replaceGameWindowWithColorText(divider + "\n", Color.WHITE);
+        appendWithColoredText(player + "\n", Color.PINK);
         String formatted = "Possible Ghosts ";
-        simpleOutputInlineSetting(formatted, Color.GREEN);
-        narrateNoNewLine(ghosts.toString() + "\n", Color.GREEN);
+        appendToGameWindowsWithColorNoSound(formatted, Color.GREEN);
+        appendWithColoredText(ghosts.toString() + "\n", Color.GREEN);
         formatted = " Rooms visited ";
-        simpleOutputInlineSetting(formatted, Color.PINK);
-        narrateNoNewLine(player.getRoomsVisited() + "\n", Color.YELLOW);
-        simpleOutputInlineSetting(divider + "\n", Color.pink);
+        appendToGameWindowsWithColorNoSound(formatted, Color.PINK);
+        appendWithColoredText(player.getRoomsVisited() + "\n", Color.YELLOW);
+        appendToGameWindowsWithColorNoSound(divider + "\n", Color.pink);
     }
 
     public void openNewWindowJournalWithUpdatedInfo() {
@@ -488,6 +510,11 @@ public class Game implements java.io.Serializable {
 
     void populateMiniGhostList(ClassLoader cl) {
         this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl), "minighost"));
+    }
+
+    void populateItemsList(ClassLoader cl) {
+        Map<String, List<? extends Items>> submitted = XMLParser.populateItems(XMLParser.readXML(resourcePath + "Items", cl), "item");
+        this.setItems(submitted);
     }
 
     Ghost getRandomGhost() {
@@ -513,7 +540,7 @@ public class Game implements java.io.Serializable {
 
             }
         } catch (NullPointerException e) {
-            simpleOutputInlineSetting("The data given is empty, cannot perform function", Color.pink);
+            appendToGameWindowsWithColorNoSound("The data given is empty, cannot perform function", Color.pink);
         }
     }
 
@@ -535,7 +562,42 @@ public class Game implements java.io.Serializable {
 
             }
         } catch (NullPointerException e) {
-            simpleOutputInlineSetting("There is no minighost to add to the room.\n", Color.pink);
+            appendToGameWindowsWithColorNoSound("There is no minighost to add to the room.\n", Color.pink);
+        }
+    }
+
+    private void assignRandomItemsToMap() {
+        try {
+            for (int i = 0; i < items.get("items").size(); i++) {
+                // Success condition
+                boolean addedItem = false;
+
+                // Loop while no success
+                while (!addedItem) {
+                    Room x = getRandomRoomFromWorld();
+                    if (x.getRoomItems().size() <= 2) {
+                        x.addItemToRoom(items.get("items").get(i));
+                        addedItem = true;
+                    }
+                }
+
+            }
+            for (int i = 0; i < items.get("weapons").size(); i++) {
+                // Success condition
+                boolean addedItem = false;
+
+                // Loop while no success
+                while (!addedItem) {
+                    Room x = getRandomRoomFromWorld();
+                    if (x.getRoomItems().size() <= 2) {
+                        x.addItemToRoom(items.get("weapons").get(i));
+                        addedItem = true;
+                    }
+                }
+
+            }
+        } catch (NullPointerException e) {
+            appendToGameWindowsWithColorNoSound("There is no minighost to add to the room.\n", Color.pink);
         }
     }
 
@@ -577,6 +639,15 @@ public class Game implements java.io.Serializable {
         this.miniGhosts = miniGhosts;
     }
 
+
+    private void setItems(Map<String, List<? extends Items>> items) {
+        this.items = items;
+    }
+
+    private void setWeapon(List<Weapon> weapons) {
+        this.weapons = weapons;
+    }
+
     Ghost getCurrentGhost() {
         return currentGhost;
     }
@@ -600,11 +671,11 @@ public class Game implements java.io.Serializable {
     private boolean userAbleToExit() {
         // Is player currently in lobby? Has user visited any other rooms? Is so size of roomsVisited would be greater than 1
         if (!world.getCurrentRoom().getRoomTitle().equals("Lobby")) {
-            simpleOutputInlineSetting("You can only exit from Lobby.\n", Color.WHITE);
+            appendToGameWindowsWithColorNoSound("You can only exit from Lobby.\n", Color.WHITE);
             return false;
         }
         if (player.getRoomsVisited().size() == 1) {
-            simpleOutputInlineSetting("You must visit more than one room to exit.\n", Color.WHITE);
+            appendToGameWindowsWithColorNoSound("You must visit more than one room to exit.\n", Color.WHITE);
             return false;
         }
         return true;
@@ -621,7 +692,7 @@ public class Game implements java.io.Serializable {
             player.resetPlayer();
         } else {
             String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
-            simpleOutputInlineSetting(formatted, Color.YELLOW);
+            appendToGameWindowsWithColorNoSound(formatted, Color.YELLOW);
             isGameRunning = false;
         }
     }
@@ -653,13 +724,13 @@ public class Game implements java.io.Serializable {
     }
 
     // Used to add narration by appending to the GUI without removing any currently displayed text
-    public void narrateNoNewLine(String input, Color color) {
+    public void appendWithColoredText(String input, Color color) {
 
         if (isSound) {
             keyboardEffect.playSoundEffect();
         }
         try {
-            jFrame.setTextColorAndDisplay(input, color);
+            jFrame.appendTextColorAndDisplay(input, color);
         } catch (BadLocationException exc) {
             exc.printStackTrace();
         }
@@ -667,7 +738,7 @@ public class Game implements java.io.Serializable {
     }
 
     // Add narration to the GUI by removing all prior text added
-    public void quickNarrateFormatted(String input, Color color) {
+    public void replaceGameWindowWithColorText(String input, Color color) {
         if (isSound) {
             keyboardEffect.playSoundEffect();
         }
@@ -686,9 +757,9 @@ public class Game implements java.io.Serializable {
     }
 
     // Appends to GUI without altering prior added text
-    public void simpleOutputInlineSetting(String input, Color color) {
+    public void appendToGameWindowsWithColorNoSound(String input, Color color) {
         try {
-            jFrame.setTextColorAndDisplay(input, color);
+            jFrame.appendTextColorAndDisplay(input, color);
         } catch (BadLocationException exc) {
             exc.printStackTrace();
         }
