@@ -203,7 +203,7 @@ public class Game implements java.io.Serializable {
                     case "write":
                         quickNarrateFormatted("Would you like to document anything in your journal? [Yes/No]\n", Color.WHITE);
                         break;
-                    //Allows user to leave if more than one room has been input into RoomsVisted
+                    //Allows user to leave if more than one room has been input into RoomsVisited
                     case "exit":
                         if (userAbleToExit()) {
                             // In order to win, user has to have correct evidence and guessed right ghost
@@ -232,28 +232,7 @@ public class Game implements java.io.Serializable {
                         break;
                     case "move":
                     case "go":
-                        if (checkStringNorth(input)) {
-                            int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
-                                    "Did you mean to say north? ",
-                                    "Going north?",
-                                    JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE,
-                                    null, new Object[]{"Yes", "No"},
-                                    JOptionPane.YES_OPTION);
-                            switch (dirChoice) {
-                                case 0:
-                                    input[1] = "north";
-                                    break;
-                                case 1:
-                                case -1:
-                                    break;
-                            }
-                        }
-                        else {
-//                            if (!checkStringSouth(input)) {
-//                                simpleOutputInlineSetting("Did you mean to say South?");
-                        }
-                        changeRoom(isValidInput, input, attempt);
+                        CheckCommand(isValidInput, input, attempt);
                         break;
                     case "inventory":
                         quickNarrateFormatted("Inventory:\n\n", Color.white);
@@ -272,6 +251,76 @@ public class Game implements java.io.Serializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws IOException {
+        if (checkStringNorth(input) && !input[1].equals("north")) {
+            int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
+                    "Did you mean to say north? ",
+                    "Going north?",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null, new Object[]{"Yes", "No"},
+                    JOptionPane.YES_OPTION);
+            switch (dirChoice) {
+                case 0:
+                    input[1] = "north";
+                    break;
+                case 1:
+                case -1:
+                    break;
+            }
+        } else if (checkStringSouth(input) && !input[1].equals("south")) {
+            int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
+                    "Did you mean to say south? ",
+                    "Going south?",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null, new Object[]{"Yes", "No"},
+                    JOptionPane.YES_OPTION);
+            switch (dirChoice) {
+                case 0:
+                    input[1] = "south";
+                    break;
+                case 1:
+                case -1:
+                    break;
+            }
+        } else if (checkStringEast(input) && !input[1].equals("east")) {
+            int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
+                    "Did you mean to say east? ",
+                    "Going east?",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null, new Object[]{"Yes", "No"},
+                    JOptionPane.YES_OPTION);
+            switch (dirChoice) {
+                case 0:
+                    input[1] = "east";
+                    break;
+                case 1:
+                case -1:
+                    break;
+            }
+        } else if (checkStringWest(input) && !input[1].equals("west")) {
+            int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
+                    "Did you mean to say west? ",
+                    "Going west?",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null, new Object[]{"Yes", "No"},
+                    JOptionPane.YES_OPTION);
+            switch (dirChoice) {
+                case 0:
+                    input[1] = "west";
+                    break;
+                case 1:
+                case -1:
+                    break;
+            }
+        }
+        changeRoom(isValidInput, input, attempt);
+        return;
     }
 
     void guessOrGoBackInside(String ans) {
@@ -318,13 +367,13 @@ public class Game implements java.io.Serializable {
         }
 
 
-public String normalizeText(String input){
-        List<String> northOptions=Arrays.asList("north","up","n");
-        List<String> southOptions=Arrays.asList("south","down","s");
-        List<String> eastOptions=Arrays.asList("east","right","e");
-        List<String> westOptions=Arrays.asList("west","left","w");
-        if(northOptions.contains(input.toLowerCase())){
-        return"north";
+    public String normalizeText(String input) {
+        List<String> northOptions = Arrays.asList("north", "up");
+        List<String> southOptions = Arrays.asList("south", "down");
+        List<String> eastOptions = Arrays.asList("east", "right");
+        List<String> westOptions = Arrays.asList("west", "left");
+        if (northOptions.contains(input.toLowerCase())) {
+            return "north";
         }
         if(southOptions.contains(input.toLowerCase())){
         return"south";
