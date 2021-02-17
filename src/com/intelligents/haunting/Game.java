@@ -255,8 +255,9 @@ public class Game implements java.io.Serializable {
                         }
                         changeRoom(isValidInput, input, attempt);
                         break;
-                    case "weapons":
-                        quickNarrateFormatted("", Color.white);
+                    case "inventory":
+                        quickNarrateFormatted("Inventory:\n\n", Color.white);
+                        // This will need to be refactored to match Player once items exist in the game.
                         List<Weapon> weapons = player.getAllWeapons();
                         for (int itr = 0; itr < weapons.size(); itr++) {
                             simpleOutputInlineSetting(weapons.get(itr).getName(), Color.WHITE);
