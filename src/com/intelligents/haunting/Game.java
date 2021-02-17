@@ -236,8 +236,8 @@ public class Game implements java.io.Serializable {
                                         " Would you like to GUESS the ghost or go back INSIDE to continue exploring?\n", Color.WHITE);
                             }
                             appendWithColoredText(divider + "\n", Color.WHITE);
-                            break;
                         }
+                        break;
                     case "quit":
                     case "q":
                         if (jFrame.quitGame()) mp.quitMusic();
