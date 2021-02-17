@@ -10,14 +10,17 @@ class Player implements java.io.Serializable {
     private static Player playerSingleton;
     private String name;
     private String mostRecentExit;
+    private int hitPoints = 1000;
     private final List<String> journal = new ArrayList<>();
     private final List<String> roomsVisited = new ArrayList<>();
+    private List<Weapon> inventory = new ArrayList<>();
 
 
     private Player() {
         if (playerSingleton != null) {
             throw new RuntimeException("Need to use getInstance()");
         }
+        addWeapon(new Weapon("iron bar", "Long and heavy; ready to break through things!", 100));
     }
 
 
@@ -80,5 +83,30 @@ class Player implements java.io.Serializable {
         return getName() + "'s"
                 + " journal currently shows these items: " + "\uD83D\uDCD6" + "\n\n"
                 + getJournal();
+    }
+
+    // For now these are set exclusive to weapons, but once items are formed, this can be changed to items and weapon can be made an item
+    public void addWeapon(Weapon weapon) {
+        inventory.add(weapon);
+    }
+
+    public void removeWeapon(Weapon weapon) {
+        inventory.remove(weapon);
+    }
+
+    public List getAllWeapons() {
+        return inventory;
+    }
+
+    public void playerTakesDamage(int damagePoints) {
+        hitPoints -= damagePoints;
+    }
+
+    public void playerGainsHealth(int healthPoints) {
+        hitPoints += healthPoints;
+    }
+
+    public int getPlayerHitPoints() {
+        return hitPoints;
     }
 }

@@ -25,7 +25,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private String currentRoom;
     private Game game;
     private Controller controller;
-    private FileReader p = new FileReader();
     private ClassLoader cl;
     private final String pathStartResources = "com/intelligents/resources/";
     private final String pathStartSounds = pathStartResources + "Sounds/";
@@ -38,6 +37,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private MusicPlayer themeSong;
     private JFrame mapFrame;
     private JFrame journalFrame;
+    private JPanel gamePanel = new JPanel(new FlowLayout());
 
     public HauntingJFrame() throws IOException {
         cl = getClass().getClassLoader();
@@ -51,22 +51,24 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
     private void gameWindow() {
         gameFrame = new JFrame("The Haunting of Amazon Hill");
-        gameFrame.setSize(800, 700);
+        gameFrame.setMinimumSize(new Dimension(1000, 800));
+        gamePanel.setBackground(Color.DARK_GRAY);
 
         textDisplayPanel = new JPanel();
-        userInputPanel = new JPanel();
+        userInputPanel = new JPanel(new GridLayout());
         buttonsAndInfoPanel = new JPanel();
-        playerLocationPanel = new JPanel();
+        playerLocationPanel = new JPanel(new BorderLayout());
 
 
         textDisplayPanel.setBackground(Color.black);
         buttonsAndInfoPanel.setBackground(Color.DARK_GRAY);
+        buttonsAndInfoPanel.setPreferredSize(new Dimension(200, 300));
         buttonsAndInfoPanel.setLayout(new FlowLayout());
         buttonsAndInfoPanel.add(showJournal);
         buttonsAndInfoPanel.add(Box.createHorizontalGlue());
         buttonsAndInfoPanel.add(showMap);
         buttonsAndInfoPanel.add(Box.createHorizontalGlue());
-        buttonsAndInfoPanel.add(playerLocationPanel);
+//        buttonsAndInfoPanel.add(playerLocationPanel);
 
         showJournal.addActionListener(this);
         showMap.addActionListener(this);
@@ -89,30 +91,39 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayGameWindow);
-        scrollPane.setPreferredSize(new Dimension(700, 500));
+        scrollPane.setPreferredSize(new Dimension(700, 600));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Text field for user to input
-        userInput.setSize(new Dimension(500, 100));
+        userInputPanel.setPreferredSize(new Dimension(200, 150));
+        userInput.setPreferredSize(new Dimension(200, 50));
         userInput.setFont(new Font("Consolas", Font.CENTER_BASELINE, 15));
         userInput.setForeground(Color.white);
         userInput.setBackground(Color.DARK_GRAY);
-        userInput.setCaretColor(Color.BLACK);
+        userInput.setCaretColor(Color.YELLOW);
+
 
         userInputPanel.setBackground(Color.BLACK);
         textDisplayPanel.add(scrollPane);
-        userInputPanel.setLayout(new GridLayout(1, 2));
+        userInputPanel.setLayout(new GridLayout(3, 1));
         userInputPanel.add(userInput);
+        userInputPanel.add(buttonsAndInfoPanel);
+        userInputPanel.add(playerLocationPanel);
+
 
         playerLocationPanel.setBackground(Color.white);
-        playerLocationArea.setSize(200,75);
+        playerLocationPanel.setLayout(new GridBagLayout());
+        playerLocationArea.setPreferredSize(new Dimension(200, 75));
         playerLocationArea.setForeground(Color.blue);
         playerLocationArea.setEditable(false);
         playerLocationPanel.add(playerLocationArea);
 
-        gameFrame.add(textDisplayPanel, BorderLayout.NORTH);
-        gameFrame.add(userInputPanel, BorderLayout.CENTER);
-        gameFrame.add(buttonsAndInfoPanel, BorderLayout.SOUTH);
+
+        gamePanel.add(textDisplayPanel);
+        gamePanel.add(userInputPanel);
+//        gameFrame.add(buttonsAndInfoPanel, BorderLayout.LINE_END);
+        gameFrame.add(gamePanel);
+        gameFrame.pack();
 
 
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
