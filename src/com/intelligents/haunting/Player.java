@@ -13,14 +13,14 @@ class Player implements java.io.Serializable {
     private int hitPoints = 1000;
     private final List<String> journal = new ArrayList<>();
     private final List<String> roomsVisited = new ArrayList<>();
-    private List<Weapon> weapons = new ArrayList<>();
+    private List<Weapon> inventory = new ArrayList<>();
 
 
     private Player() {
         if (playerSingleton != null) {
             throw new RuntimeException("Need to use getInstance()");
         }
-        addWeapon(new Weapon("Sword", "Long and heavy; with a point that can pierce through any solid object!", 100));
+        addWeapon(new Weapon("iron bar", "Long and heavy; ready to break through things!", 100));
     }
 
 
@@ -85,16 +85,17 @@ class Player implements java.io.Serializable {
                 + getJournal();
     }
 
+    // For now these are set exclusive to weapons, but once items are formed, this can be changed to items and weapon can be made an item
     public void addWeapon(Weapon weapon) {
-        weapons.add(weapon);
+        inventory.add(weapon);
     }
 
     public void removeWeapon(Weapon weapon) {
-        weapons.remove(weapon);
+        inventory.remove(weapon);
     }
 
     public List getAllWeapons() {
-        return weapons;
+        return inventory;
     }
 
     public void playerTakesDamage(int damagePoints) {
