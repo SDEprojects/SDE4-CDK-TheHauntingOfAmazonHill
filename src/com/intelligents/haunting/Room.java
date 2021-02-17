@@ -51,6 +51,10 @@ class Room implements java.io.Serializable {
         roomItems.add(item);
     }
 
+    void removeItemFromRoom(Items item) {
+        roomItems.remove(item);
+    }
+
     List<Items> getRoomItems() {
         List<Items> results = new ArrayList<>();
         if (roomItems.size() == 0) {
