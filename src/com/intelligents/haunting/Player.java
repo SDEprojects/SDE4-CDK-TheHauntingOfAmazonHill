@@ -22,7 +22,7 @@ class Player implements java.io.Serializable {
         if (playerSingleton != null) {
             throw new RuntimeException("Need to use getInstance()");
         }
-        addWeapon(new Weapon("Sword", "Long and heavy; with a point that can pierce through any solid object!", 100));
+//        addWeapon(new Weapon("Sword", "Long and heavy; with a point that can pierce through any solid object!", 100));
     }
 
 
