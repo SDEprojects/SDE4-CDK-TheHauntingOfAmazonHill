@@ -77,8 +77,8 @@ public class Game implements java.io.Serializable {
     public void intro(String[] gameType) throws IOException {
         if (gameType[0].matches("1")) {
             replaceGameWindowWithColorText(fileReader.fileReader(resourcePath, "introText", cl), Color.RED);
-            appendToGameWindowWithColorText(fileReader.fileReader(resourcePath, "settingTheScene", cl), Color.WHITE);
-            appendToGameWindowWithColorText("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
+            appendToGameWindowsWithColorNoSound(fileReader.fileReader(resourcePath, "settingTheScene", cl), Color.WHITE);
+            appendToGameWindowsWithColorNoSound("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
                     "What would you like your name to be?\n" , Color.GREEN);
 
             jFrame.stopThemeSong();
@@ -93,14 +93,14 @@ public class Game implements java.io.Serializable {
                 mp.startMusic();
                 SaveGame.setGame(this);
                 replaceGameWindowWithColorText("Loading game!!!", Color.YELLOW);
-                appendToGameWindowWithColorText("\n\nWelcome back, " + player.getName() + "!" +
+                appendToGameWindowsWithColorNoSound("\n\nWelcome back, " + player.getName() + "!" +
                         "\nYou are currently in the " + currentRoom + ".", Color.GREEN);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
 
         } else {
-            appendToGameWindowWithColorText("Invalid selection , please enter 1.", Color.pink);
+            appendToGameWindowsWithColorNoSound("Invalid selection , please enter 1.", Color.pink);
         }
     }
 
@@ -117,8 +117,8 @@ public class Game implements java.io.Serializable {
 
         formatted = "\nGood luck to you, " + player.getName() + "!";
         appendWithColoredText(formatted, Color.white);
-        appendToGameWindowWithColorText("\n\n" + currentLoc, Color.YELLOW);
-        appendToGameWindowWithColorText("\n" + moveGuide, Color.YELLOW);
+        appendToGameWindowsWithColorNoSound("\n\n" + currentLoc, Color.YELLOW);
+        appendToGameWindowsWithColorNoSound("\n" + moveGuide, Color.YELLOW);
 
     }
 
@@ -157,7 +157,7 @@ public class Game implements java.io.Serializable {
         updateCurrentRoom();
         checkIfRoomVisited();
         if (input.length > 2) {
-            appendToGameWindowWithColorText("You cannot type more than 2 commands!Try again:\n ", Color.WHITE);
+            appendToGameWindowsWithColorNoSound("You cannot type more than 2 commands!Try again:\n ", Color.WHITE);
         } else {
             try {
                 switch (input[0]) {
@@ -256,25 +256,12 @@ public class Game implements java.io.Serializable {
                         CheckCommand(isValidInput, input, attempt);
                         break;
                     case "inventory":
-                        quickNarrateFormatted("Inventory:\n\n", Color.white);
+                        replaceGameWindowWithColorText("Inventory:\n\n", Color.white);
                         // This will need to be refactored to match Player once items exist in the game.
-                        List<Weapon> weapons = player.getAllWeapons();
-                        for (int itr = 0; itr < weapons.size(); itr++) {
-                            simpleOutputInlineSetting(weapons.get(itr).getName(), Color.WHITE);
-                        }
-                        break;
-                    case "weapons":
-                        replaceGameWindowWithColorText("", Color.white);
-                        List<Items> weapons = player.getAllWeapons();
-                        for (int itr = 0; itr < weapons.size(); itr++) {
-                            appendToGameWindowWithColorText(weapons.get(itr).getName(), Color.WHITE);
-                        }
-                        break;
-                    case "items":
-                        replaceGameWindowWithColorText("", Color.white);
-                        List<Items> items = player.getItems();
-                        for (int itr = 0; itr < items.size(); itr++) {
-                            appendToGameWindowWithColorText(items.get(itr).getName(), Color.WHITE);
+                        List<Items> playerInventory = player.getPlayerInventory();
+                        for (Items item : playerInventory) {
+                            appendToGameWindowsWithColorNoSound(item.getType() + " - " +
+                                    item.getName() + " - " + item.getDescription() + "\n", Color.WHITE);
                         }
                         break;
                 }
@@ -363,8 +350,8 @@ public class Game implements java.io.Serializable {
                     "Based on your expertise, make an informed decision on what type of " +
                     "ghost is haunting Amazon Hill?\n" +
                     "Here are all the possible ghosts:\n", Color.WHITE);
-            ghosts.forEach(ghost -> appendToGameWindowWithColorText(ghost.getType() + "\n", Color.GREEN));
-            appendToGameWindowWithColorText("Which Ghost do you think it is?\n", Color.WHITE);
+            ghosts.forEach(ghost -> appendToGameWindowsWithColorNoSound(ghost.getType() + "\n", Color.GREEN));
+            appendToGameWindowsWithColorNoSound("Which Ghost do you think it is?\n", Color.WHITE);
         } else if (ans.contains("inside")) {
             replaceGameWindowWithColorText("You are back inside", Color.WHITE);
         } else {
@@ -439,9 +426,9 @@ public class Game implements java.io.Serializable {
                     replaceGameWindowWithColorText("You hit a wall. Try again.\n ", Color.RED);
                     attemptCount++;
                     if (attemptCount >= 2) {
-                        appendToGameWindowWithColorText("\n", Color.WHITE);
+                        appendToGameWindowsWithColorNoSound("\n", Color.WHITE);
                         openMap();
-                        appendToGameWindowWithColorText("Where would you like to go?\n ", Color.WHITE);
+                        appendToGameWindowsWithColorNoSound("Where would you like to go?\n ", Color.WHITE);
                         setAttemptCount(0);
                     }
                 }
@@ -461,7 +448,7 @@ public class Game implements java.io.Serializable {
                     null,
                     new Object[]{"Fight", "Run"},
                     JOptionPane.YES_OPTION);
-            appendToGameWindowWithColorText(runCombat(Integer.toString(fightChoice), this), Color.WHITE);
+            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this), Color.WHITE);
         }
     }
 
@@ -498,12 +485,12 @@ public class Game implements java.io.Serializable {
         replaceGameWindowWithColorText(divider + "\n", Color.WHITE);
         appendWithColoredText(player + "\n", Color.PINK);
         String formatted = "Possible Ghosts ";
-        appendToGameWindowWithColorText(formatted, Color.GREEN);
+        appendToGameWindowsWithColorNoSound(formatted, Color.GREEN);
         appendWithColoredText(ghosts.toString() + "\n", Color.GREEN);
         formatted = " Rooms visited ";
-        appendToGameWindowWithColorText(formatted, Color.PINK);
+        appendToGameWindowsWithColorNoSound(formatted, Color.PINK);
         appendWithColoredText(player.getRoomsVisited() + "\n", Color.YELLOW);
-        appendToGameWindowWithColorText(divider + "\n", Color.pink);
+        appendToGameWindowsWithColorNoSound(divider + "\n", Color.pink);
     }
 
     public void openNewWindowJournalWithUpdatedInfo() {
@@ -553,7 +540,7 @@ public class Game implements java.io.Serializable {
 
             }
         } catch (NullPointerException e) {
-            appendToGameWindowWithColorText("The data given is empty, cannot perform function", Color.pink);
+            appendToGameWindowsWithColorNoSound("The data given is empty, cannot perform function", Color.pink);
         }
     }
 
@@ -575,7 +562,7 @@ public class Game implements java.io.Serializable {
 
             }
         } catch (NullPointerException e) {
-            appendToGameWindowWithColorText("There is no minighost to add to the room.\n", Color.pink);
+            appendToGameWindowsWithColorNoSound("There is no minighost to add to the room.\n", Color.pink);
         }
     }
 
@@ -610,7 +597,7 @@ public class Game implements java.io.Serializable {
 
             }
         } catch (NullPointerException e) {
-            appendToGameWindowWithColorText("There is no minighost to add to the room.\n", Color.pink);
+            appendToGameWindowsWithColorNoSound("There is no minighost to add to the room.\n", Color.pink);
         }
     }
 
@@ -684,11 +671,11 @@ public class Game implements java.io.Serializable {
     private boolean userAbleToExit() {
         // Is player currently in lobby? Has user visited any other rooms? Is so size of roomsVisited would be greater than 1
         if (!world.getCurrentRoom().getRoomTitle().equals("Lobby")) {
-            appendToGameWindowWithColorText("You can only exit from Lobby.\n", Color.WHITE);
+            appendToGameWindowsWithColorNoSound("You can only exit from Lobby.\n", Color.WHITE);
             return false;
         }
         if (player.getRoomsVisited().size() == 1) {
-            appendToGameWindowWithColorText("You must visit more than one room to exit.\n", Color.WHITE);
+            appendToGameWindowsWithColorNoSound("You must visit more than one room to exit.\n", Color.WHITE);
             return false;
         }
         return true;
@@ -705,7 +692,7 @@ public class Game implements java.io.Serializable {
             player.resetPlayer();
         } else {
             String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
-            appendToGameWindowWithColorText(formatted, Color.YELLOW);
+            appendToGameWindowsWithColorNoSound(formatted, Color.YELLOW);
             isGameRunning = false;
         }
     }
@@ -770,7 +757,7 @@ public class Game implements java.io.Serializable {
     }
 
     // Appends to GUI without altering prior added text
-    public void appendToGameWindowWithColorText(String input, Color color) {
+    public void appendToGameWindowsWithColorNoSound(String input, Color color) {
         try {
             jFrame.appendTextColorAndDisplay(input, color);
         } catch (BadLocationException exc) {

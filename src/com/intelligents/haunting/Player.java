@@ -13,9 +13,9 @@ class Player implements java.io.Serializable {
     private int hitPoints = 1000;
     private final List<String> journal = new ArrayList<>();
     private final List<String> roomsVisited = new ArrayList<>();
-    private List<Items> weapons = new ArrayList<>();
-    private List<Items> items = new ArrayList<>();
-    private List<Weapon> inventory = new ArrayList<>();
+    private List<Items> playerWeapons = new ArrayList<>();
+    private List<Items> playerItems = new ArrayList<>();
+    private List<Items> playerInventory = new ArrayList<>();
 
 
     private Player() {
@@ -88,28 +88,31 @@ class Player implements java.io.Serializable {
     }
 
     public void addWeapon(Items weapon) {
-        weapons.add(weapon);
-    // For now these are set exclusive to weapons, but once items are formed, this can be changed to items and weapon can be made an item
-    public void addWeapon(Weapon weapon) {
-        inventory.add(weapon);
+        playerWeapons.add(weapon);
     }
 
     public void addItem(Items item) {
-        items.add(item);
+        playerItems.add(item);
     }
 
     public void removeWeapon(Weapon weapon) {
-        inventory.remove(weapon);
+        playerInventory.remove(weapon);
     }
 
     public List<Items> getAllWeapons() {
-        return weapons;
-    public List getAllWeapons() {
-        return inventory;
+        return playerWeapons;
     }
 
-    public List<Items> getItems() {
-        return items;
+    public List<Items> getPlayerInventory() {
+        playerInventory.clear();
+        playerInventory.addAll(playerWeapons);
+        playerInventory.addAll(playerItems);
+        return playerInventory;
+    }
+
+
+    public List<Items> getPlayerItems() {
+        return playerItems;
     }
 
     public void playerTakesDamage(int damagePoints) {

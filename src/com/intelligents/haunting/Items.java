@@ -14,11 +14,11 @@ public class Items {
         this.type = type;
     }
     public void addItem(Items item, Player player) {
-        player.getItems().add(item);
+        player.getPlayerItems().add(item);
     };
 
     public void removeItem(Items item, Player player) {
-        player.getItems().remove(item);
+        player.getPlayerItems().remove(item);
     };
 
     public String getType() {
