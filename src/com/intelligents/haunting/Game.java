@@ -728,9 +728,13 @@ public class Game implements java.io.Serializable {
         guessCounter++;
         if (guessCounter <= 1) {
             removeAllEvidenceFromWorld();
+            removeAllItemsFromWorld();
+            removeAllMiniGhostsFromWorld();
             setCurrentGhost(getRandomGhost());
+            populateMiniGhostList(cl);
+            assignRandomMiniGhostToMap();
             assignRandomEvidenceToMap();
-            player.resetPlayer();
+            player.resetPlayerRoundTwo();
             jFrame.setControllerFlag();
         } else {
             String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
@@ -748,9 +752,29 @@ public class Game implements java.io.Serializable {
         }
     }
 
+    private void removeAllMiniGhostsFromWorld() {
+        for (Room room : world.gameMap) {
+            if (room.getRoomMiniGhost() != null) {
+                room.setRoomMiniGhost(null);
+            }
+        }
+    }
+    private void removeAllItemsFromWorld() {
+        for (Room room : world.gameMap) {
+            if (!room.getRoomItems().isEmpty()) {
+                room.clearRoomItems();
+            }
+        }
+    }
+
     private void resetGame() {
         removeAllEvidenceFromWorld();
+        removeAllItemsFromWorld();
+        removeAllMiniGhostsFromWorld();
         setCurrentGhost(getRandomGhost());
+        populateMiniGhostList(cl);
+        assignRandomItemsToMap();
+        assignRandomMiniGhostToMap();
         assignRandomEvidenceToMap();
         player.resetPlayer();
         world.setCurrentRoom(world.getStartingRoom());

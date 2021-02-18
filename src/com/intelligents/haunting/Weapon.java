@@ -2,7 +2,7 @@ package com.intelligents.haunting;
 
 import java.util.StringJoiner;
 
-public class Weapon extends Items{
+public class Weapon extends Items implements java.io.Serializable {
     private int damagePoints;
 
     Weapon(String name, String description, int damagePoints) {

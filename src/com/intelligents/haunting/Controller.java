@@ -2,7 +2,7 @@ package com.intelligents.haunting;
 
 import java.io.IOException;
 
-public class Controller {
+public class Controller implements java.io.Serializable {
 
 
     private boolean introScreen;
