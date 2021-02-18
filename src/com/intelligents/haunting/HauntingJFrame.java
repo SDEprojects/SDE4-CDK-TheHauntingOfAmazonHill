@@ -150,7 +150,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
             userInput.setText("");
             try {
                 controller.kickoffResponse(userResponse, textDisplayGameWindow.getText());
-            } catch (IOException ioException) {
+            } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
             }
         }

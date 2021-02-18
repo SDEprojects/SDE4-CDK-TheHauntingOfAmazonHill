@@ -18,7 +18,7 @@ public class Controller {
         this.game = game;
     }
 
-    public void kickoffResponse(String[] response, String promptToUser) throws IOException {
+    public void kickoffResponse(String[] response, String promptToUser) throws IOException, InterruptedException {
         // Get what chapter the user wants
         if (introScreen) {
             game.intro(response);
@@ -38,7 +38,7 @@ public class Controller {
             game.guessOrGoBackInside(response[0]);
         // Player has indicated that they are ready to guess
         } else if (readyToGuess) {
-            game.userGuess(response[0]);
+            game.userGuess(response[0],game);
         // Player has option to write in journal or not
         } else if (promptToUser.equals("Would you like to document anything in your journal? [Yes/No]\n") || promptToUser.equals("Invalid Journal entry. Please look/show again to document again.\n")) {
             game.writeEntryInJournal(response[0]);
