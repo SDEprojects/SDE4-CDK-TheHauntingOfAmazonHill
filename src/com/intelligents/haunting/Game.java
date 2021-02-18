@@ -109,9 +109,6 @@ public class Game implements java.io.Serializable {
         updateCurrentRoom();
 
         player.setName(nameInput[0]);
-        // // TODO: 2/17/2021 Remove these two lines once world interaction is possible
-//        player.addWeapon(items.get("weapons").get(0));
-//        player.addItem(items.get("items").get(0));
 
         String formatted = "If you're new to the game type help for assistance.";
         replaceGameWindowWithColorText(formatted, Color.CYAN);
@@ -268,8 +265,11 @@ public class Game implements java.io.Serializable {
                     case "take":
                     case "grab":
                         String result = addToInventory(input);
-                        appendToGameWindowsWithColorNoSound(result, result.contains("pickup") ? Color.GREEN :
+                        UIManager.put("OptionPane.messageForeground", result.contains("pickup") ? Color.GREEN :
                                 Color.RED);
+                        UIManager.put("Panel.background", Color.DARK_GRAY);
+                        JOptionPane.showMessageDialog(null, result);
+                        processInput(true, new String[]{"look"}, 0);
                         break;
                     default:
                         replaceGameWindowWithColorText("Command not recognized! Please try again!", Color.RED);
@@ -291,18 +291,16 @@ public class Game implements java.io.Serializable {
             if (item.getName().equalsIgnoreCase(input[1])) {
                 if (item.getType().equalsIgnoreCase("weapon")) {
                     player.addWeapon(item);
-                    newList.add(item);
                 } else {
                     player.addItem(item);
-                    newList.add(item);
                 }
+                newList.add(item);
                 result = "You pickup the " + item.getName() +
                         " and place it in your inventory.";
-                break;
             } else {
                 result = "I don't see what you're trying to get.";
-                break;
             }
+            break;
         }
         currentItems.removeAll(newList);
         return result;
@@ -375,7 +373,6 @@ public class Game implements java.io.Serializable {
             }
         }
         changeRoom(isValidInput, input, attempt);
-        return;
     }
 
     void guessOrGoBackInside(String ans) {
@@ -517,12 +514,14 @@ public class Game implements java.io.Serializable {
     }
 
     private void printJournal() throws BadLocationException {
+        String ghostEmoji = "\uD83D\uDC7B ";
+        String houseEmoji = "\uD83C\uDFE0";
         jFrame.setTextBoxJournal(divider + "\n", Color.WHITE);
         jFrame.appendTextColorAndDisplayJournal(player + "\n", Color.PINK);
-        String formatted = "Possible Ghosts ";
+        String formatted = ghostEmoji + "Possible Ghosts " + ghostEmoji;
         jFrame.appendTextColorAndDisplayJournal(formatted, Color.GREEN);
         jFrame.appendTextColorAndDisplayJournal(ghosts.toString() + "\n", Color.GREEN);
-        formatted = " Rooms visited ";
+        formatted = houseEmoji + " Rooms visited " + houseEmoji;
         jFrame.appendTextColorAndDisplayJournal(formatted, Color.PINK);
         jFrame.appendTextColorAndDisplayJournal(player.getRoomsVisited() + "\n", Color.YELLOW);
         jFrame.appendTextColorAndDisplayJournal(divider + "\n", Color.pink);
@@ -572,7 +571,7 @@ public class Game implements java.io.Serializable {
     private void assignRandomMiniGhostToMap() {
         try {
             //for each minighost, get rooms from world.gamemap equivalent to the number of evidences.
-            for (int i = 0; i < miniGhosts.size(); i++) {
+            for (MiniGhost miniGhost : miniGhosts) {
                 // Success condition
                 boolean addedMiniGhost = false;
 
@@ -580,7 +579,7 @@ public class Game implements java.io.Serializable {
                 while (!addedMiniGhost) {
                     Room x = getRandomRoomFromWorld();
                     if (x.getRoomMiniGhost() == (null)) {
-                        x.setRoomMiniGhost(miniGhosts.get(i));
+                        x.setRoomMiniGhost(miniGhost);
                         addedMiniGhost = true;
                     }
                 }

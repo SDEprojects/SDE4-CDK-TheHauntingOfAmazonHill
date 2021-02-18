@@ -177,7 +177,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
         // Opens new window at current room
         journalFrame = new JFrame("Journal");
-        journalFrame.setSize(600, 700);
+        journalFrame.setSize(700, 700);
 
         textDisplayJournal = new JTextPane();
         DefaultCaret caret = (DefaultCaret) textDisplayJournal.getCaret();
