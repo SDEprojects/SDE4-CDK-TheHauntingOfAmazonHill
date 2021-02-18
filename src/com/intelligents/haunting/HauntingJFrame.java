@@ -1,6 +1,5 @@
 package com.intelligents.haunting;
 
-import javax.naming.ldap.Control;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
@@ -39,6 +38,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private JFrame mapFrame;
     private JFrame journalFrame;
     private JPanel gamePanel = new JPanel(new FlowLayout());
+    boolean playerWantsToContinuePlaying = true;
 
     public HauntingJFrame() throws IOException {
         cl = getClass().getClassLoader();
@@ -261,6 +261,12 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     }
 
     boolean quitGame() throws InterruptedException {
+        if (!playerWantsToContinuePlaying) {
+            // Disable from continuing the game
+            userInput.setEditable(false);
+            closeWindows();
+        }
+
         int result = JOptionPane.showConfirmDialog(null,
                 "Are you sure you would like to quit?\n" +
                         "Click yes to quit and close game.\n" +
