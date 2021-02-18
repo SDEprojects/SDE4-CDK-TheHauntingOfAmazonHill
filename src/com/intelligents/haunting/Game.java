@@ -394,7 +394,7 @@ public class Game implements java.io.Serializable {
     void userGuess(String ans) throws IOException, InterruptedException {
         replaceGameWindowWithColorText("Good job gathering evidence, " + player.getName() + ".\nYou " +
                 "guessed: " + ans + "\n", Color.WHITE);
-        if (ans.equalsIgnoreCase(currentGhost.getType())) {
+        if (ans.equalsIgnoreCase(currentGhost.getType().trim())) {
             appendWithColoredText("You won!\n", Color.RED);
             appendWithColoredText(getGhostBackstory() + "\n", Color.WHITE);
             isGameRunning = false;
@@ -402,7 +402,7 @@ public class Game implements java.io.Serializable {
         } else {
             if (guessCounter < 1) {
                 appendWithColoredText("Unfortunately, the ghost you determined was incorrect. The correct " +
-                        "ghost was \n" + currentGhost.toString() + "\nYou have been loaded into a new " +
+                        "ghost was: \n" + currentGhost.toString() + "\nYou have been loaded into a new " +
                         "world. Good luck trying again.\n", Color.WHITE);
             }
             resetWorld();
