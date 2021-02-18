@@ -151,7 +151,5 @@ class Player implements java.io.Serializable {
         return hitPoints;
     }
 
-    private void resetPlayerHitPoints() {
-        hitPoints = 1000;
-    }
+    private void resetPlayerHitPoints() { hitPoints = 1000; }
 }
