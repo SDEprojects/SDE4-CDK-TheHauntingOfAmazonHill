@@ -215,6 +215,7 @@ public class Game implements java.io.Serializable {
                             appendWithColoredText("You've found some useful evidence: " +
                                     world.getCurrentRoom().getRoomEvidence() + "\n\n", Color.WHITE);
                             appendWithColoredText("Evidence logged into your journal.\n", Color.WHITE);
+                            world.getCurrentRoom().setRoomEvidence("");
                         }
                         appendWithColoredText(divider + "\n", Color.WHITE);
                         break;
