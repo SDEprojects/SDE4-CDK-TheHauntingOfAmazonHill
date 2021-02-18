@@ -33,6 +33,8 @@ public class CombatEngine {
                     game.getWorld().getCurrentRoom().setRoomMiniGhost(null);
                     result = fightResult;
                     inFight = false;
+                } else if (fightResult.contains("lost")) {
+                    return fightResult;
                 } else {
                     result = fightResult;
                     inFight = false;
@@ -91,14 +93,18 @@ public class CombatEngine {
                     result = "\n\nYou swing your " + optionOneItem.getName() + ", and the " + battleGhost.getName() + " dissipates, but reappears behind you.\n";
                     break;
                 case "2":
+                    battleGhost.lowerHitPoints(25);
+                    player.playerTakesDamage(250);
                     result = "\n\nYou collect an impressive amount of sweat from your body " +
                             "and throw it at the " + battleGhost.getName() + ".\nWhile gross, the " +
-                            "extreme salt content in your perspiration banishes the " +
-                            battleGhost.getName() + " back to whence it came.\n";
+                            "extreme salt content in your perspiration deals some damage to the " +
+                            battleGhost.getName() + ", but in turn, dehydrating yourself took some major damage too.\n";
                     break;
                 case "3":
                     battleGhost.lowerHitPoints(((Weapon) optionThreeItem).getDamagePoints());
-                    result = "\n\nYou jab your " + optionThreeItem + " at the " + battleGhost.getName() + " , but your " + optionThreeItem +  " passes right through.\n";
+                    if (optionThreeItem.getName().equals("Sword")) result = "\n\nYou jab your " + optionThreeItem.getName() + " at the " + battleGhost.getName() + ", and your " + optionThreeItem.getName() +  " passes right through. " +
+                            "But something in the " +  optionThreeItem.getName() + " lights up like magic, forcing the " + battleGhost.getName() + " to dissipate forever.\n";
+                    else result = "\n\nYou jab your " + optionThreeItem.getName() + " at the " + battleGhost.getName() + ", and your " + optionThreeItem.getName() +  " passes right through.\n";
                     break;
                 case "4":
                     player.playerTakesDamage(10);
@@ -111,13 +117,19 @@ public class CombatEngine {
             }
 
             if (result.contains("better about your choices")) return result;
+
+            String playerHP = String.valueOf(player.getPlayerHitPoints());
+            String ghostHP = String.valueOf(battleGhost.getHitPoints());
+            if (player.getPlayerHitPoints() <= 0) playerHP = "DEAD";
+            if (battleGhost.getHitPoints() <= 0) ghostHP = "DEAD";
             game.replaceGameWindowWithColorText(result +
-                    "\n\nYour HP: " + player.getPlayerHitPoints() +
-                    "\n\nGhost HP: " + battleGhost.getHitPoints(), Color.WHITE);
+                    "\n\nYour HP: " + playerHP +
+                    "\n\nGhost HP: " + ghostHP, Color.WHITE);
 //            processChoice(game, player);
         }
         if (player.getPlayerHitPoints() > 0) return "\n\nYou have defeated the " + battleGhost.getName() + "!";
-        else return "\n\nYou have lost the game. Too bad, so sad.";
+        else if (player.getPlayerHitPoints() <= 0 && battleGhost.getHitPoints() <= 0) return "\n\nAt the cost of your own life, you defeat the ghost. Still, you have lost the game.";
+        else return "\n\nBecause you lost all of your HP, you have lost the game. Too bad, so sad.";
     }
 
     private static String[] invertPlayerRoom(String mostRecentExit) {
