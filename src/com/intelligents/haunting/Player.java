@@ -69,6 +69,10 @@ class Player implements java.io.Serializable {
     void resetPlayer() {
         this.clearJournal();
         this.resetRoomsVisited();
+        this.resetPlayerWeapons();
+        this.resetPlayerHitPoints();
+        this.resetPlayerItems();
+        this.resetPlayerInventory();
     }
 
     private void resetRoomsVisited() {
@@ -104,6 +108,10 @@ class Player implements java.io.Serializable {
         return playerWeapons;
     }
 
+    private void resetPlayerWeapons() {
+        playerWeapons.clear();
+    }
+
     public Items getSpecificWeapon(String weaponName) {
         for(int itr = 0; itr < playerWeapons.size(); itr++) {
             if (playerWeapons.get(itr).getName().equals(weaponName)) return playerWeapons.get(itr);
@@ -118,9 +126,17 @@ class Player implements java.io.Serializable {
         return playerInventory;
     }
 
+    private void resetPlayerInventory() {
+        playerInventory.clear();
+    }
+
 
     public List<Items> getPlayerItems() {
         return playerItems;
+    }
+
+    private void resetPlayerItems() {
+        playerItems.clear();
     }
 
     public void playerTakesDamage(int damagePoints) {
@@ -135,6 +151,7 @@ class Player implements java.io.Serializable {
         return hitPoints;
     }
 
-
-
+    private void resetPlayerHitPoints() {
+        hitPoints = 1000;
+    }
 }
