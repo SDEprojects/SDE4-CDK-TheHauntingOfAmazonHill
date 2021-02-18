@@ -29,7 +29,7 @@ public class CombatEngine {
                 if (fightResult.contains("invalid") || fightResult.contains("hoping")) {
                     //output result message and loop again
                     game.appendWithColoredText(fightResult + "\n", Color.white);
-                } else if (fightResult.contains("dissipates") || fightResult.contains("whence")) {
+                } else if (fightResult.contains("defeated")) {
                     game.getWorld().getCurrentRoom().setRoomMiniGhost(null);
                     result = fightResult;
                     inFight = false;
@@ -41,7 +41,9 @@ public class CombatEngine {
             }
         }
         if (userChoice.equals("run")) {
-            result = "Frightened to the point of tears, you flee back the way you came.";
+            player.playerTakesDamage(10);
+            result = "\nFrightened to the point of tears, you flee back the way you came." +
+                    "Before you can make your narrow escape, the ghost scratches you and deals 10 points of damage.\n";
             game.changeRoom(true, invertPlayerRoom(game.getPlayer().getMostRecentExit()), 0);
         }
         return result;
@@ -65,6 +67,7 @@ public class CombatEngine {
         Items optionThreeItem = Optional.ofNullable(player.getSpecificWeapon("Sword"))
                 .orElse(fists);
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
+
         while (battleGhost.getHitPoints() > 0 && player.getPlayerHitPoints() > 0) {
             String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
                     "Choose your action: \n" +
@@ -100,7 +103,7 @@ public class CombatEngine {
                 case "4":
                     player.playerTakesDamage(10);
                     result = "\n\nYou think better about your choices, and decide to flee back the way you came.\n" +
-                            "Before you can make your narrow escape, the ghost scratches your back to deal 10 points of damage.\n";
+                            "Before you can make your narrow escape, the ghost scratches you and deals 10 points of damage.\n";
                     break;
                 default:
                     result = "\n\nThat is an invalid option, please pick 1-4.\n";
@@ -113,8 +116,8 @@ public class CombatEngine {
                     "\n\nGhost HP: " + battleGhost.getHitPoints(), Color.WHITE);
 //            processChoice(game, player);
         }
-        if (player.getPlayerHitPoints() > 0) return "You have defeated the " + battleGhost.getName() + "!";
-        else return "You have lost the game. Too bad, so sad.";
+        if (player.getPlayerHitPoints() > 0) return "\n\nYou have defeated the " + battleGhost.getName() + "!";
+        else return "\n\nYou have lost the game. Too bad, so sad.";
     }
 
     private static String[] invertPlayerRoom(String mostRecentExit) {
