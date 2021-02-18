@@ -1,5 +1,7 @@
 package com.intelligents.haunting;
 
+import java.util.StringJoiner;
+
 public class Weapon extends Items{
     private int damagePoints;
 
@@ -8,8 +10,18 @@ public class Weapon extends Items{
         this.damagePoints = damagePoints;
     }
 
-    public int getDamagePoints() {
+    public int getDamage() {
         return this.damagePoints;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner("\n", "\n", "\n")
+                .add("Name: '" + super.getName() + "'")
+                .add("Type: " + super.getType())
+                .add("Description: " + super.getDescription())
+                .add("Damage: " + damagePoints)
+                .toString();
     }
 
 }

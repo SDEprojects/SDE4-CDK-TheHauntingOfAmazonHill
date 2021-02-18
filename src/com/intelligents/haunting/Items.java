@@ -41,6 +41,11 @@ public class Items {
         this.description = description;
     }
 
+
+    public int getDamage() {
+        return 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,4 +67,5 @@ public class Items {
                 .add("Description: " + description)
                 .toString();
     }
+
 }

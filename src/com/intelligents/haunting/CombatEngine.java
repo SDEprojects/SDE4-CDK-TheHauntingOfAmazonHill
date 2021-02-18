@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class CombatEngine {
-    private static Items fists = new Weapon("Fists", "Decent for a fist fight; not much help against ghosts.", 10);
+    private static Items fists = new Weapon("Fists",
+            "Decent for a fist fight; not much help against ghosts.", 10);
 
     public static String runCombat(String userChoice, Game game, Player player) throws IOException, InterruptedException {
         String result = "";
@@ -15,7 +16,8 @@ public class CombatEngine {
             case "0":
                 userChoice = "fight";
                 break;
-            case "1": case "-1":
+            case "1":
+            case "-1":
                 userChoice = "run";
                 break;
             default:
@@ -62,7 +64,7 @@ public class CombatEngine {
 
     private static String processChoice(Game game, Player player) {
         Items optionOneItem = Optional.ofNullable(player.getSpecificWeapon("Iron-Bar"))
-            .orElse(fists);
+                .orElse(fists);
         Items optionThreeItem = Optional.ofNullable(player.getSpecificWeapon("Sword"))
                 .orElse(fists);
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
@@ -70,9 +72,11 @@ public class CombatEngine {
         while (battleGhost.getHitPoints() > 0 && player.getPlayerHitPoints() > 0) {
             String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
                     "Choose your action: \n" +
-                            "1 - Swing " + optionOneItem.getName() + "!\n" +
-                            "2 - Sweat on it!\n" +
-                            "3 - Jab it with your " + optionThreeItem.getName() + "!\n" +
+                            "1 - Swing " + optionOneItem.getName() + "!(" +
+                            optionOneItem.getDamage() + ")\n" +
+                            "2 - Sweat on it!(25)\n" +
+                            "3 - Jab it with your " + optionThreeItem.getName() + "!(" +
+                            optionThreeItem.getDamage() + ")\n" +
                             "4 - Run!\n",
                     "Combat!",
                     JOptionPane.QUESTION_MESSAGE,
@@ -86,8 +90,9 @@ public class CombatEngine {
             String result;
             switch (fightChoice) {
                 case "1":
-                    battleGhost.lowerHitPoints(((Weapon) optionOneItem).getDamagePoints());
-                    result = "\n\nYou swing your " + optionOneItem.getName() + ", and the " + battleGhost.getName() + " dissipates, but reappears behind you.\n";
+                    battleGhost.lowerHitPoints(((Weapon) optionOneItem).getDamage());
+                    result = "\n\nYou swing your " + optionOneItem.getName() +
+                            ", and the " + battleGhost.getName() + " dissipates, but reappears behind you.\n";
                     break;
                 case "2":
                     battleGhost.lowerHitPoints(25);
@@ -98,10 +103,12 @@ public class CombatEngine {
                             battleGhost.getName() + ", but in turn, dehydrating yourself took some major damage too.\n";
                     break;
                 case "3":
-                    battleGhost.lowerHitPoints(((Weapon) optionThreeItem).getDamagePoints());
-                    if (optionThreeItem.getName().equals("Sword")) result = "\n\nYou jab your " + optionThreeItem.getName() + " at the " + battleGhost.getName() + ", and your " + optionThreeItem.getName() +  " passes right through. " +
-                            "But something in the " +  optionThreeItem.getName() + " lights up like magic, forcing the " + battleGhost.getName() + " to dissipate forever.\n";
-                    else result = "\n\nYou jab your " + optionThreeItem.getName() + " at the " + battleGhost.getName() + ", and your " + optionThreeItem.getName() +  " passes right through.\n";
+                    battleGhost.lowerHitPoints(((Weapon) optionThreeItem).getDamage());
+                    if (optionThreeItem.getName().equals("Sword"))
+                        result = "\n\nYou jab your " + optionThreeItem.getName() + " at the " + battleGhost.getName() + ", and your " + optionThreeItem.getName() + " passes right through. " +
+                                "But something in the " + optionThreeItem.getName() + " lights up like magic, forcing the " + battleGhost.getName() + " to dissipate forever.\n";
+                    else
+                        result = "\n\nYou jab your " + optionThreeItem.getName() + " at the " + battleGhost.getName() + ", and your " + optionThreeItem.getName() + " passes right through.\n";
                     break;
                 case "4":
                     player.playerTakesDamage(10);
@@ -126,7 +133,8 @@ public class CombatEngine {
                     "\n\nGhost HP: " + ghostHP, Color.WHITE);
         }
         if (player.getPlayerHitPoints() > 0) return "\n\nYou have defeated the " + battleGhost.getName() + "!";
-        else if (player.getPlayerHitPoints() <= 0 && battleGhost.getHitPoints() <= 0) return "\n\nAt the cost of your own life, you defeat the ghost. Still, you have lost the game.";
+        else if (player.getPlayerHitPoints() <= 0 && battleGhost.getHitPoints() <= 0)
+            return "\n\nAt the cost of your own life, you defeat the ghost. Still, you have lost the game.";
         else return "\n\nBecause you lost all of your HP, you have lost the game. Too bad, so sad.";
     }
 
