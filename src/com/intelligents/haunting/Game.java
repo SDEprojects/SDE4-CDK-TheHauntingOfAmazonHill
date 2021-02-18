@@ -160,7 +160,6 @@ public class Game implements java.io.Serializable {
             replaceGameWindowWithColorText("\n\nYou cannot type more than 2 commands! Try again:", Color.RED);
         } else {
             try {
-                System.out.println(input[0].toLowerCase(Locale.ROOT));
                 switch (input[0].toLowerCase(Locale.ROOT)) {
                         /* Case for original developer easter egg, disabled for security. Uncomment to enable
                         and also related function at the bottom of Game.java
