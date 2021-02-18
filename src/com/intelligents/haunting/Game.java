@@ -10,7 +10,6 @@ import java.util.Random;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static com.intelligents.haunting.CombatEngine.runCombat;
@@ -765,6 +764,7 @@ public class Game implements java.io.Serializable {
             "Thank you for playing our game!",
             "GOODBYE!",
             JOptionPane.INFORMATION_MESSAGE);
+            jFrame.playerWantsToContinuePlaying = false;
             jFrame.quitGame();
             //return false;
         }
