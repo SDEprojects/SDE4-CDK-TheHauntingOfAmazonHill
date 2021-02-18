@@ -757,8 +757,8 @@ public class Game implements java.io.Serializable {
             String[] response = {"1"};
             game.resetGame();
             game.intro(response);
-
-            //return true;
+            String [] name = {getPlayer().getName()};
+            game.createPlayer(name);
         }else{
             JOptionPane.showMessageDialog(new JFrame(),
             "Thank you for playing our game!",
@@ -766,7 +766,6 @@ public class Game implements java.io.Serializable {
             JOptionPane.INFORMATION_MESSAGE);
             jFrame.playerWantsToContinuePlaying = false;
             jFrame.quitGame();
-            //return false;
         }
     }
 
