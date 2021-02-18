@@ -95,12 +95,19 @@ class Player implements java.io.Serializable {
         playerItems.add(item);
     }
 
-    public void removeWeapon(Weapon weapon) {
+    public void removeWeapon(Items weapon) {
         playerInventory.remove(weapon);
     }
 
     public List<Items> getAllWeapons() {
         return playerWeapons;
+    }
+
+    public Items getSpecificWeapon(String weaponName) {
+        for(int itr = 0; itr < playerWeapons.size(); itr++) {
+            if (playerWeapons.get(itr).getName().equals(weaponName)) return playerWeapons.get(itr);
+        }
+        return null;
     }
 
     public List<Items> getPlayerInventory() {

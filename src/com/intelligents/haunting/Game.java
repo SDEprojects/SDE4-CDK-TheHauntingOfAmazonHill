@@ -157,7 +157,7 @@ public class Game implements java.io.Serializable {
         updateCurrentRoom();
         checkIfRoomVisited();
         if (input.length > 2) {
-            appendToGameWindowsWithColorNoSound("You cannot type more than 2 commands!Try again:\n ", Color.WHITE);
+            replaceGameWindowWithColorText("\n\nYou cannot type more than 2 commands! Try again:", Color.RED);
         } else {
             try {
                 switch (input[0]) {
@@ -264,9 +264,13 @@ public class Game implements java.io.Serializable {
                         }
                         break;
                     case "get":
+                    case "take":
+                    case "grab":
                         String result = addToInventory(input);
                         appendToGameWindowsWithColorNoSound(result, result.contains("pickup") ? Color.GREEN :
                                 Color.RED);
+                    default:
+                        replaceGameWindowWithColorText("Command not recognized! Please try again!", Color.RED);
                 }
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 appendWithColoredText("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then " +
@@ -476,7 +480,7 @@ public class Game implements java.io.Serializable {
                     null,
                     new Object[]{"Fight", "Run"},
                     JOptionPane.YES_OPTION);
-            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this), Color.WHITE);
+            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this, player), Color.WHITE);
         }
     }
 
