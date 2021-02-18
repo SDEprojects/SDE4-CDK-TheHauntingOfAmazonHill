@@ -75,6 +75,11 @@ class Player implements java.io.Serializable {
         this.resetPlayerInventory();
     }
 
+    public void resetPlayerRoundTwo() {
+        this.clearJournal();
+        this.resetRoomsVisited();
+    }
+
     private void resetRoomsVisited() {
         roomsVisited.clear();
         addToRoomsVisited("Lobby");
@@ -152,4 +157,5 @@ class Player implements java.io.Serializable {
     }
 
     private void resetPlayerHitPoints() { hitPoints = 1000; }
+
 }
