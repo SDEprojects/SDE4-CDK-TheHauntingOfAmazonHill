@@ -9,6 +9,8 @@ public class World implements java.io.Serializable {
     private List<Room> rooms = new ArrayList<>();
     private Room currentRoom;
 
+    private Room startingRoom;
+
     Room getCurrentRoom() {
         return currentRoom;
     }
@@ -25,6 +27,8 @@ public class World implements java.io.Serializable {
         HashMap<String, Room> map = new HashMap<>();
         // create map between room name and room object
         for (Room room : rooms) {
+            // Save starting room for a game reset
+            if (room.getRoomTitle().equals("Lobby")) setStartingRoom(room);
             map.put(room.getRoomTitle(), room);
             gameMap.add(room);
         }
@@ -45,4 +49,13 @@ public class World implements java.io.Serializable {
     void setRooms(List<Room> rooms) {
         this.rooms = rooms;
     }
+
+    public Room getStartingRoom() {
+        return startingRoom;
+    }
+
+    public void setStartingRoom(Room startingRoom) {
+        this.startingRoom = startingRoom;
+    }
+
 }
