@@ -3,10 +3,11 @@ package com.intelligents.haunting;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Optional;
 
 public class CombatEngine {
 
-    public static String runCombat(String userChoice, Game game) throws IOException {
+    public static String runCombat(String userChoice, Game game, Player player) throws IOException {
         String result = "";
         // Switches based on button - yes button value is 0, no is 1, close window is -1
         switch (userChoice) {
@@ -23,7 +24,7 @@ public class CombatEngine {
         if (userChoice.equals("fight")) {
             boolean inFight = true;
             while (inFight) {
-                String fightResult = mortalCombat(game);
+                String fightResult = mortalCombat(game, player);
                 if (fightResult.contains("invalid") || fightResult.contains("hoping")) {
                     //output result message and loop again
                     game.appendWithColoredText(fightResult + "\n", Color.white);
@@ -45,20 +46,24 @@ public class CombatEngine {
         return result;
     }
 
-    private static String mortalCombat(Game game) {
+    private static String mortalCombat(Game game, Player player) {
         showStatus(game);
-        return processChoice(game);
+        return processChoice(game, player);
     }
 
     private static void showStatus(Game game) {
         game.appendWithColoredText("\n\nCombat commencing...\n", Color.WHITE);
     }
 
-    private static String processChoice(Game game) {
+    private static String processChoice(Game game, Player player) {
+//        player.removeWeapon(player.getSpecificWeapon("Iron Bar"));
+//        String option1Item = Optional.ofNullable(player.getSpecificWeapon("Iron Bar").getName())
+//            .orElse("fists");
+//        System.out.println(option1Item);
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
         String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
                 "Choose your action: \n" +
-                        "1 - Swing Iron Bar!\n" +
+                        "1 - Swing " + "Iron Bar" + "!\n" +
                         "2 - Sweat on it!\n" +
                         "3 - Punch it!\n" +
                         "4 - Run!\n",

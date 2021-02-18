@@ -19,7 +19,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private JButton showJournal = new JButton("Journal");
     private JButton showMap = new JButton("Map");
     private JTextPane textDisplayGameWindow = new JTextPane();
-    JTextArea textDisplayJournal = new JTextArea();
+    private JTextPane textDisplayJournal;
     private JFrame gameFrame;
     private boolean calledOnce=false;
     private String currentRoom;
@@ -121,7 +121,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
         gamePanel.add(textDisplayPanel);
         gamePanel.add(userInputPanel);
-//        gameFrame.add(buttonsAndInfoPanel, BorderLayout.LINE_END);
         gameFrame.add(gamePanel);
         gameFrame.pack();
 
@@ -140,7 +139,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Journal")) {
-            showJournal();
+            game.processInput(true, new String[]{"read"}, 0);
         }
         if (e.getActionCommand().equals("Map")) {
             game.processInput(true, new String[]{"open"}, 0);
@@ -172,22 +171,18 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         // Closes old window if opened before
         if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
         // Opens new window at current room
-
         journalFrame = new JFrame("Journal");
-        journalFrame.setSize(500, 500);
+        journalFrame.setSize(600, 700);
 
-        textDisplayJournal = new JTextArea();
+        textDisplayJournal = new JTextPane();
         DefaultCaret caret = (DefaultCaret) textDisplayJournal.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         textDisplayJournal.setCaretPosition(0);
-        game.openNewWindowJournalWithUpdatedInfo();
-        textDisplayJournal.setLineWrap(true);
-        textDisplayJournal.setWrapStyleWord(true);
         textDisplayJournal.setBorder(BorderFactory.createBevelBorder(1));
         textDisplayJournal.setForeground(new Color(0, 60, 70));
         textDisplayJournal.setFont(new Font("Comic Sans", Font.BOLD, 15));
         textDisplayJournal.setEditable(false);
-        textDisplayJournal.setBackground(new Color(196, 223, 230));
+        textDisplayJournal.setBackground(Color.DARK_GRAY);
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayJournal);
@@ -198,6 +193,19 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
         journalFrame.setLocationRelativeTo(null);
         journalFrame.setVisible(true);
+    }
+
+    public void setTextBoxJournal(String text, Color color) {
+        showJournal();
+        textDisplayJournal.setForeground(color);
+        textDisplayJournal.setText(text);
+    }
+
+    public void appendTextColorAndDisplayJournal(String textToDisplay, Color color) throws BadLocationException {
+        StyledDocument doc = textDisplayJournal.getStyledDocument();
+        Style style = textDisplayJournal.addStyle("", null);
+        StyleConstants.setForeground(style, color);
+        doc.insertString(doc.getLength(), textToDisplay, style);
     }
 
     void showMap() {

@@ -28,6 +28,8 @@ Happy hunting!!
 
 - move/go + direction e.g. "move north" or "go west"
 
+- get/grab/take + item e.g. "grab basket" or "get basket"
+
 - save = save game progress
 
 - play = start music

@@ -22,7 +22,7 @@ class Player implements java.io.Serializable {
         if (playerSingleton != null) {
             throw new RuntimeException("Need to use getInstance()");
         }
-        addWeapon(new Weapon("Sword", "Long and heavy; with a point that can pierce through any solid object!", 100));
+//        addWeapon(new Weapon("Sword", "Long and heavy; with a point that can pierce through any solid object!", 100));
     }
 
 
@@ -95,12 +95,19 @@ class Player implements java.io.Serializable {
         playerItems.add(item);
     }
 
-    public void removeWeapon(Weapon weapon) {
+    public void removeWeapon(Items weapon) {
         playerInventory.remove(weapon);
     }
 
     public List<Items> getAllWeapons() {
         return playerWeapons;
+    }
+
+    public Items getSpecificWeapon(String weaponName) {
+        for(int itr = 0; itr < playerWeapons.size(); itr++) {
+            if (playerWeapons.get(itr).getName().equals(weaponName)) return playerWeapons.get(itr);
+        }
+        return null;
     }
 
     public List<Items> getPlayerInventory() {
