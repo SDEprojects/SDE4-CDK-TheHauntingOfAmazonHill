@@ -10,7 +10,6 @@ import java.util.Random;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static com.intelligents.haunting.CombatEngine.runCombat;
@@ -215,6 +214,7 @@ public class Game implements java.io.Serializable {
                             appendWithColoredText("You've found some useful evidence: " +
                                     world.getCurrentRoom().getRoomEvidence() + "\n\n", Color.WHITE);
                             appendWithColoredText("Evidence logged into your journal.\n", Color.WHITE);
+                            world.getCurrentRoom().setRoomEvidence("");
                         }
                         appendWithColoredText(divider + "\n", Color.WHITE);
                         break;
@@ -306,7 +306,7 @@ public class Game implements java.io.Serializable {
         return result;
     }
 
-    private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws IOException {
+    private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws IOException, InterruptedException {
         if (checkStringNorth(input) && !input[1].equals("north")) {
             int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
                     "Did you mean to say north? ",
@@ -440,7 +440,7 @@ public class Game implements java.io.Serializable {
         return "";
     }
 
-    public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws IOException {
+    public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws IOException, InterruptedException {
         while (isValidInput) {
             String normalize = normalizeText(input[1]);
             try {
@@ -480,7 +480,12 @@ public class Game implements java.io.Serializable {
                     null,
                     new Object[]{"Fight", "Run"},
                     JOptionPane.YES_OPTION);
-            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this, player), Color.WHITE);
+            String combatResult = runCombat(Integer.toString(fightChoice), this, player);
+            if (combatResult.contains("lost")) {
+                appendToGameWindowsWithColorNoSound(combatResult, Color.WHITE);
+                playAgain(this);
+            }
+            else appendToGameWindowsWithColorNoSound(combatResult, Color.WHITE);
         }
     }
 
@@ -759,6 +764,7 @@ public class Game implements java.io.Serializable {
             "Thank you for playing our game!",
             "GOODBYE!",
             JOptionPane.INFORMATION_MESSAGE);
+            jFrame.playerWantsToContinuePlaying = false;
             jFrame.quitGame();
         }
     }
