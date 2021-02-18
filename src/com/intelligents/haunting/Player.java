@@ -82,8 +82,9 @@ class Player implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return getName() + "'s"
-                + " journal currently shows these items: " + "\uD83D\uDCD6" + "\n\n"
+        String bookEmoji = "\uD83D\uDCD6";
+        return bookEmoji + getName() + "'s"
+                + " journal currently shows these items: " + bookEmoji + "\n\n"
                 + getJournal();
     }
 
