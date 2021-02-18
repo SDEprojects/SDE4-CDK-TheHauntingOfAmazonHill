@@ -8,7 +8,7 @@ import java.util.Optional;
 public class CombatEngine {
     private static Items fists = new Weapon("Fists", "Decent for a fist fight; not much help against ghosts.", 10);
 
-    public static String runCombat(String userChoice, Game game, Player player) throws IOException {
+    public static String runCombat(String userChoice, Game game, Player player) throws IOException, InterruptedException {
         String result = "";
         // Switches based on button - yes button value is 0, no is 1, close window is -1
         switch (userChoice) {
