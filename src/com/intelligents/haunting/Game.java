@@ -107,7 +107,7 @@ public class Game implements java.io.Serializable {
     void createPlayer(String[] nameInput) {
         updateCurrentRoom();
 
-        player.setName(nameInput[0]);
+        player.setName(nameInput[0].substring(0, 1).toUpperCase() + nameInput[0].substring(1));
 
         String formatted = "If you're new to the game type help for assistance.";
         replaceGameWindowWithColorText(formatted, Color.CYAN);
