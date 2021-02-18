@@ -56,14 +56,14 @@ public class CombatEngine {
     }
 
     private static String processChoice(Game game, Player player) {
-//        player.removeWeapon(player.getSpecificWeapon("Iron Bar"));
-//        String option1Item = Optional.ofNullable(player.getSpecificWeapon("Iron Bar").getName())
-//            .orElse("fists");
-//        System.out.println(option1Item);
+//        player.removeWeapon(player.getSpecificWeapon("Iron-Bar"));
+        Items option1Item = Optional.ofNullable(player.getSpecificWeapon("Iron-Bar"))
+            .orElse(new Weapon("Fists", "Your hands.", 10));
+        System.out.println(option1Item + ": This is the mother fucking item");
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
         String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
                 "Choose your action: \n" +
-                        "1 - Swing " + "Iron Bar" + "!\n" +
+                        "1 - Swing " + option1Item.getName() + "!\n" +
                         "2 - Sweat on it!\n" +
                         "3 - Punch it!\n" +
                         "4 - Run!\n",
@@ -79,7 +79,7 @@ public class CombatEngine {
         String result;
         switch (fightChoice) {
             case "1":
-                result = "\n\nYou swing the iron bar, and the " + battleGhost.getName() + " dissipates.\n";
+                result = "\n\nYou swing the " + option1Item.getName() + ", and the " + battleGhost.getName() + " dissipates.\n";
                 break;
             case "2":
                 result = "\n\nYou collect an impressive amount of sweat from your body " +
