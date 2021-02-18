@@ -18,7 +18,11 @@ public class Controller {
         this.game = game;
     }
 
-    public void kickoffResponse(String[] response, String promptToUser) throws IOException {
+    public void setReadyToGuess(boolean readyToGuess) {
+        this.readyToGuess = readyToGuess;
+    }
+
+    public void kickoffResponse(String[] response, String promptToUser) throws IOException, InterruptedException {
         // Get what chapter the user wants
         if (introScreen) {
             game.intro(response);

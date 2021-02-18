@@ -1,5 +1,6 @@
 package com.intelligents.haunting;
 
+import javax.naming.ldap.Control;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
@@ -46,6 +47,10 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         gameWindow();
         game = new Game(this, pathStartSounds, pathStartResources, cl);
         controller = new Controller(game);
+    }
+
+    public void setControllerFlag() {
+        controller.setReadyToGuess(false);
     }
 
 
@@ -149,7 +154,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
             userInput.setText("");
             try {
                 controller.kickoffResponse(userResponse, textDisplayGameWindow.getText());
-            } catch (IOException ioException) {
+            } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
             }
         }
