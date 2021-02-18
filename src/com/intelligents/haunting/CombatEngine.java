@@ -60,53 +60,61 @@ public class CombatEngine {
 //        Items fists = player.getSpecificWeapon("fists");
 //        Weapon fists = new Weapon("Fists", "Decent for a fist fight; not much help against ghosts.", 10);
 //        player.removeWeapon(player.getSpecificWeapon("Iron-Bar"));
-        Items option1Item = Optional.ofNullable(player.getSpecificWeapon("Iron-Bar"))
+        Items optionOneItem = Optional.ofNullable(player.getSpecificWeapon("Iron-Bar"))
             .orElse(fists);
+        Items optionThreeItem = Optional.ofNullable(player.getSpecificWeapon("Sword"))
+                .orElse(fists);
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
-        String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
-                "Choose your action: \n" +
-                        "1 - Swing " + option1Item.getName() + "!\n" +
-                        "2 - Sweat on it!\n" +
-                        "3 - Punch it!\n" +
-                        "4 - Run!\n",
-                "Combat!",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                new Object[]{"1", "2", "3", "4"},
-                "1");
-        // This catches cancel and close buttons
-        if (fightChoice == null) {
-            fightChoice = "4";
-        }
-        String result;
-        switch (fightChoice) {
-            case "1":
-                result = "\n\nYou swing your " + option1Item.getName() + ", and the " + battleGhost.getName() + " dissipates.\n";
-                break;
-            case "2":
-                result = "\n\nYou collect an impressive amount of sweat from your body " +
-                        "and throw it at the " + battleGhost.getName() + ".\nWhile gross, the " +
-                        "extreme salt content in your perspiration banishes the " +
-                        battleGhost.getName() + " back to whence it came.\n";
-                break;
-            case "3":
-                result = "\n\nYou punch at the " + battleGhost.getName() + " , but your hand passes right through.\n" +
-                        "What were you hoping to achieve?\n";
-                break;
-            case "4":
-                result = "\n\nYou think better about your choices, and decide to flee back the way you came.\n";
-                break;
-            default:
-                result = "\n\nThat is an invalid option, please pick 1-4.\n";
-                break;
-        }
-        while (battleGhost.hitPoints > 0 || player.getPlayerHitPoints() > 0) {
+        while (battleGhost.getHitPoints() > 0 && player.getPlayerHitPoints() > 0) {
+            String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
+                    "Choose your action: \n" +
+                            "1 - Swing " + optionOneItem.getName() + "!\n" +
+                            "2 - Sweat on it!\n" +
+                            "3 - Jab it with your " + optionThreeItem.getName() + "!\n" +
+                            "4 - Run!\n",
+                    "Combat!",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new Object[]{"1", "2", "3", "4"},
+                    "1");
+            // This catches cancel and close buttons
+            if (fightChoice == null) {
+                fightChoice = "4";
+            }
+            String result;
+            switch (fightChoice) {
+                case "1":
+                    battleGhost.lowerHitPoints(((Weapon) optionOneItem).getDamagePoints());
+                    result = "\n\nYou swing your " + optionOneItem.getName() + ", and the " + battleGhost.getName() + " dissipates, but reappears behind you.\n";
+                    break;
+                case "2":
+                    result = "\n\nYou collect an impressive amount of sweat from your body " +
+                            "and throw it at the " + battleGhost.getName() + ".\nWhile gross, the " +
+                            "extreme salt content in your perspiration banishes the " +
+                            battleGhost.getName() + " back to whence it came.\n";
+                    break;
+                case "3":
+                    battleGhost.lowerHitPoints(((Weapon) optionThreeItem).getDamagePoints());
+                    result = "\n\nYou jab your " + optionThreeItem + " at the " + battleGhost.getName() + " , but your " + optionThreeItem +  " passes right through.\n";
+                    break;
+                case "4":
+                    player.playerTakesDamage(10);
+                    result = "\n\nYou think better about your choices, and decide to flee back the way you came.\n" +
+                            "Before you can make your narrow escape, the ghost scratches your back to deal 10 points of damage.\n";
+                    break;
+                default:
+                    result = "\n\nThat is an invalid option, please pick 1-4.\n";
+                    break;
+            }
+
+            if (result.contains("better about your choices")) return result;
             game.replaceGameWindowWithColorText(result +
                     "\n\nYour HP: " + player.getPlayerHitPoints() +
                     "\n\nGhost HP: " + battleGhost.getHitPoints(), Color.WHITE);
-            processChoice(game, player);
+//            processChoice(game, player);
         }
-        return result;
+        if (player.getPlayerHitPoints() > 0) return "You have defeated the " + battleGhost.getName() + "!";
+        else return "You have lost the game. Too bad, so sad.";
     }
 
     private static String[] invertPlayerRoom(String mostRecentExit) {
