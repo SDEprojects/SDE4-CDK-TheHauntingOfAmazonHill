@@ -160,7 +160,8 @@ public class Game implements java.io.Serializable {
             replaceGameWindowWithColorText("\n\nYou cannot type more than 2 commands! Try again:", Color.RED);
         } else {
             try {
-                switch (input[0]) {
+                System.out.println(input[0].toLowerCase(Locale.ROOT));
+                switch (input[0].toLowerCase(Locale.ROOT)) {
                         /* Case for original developer easter egg, disabled for security. Uncomment to enable
                         and also related function at the bottom of Game.java
                         case "chris":
@@ -269,6 +270,7 @@ public class Game implements java.io.Serializable {
                         String result = addToInventory(input);
                         appendToGameWindowsWithColorNoSound(result, result.contains("pickup") ? Color.GREEN :
                                 Color.RED);
+                        break;
                     default:
                         replaceGameWindowWithColorText("Command not recognized! Please try again!", Color.RED);
                 }
