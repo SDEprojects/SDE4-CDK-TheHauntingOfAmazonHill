@@ -56,14 +56,14 @@ public class CombatEngine {
     }
 
     private static String processChoice(Game game, Player player) {
-        player.removeWeapon(player.getSpecificWeapon("Iron Bar"));
-        String option1Item = Optional.ofNullable(player.getSpecificWeapon("Iron Bar").getName())
-            .orElse("fists");
-        System.out.println(option1Item);
+//        player.removeWeapon(player.getSpecificWeapon("Iron Bar"));
+//        String option1Item = Optional.ofNullable(player.getSpecificWeapon("Iron Bar").getName())
+//            .orElse("fists");
+//        System.out.println(option1Item);
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
         String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
                 "Choose your action: \n" +
-                        "1 - Swing " + option1Item + "!\n" +
+                        "1 - Swing " + "Iron Bar" + "!\n" +
                         "2 - Sweat on it!\n" +
                         "3 - Punch it!\n" +
                         "4 - Run!\n",
