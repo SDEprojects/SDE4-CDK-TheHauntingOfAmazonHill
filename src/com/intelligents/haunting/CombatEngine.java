@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class CombatEngine {
+    private static Items fists = new Weapon("Fists", "Decent for a fist fight; not much help against ghosts.", 10);
 
     public static String runCombat(String userChoice, Game game, Player player) throws IOException {
         String result = "";
@@ -56,10 +57,11 @@ public class CombatEngine {
     }
 
     private static String processChoice(Game game, Player player) {
+//        Items fists = player.getSpecificWeapon("fists");
+//        Weapon fists = new Weapon("Fists", "Decent for a fist fight; not much help against ghosts.", 10);
 //        player.removeWeapon(player.getSpecificWeapon("Iron-Bar"));
         Items option1Item = Optional.ofNullable(player.getSpecificWeapon("Iron-Bar"))
-            .orElse(new Weapon("Fists", "Your hands.", 10));
-        System.out.println(option1Item + ": This is the mother fucking item");
+            .orElse(fists);
         MiniGhost battleGhost = game.getWorld().getCurrentRoom().getRoomMiniGhost();
         String fightChoice = (String) JOptionPane.showInputDialog(new JFrame(),
                 "Choose your action: \n" +
@@ -79,7 +81,7 @@ public class CombatEngine {
         String result;
         switch (fightChoice) {
             case "1":
-                result = "\n\nYou swing the " + option1Item.getName() + ", and the " + battleGhost.getName() + " dissipates.\n";
+                result = "\n\nYou swing your " + option1Item.getName() + ", and the " + battleGhost.getName() + " dissipates.\n";
                 break;
             case "2":
                 result = "\n\nYou collect an impressive amount of sweat from your body " +
@@ -97,6 +99,12 @@ public class CombatEngine {
             default:
                 result = "\n\nThat is an invalid option, please pick 1-4.\n";
                 break;
+        }
+        while (battleGhost.hitPoints > 0 || player.getPlayerHitPoints() > 0) {
+            game.replaceGameWindowWithColorText(result +
+                    "\n\nYour HP: " + player.getPlayerHitPoints() +
+                    "\n\nGhost HP: " + battleGhost.getHitPoints(), Color.WHITE);
+            processChoice(game, player);
         }
         return result;
     }
