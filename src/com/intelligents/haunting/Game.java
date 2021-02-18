@@ -394,14 +394,14 @@ public class Game implements java.io.Serializable {
         }
     }
 
-    void userGuess(String ans, Game game) throws IOException, InterruptedException {
+    void userGuess(String ans) throws IOException, InterruptedException {
         replaceGameWindowWithColorText("Good job gathering evidence, " + player.getName() + ".\nYou " +
                 "guessed: " + ans + "\n", Color.WHITE);
         if (ans.equalsIgnoreCase(currentGhost.getType())) {
             appendWithColoredText("You won!\n", Color.RED);
             appendWithColoredText(getGhostBackstory() + "\n", Color.WHITE);
             isGameRunning = false;
-            this.playAgain(game);
+            playAgain(this);
         } else {
             if (guessCounter < 1) {
                 appendWithColoredText("Unfortunately, the ghost you determined was incorrect. The correct " +
@@ -706,7 +706,7 @@ public class Game implements java.io.Serializable {
         return true;
     }
 
-    private void resetWorld() {
+    private void resetWorld() throws IOException, InterruptedException {
         //resets world and adds a new ghost. guessCounter is incremented with a maximum allowable guesses
         // set at 2.
         guessCounter++;
@@ -715,10 +715,12 @@ public class Game implements java.io.Serializable {
             setCurrentGhost(getRandomGhost());
             assignRandomEvidenceToMap();
             player.resetPlayer();
+            jFrame.setControllerFlag();
         } else {
             String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
             appendToGameWindowsWithColorNoSound(formatted, Color.YELLOW);
             isGameRunning = false;
+            playAgain(this);
         }
     }
 
@@ -735,6 +737,7 @@ public class Game implements java.io.Serializable {
         setCurrentGhost(getRandomGhost());
         assignRandomEvidenceToMap();
         player.resetPlayer();
+        jFrame.setControllerFlag();
     }
 
     private void playAgain(Game game) throws IOException, InterruptedException {
@@ -750,6 +753,7 @@ public class Game implements java.io.Serializable {
             String[] response = {"1"};
             game.resetGame();
             game.intro(response);
+
             //return true;
         }else{
             JOptionPane.showMessageDialog(new JFrame(),
