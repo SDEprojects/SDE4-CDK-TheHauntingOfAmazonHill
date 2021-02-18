@@ -61,9 +61,6 @@ public class CombatEngine {
     }
 
     private static String processChoice(Game game, Player player) {
-//        Items fists = player.getSpecificWeapon("fists");
-//        Weapon fists = new Weapon("Fists", "Decent for a fist fight; not much help against ghosts.", 10);
-//        player.removeWeapon(player.getSpecificWeapon("Iron-Bar"));
         Items optionOneItem = Optional.ofNullable(player.getSpecificWeapon("Iron-Bar"))
             .orElse(fists);
         Items optionThreeItem = Optional.ofNullable(player.getSpecificWeapon("Sword"))
@@ -116,8 +113,10 @@ public class CombatEngine {
                     break;
             }
 
+            // Break out of while loop if player runs
             if (result.contains("better about your choices")) return result;
 
+            // Get player and ghost HP
             String playerHP = String.valueOf(player.getPlayerHitPoints());
             String ghostHP = String.valueOf(battleGhost.getHitPoints());
             if (player.getPlayerHitPoints() <= 0) playerHP = "DEAD";
@@ -125,7 +124,6 @@ public class CombatEngine {
             game.replaceGameWindowWithColorText(result +
                     "\n\nYour HP: " + playerHP +
                     "\n\nGhost HP: " + ghostHP, Color.WHITE);
-//            processChoice(game, player);
         }
         if (player.getPlayerHitPoints() > 0) return "\n\nYou have defeated the " + battleGhost.getName() + "!";
         else if (player.getPlayerHitPoints() <= 0 && battleGhost.getHitPoints() <= 0) return "\n\nAt the cost of your own life, you defeat the ghost. Still, you have lost the game.";
