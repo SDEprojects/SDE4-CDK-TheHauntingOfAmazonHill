@@ -25,7 +25,8 @@ public class Game implements java.io.Serializable {
     private final SaveGame SaveGame = new SaveGame();
     private Ghost currentGhost;
     private final Random r = new Random();
-    private final String divider = "************************************************************************************************";
+    private final String divider = "***************************************" +
+            "*********************************************************";
     private Player player;
     private HauntingJFrame jFrame;
     SaveGame save = new SaveGame();
@@ -77,9 +78,10 @@ public class Game implements java.io.Serializable {
     public void intro(String[] gameType) throws IOException {
         if (gameType[0].matches("1")) {
             replaceGameWindowWithColorText(fileReader.fileReader(resourcePath, "introText", cl), Color.RED);
-            appendToGameWindowsWithColorNoSound(fileReader.fileReader(resourcePath, "settingTheScene", cl), Color.WHITE);
-            appendToGameWindowsWithColorNoSound("\n" + "Thank you for choosing to play The Haunting of Amazon Hill. " +
-                    "What would you like your name to be?\n", Color.GREEN);
+            appendToGameWindowsWithColorNoSound(fileReader.fileReader(resourcePath,
+                    "settingTheScene", cl), Color.WHITE);
+            appendToGameWindowsWithColorNoSound("\n" + "Thank you for choosing to play The Haunting of " +
+                    "Amazon Hill. What would you like your name to be?\n", Color.GREEN);
 
             jFrame.stopThemeSong();
             mp.startMusic();
@@ -123,6 +125,8 @@ public class Game implements java.io.Serializable {
         currentRoom = world.getCurrentRoom().getRoomTitle();
         currentLoc = "Your location is " + currentRoom;
         jFrame.playerLocationArea.setText(currentLoc);
+        UIManager.put("OptionPane.messageForeground", Color.BLACK);
+        UIManager.put("Panel.background", Color.WHITE);
     }
 
     public boolean checkStringNorth(String[] input) {
@@ -190,7 +194,8 @@ public class Game implements java.io.Serializable {
                     //
                     case "?":
                     case "help":
-                        replaceGameWindowWithColorText(fileReader.fileReader(resourcePath, "Rules", cl), Color.white);
+                        replaceGameWindowWithColorText(fileReader.fileReader(resourcePath,
+                                "Rules", cl), Color.white);
                         break;
                     case "open":
                         openMap();
@@ -219,18 +224,21 @@ public class Game implements java.io.Serializable {
                         appendWithColoredText(divider + "\n", Color.WHITE);
                         break;
                     case "write":
-                        replaceGameWindowWithColorText("Would you like to document anything in your journal? [Yes/No]\n", Color.WHITE);
+                        replaceGameWindowWithColorText("Would you like to document anything in " +
+                                "your journal? [Yes/No]\n", Color.WHITE);
                         break;
                     //Allows user to leave if more than one room has been input into RoomsVisited
                     case "exit":
                         if (userAbleToExit()) {
                             // In order to win, user has to have correct evidence and guessed right ghost
                             if (!checkIfHasAllEvidenceIsInJournal()) {
-                                replaceGameWindowWithColorText("It seems your journal does not have all of the evidence needed to determine the ghost." +
+                                replaceGameWindowWithColorText("It seems your journal does not have " +
+                                        "all of the evidence needed to determine the ghost." +
                                         " Would you like to GUESS the ghost anyway or go back INSIDE?\n", Color.WHITE);
                             } else {
-                                replaceGameWindowWithColorText("It seems like you could be ready to determine the ghost." +
-                                        " Would you like to GUESS the ghost or go back INSIDE to continue exploring?\n", Color.WHITE);
+                                replaceGameWindowWithColorText("It seems like you could be ready to determine " +
+                                        "the ghost. Would you like to GUESS the ghost or go back INSIDE to " +
+                                        "continue exploring?\n", Color.WHITE);
                             }
                             appendWithColoredText(divider + "\n", Color.WHITE);
                         }
@@ -286,7 +294,7 @@ public class Game implements java.io.Serializable {
     private String addToInventory(String[] input) {
         List<Items> currentItems = world.getCurrentRoom().getRoomItems();
         List<Items> newList = new ArrayList<>();
-        String result = "";
+        String result = "I don't see what you're trying to get. ";
         for (Items item : currentItems) {
             if (item.getName().equalsIgnoreCase(input[1])) {
                 if (item.getType().equalsIgnoreCase("weapon")) {
@@ -297,8 +305,6 @@ public class Game implements java.io.Serializable {
                 newList.add(item);
                 result = "You pickup the " + item.getName() +
                         " and place it in your inventory.";
-            } else {
-                result = "I don't see what you're trying to get.";
             }
             break;
         }
@@ -306,7 +312,8 @@ public class Game implements java.io.Serializable {
         return result;
     }
 
-    private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws IOException, InterruptedException {
+    private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws
+            IOException, InterruptedException {
         if (checkStringNorth(input) && !input[1].equals("north")) {
             int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
                     "Did you mean to say north? ",
@@ -440,7 +447,8 @@ public class Game implements java.io.Serializable {
         return "";
     }
 
-    public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws IOException, InterruptedException {
+    public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws
+            IOException, InterruptedException {
         while (isValidInput) {
             String normalize = normalizeText(input[1]);
             try {
@@ -484,8 +492,7 @@ public class Game implements java.io.Serializable {
             if (combatResult.contains("lost")) {
                 appendToGameWindowsWithColorNoSound(combatResult, Color.WHITE);
                 playAgain(this);
-            }
-            else appendToGameWindowsWithColorNoSound(combatResult, Color.WHITE);
+            } else appendToGameWindowsWithColorNoSound(combatResult, Color.WHITE);
         }
     }
 
@@ -509,7 +516,8 @@ public class Game implements java.io.Serializable {
         } else if (journalEntry.equalsIgnoreCase("yes")) {
             replaceGameWindowWithColorText("Your entry:\n ", Color.WHITE);
         } else {
-            appendWithColoredText("Invalid Journal entry. Please look/show again to document again.\n", Color.WHITE);
+            appendWithColoredText("Invalid Journal entry. Please look/show again to document " +
+                    "again.\n", Color.WHITE);
         }
     }
 
@@ -534,15 +542,18 @@ public class Game implements java.io.Serializable {
 
 
     void populateGhostList(ClassLoader cl) {
-        this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl), "ghost"));
+        this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl),
+                "ghost"));
     }
 
     void populateMiniGhostList(ClassLoader cl) {
-        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl), "minighost"));
+        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl),
+                "minighost"));
     }
 
     void populateItemsList(ClassLoader cl) {
-        Map<String, List<? extends Items>> submitted = XMLParser.populateItems(XMLParser.readXML(resourcePath + "Items", cl), "item");
+        Map<String, List<? extends Items>> submitted =
+                XMLParser.populateItems(XMLParser.readXML(resourcePath + "Items", cl), "item");
         this.setItems(submitted);
     }
 
@@ -698,7 +709,8 @@ public class Game implements java.io.Serializable {
     }
 
     private boolean userAbleToExit() {
-        // Is player currently in lobby? Has user visited any other rooms? Is so size of roomsVisited would be greater than 1
+        // Is player currently in lobby? Has user visited any other rooms? Is so size of roomsVisited would
+        // be greater than 1
         if (!world.getCurrentRoom().getRoomTitle().equals("Lobby")) {
             appendToGameWindowsWithColorNoSound("You can only exit from Lobby.\n", Color.WHITE);
             return false;
@@ -759,11 +771,11 @@ public class Game implements java.io.Serializable {
             game.intro(response);
             String [] name = {getPlayer().getName()};
             game.createPlayer(name);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(new JFrame(),
-            "Thank you for playing our game!",
-            "GOODBYE!",
-            JOptionPane.INFORMATION_MESSAGE);
+                    "Thank you for playing our game!",
+                    "GOODBYE!",
+                    JOptionPane.INFORMATION_MESSAGE);
             jFrame.playerWantsToContinuePlaying = false;
             jFrame.quitGame();
         }
