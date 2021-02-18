@@ -276,7 +276,7 @@ public class Game implements java.io.Serializable {
             } catch (ArrayIndexOutOfBoundsException | FileNotFoundException e) {
                 appendWithColoredText("Make sure to add a verb e.g. 'move', 'go', 'open', 'read' then " +
                         "a noun e.g. 'north', 'map', 'journal'.\n", Color.WHITE);
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException | InterruptedException | BadLocationException e) {
                 e.printStackTrace();
             }
         }
@@ -514,28 +514,18 @@ public class Game implements java.io.Serializable {
         replaceGameWindowWithColorText("Entry Saved!", Color.YELLOW);
     }
 
-    private void printJournal() {
-        replaceGameWindowWithColorText(divider + "\n", Color.WHITE);
-        appendWithColoredText(player + "\n", Color.PINK);
+    private void printJournal() throws BadLocationException {
+        jFrame.setTextBoxJournal(divider + "\n", Color.WHITE);
+        jFrame.appendTextColorAndDisplayJournal(player + "\n", Color.PINK);
         String formatted = "Possible Ghosts ";
-        appendToGameWindowsWithColorNoSound(formatted, Color.GREEN);
-        appendWithColoredText(ghosts.toString() + "\n", Color.GREEN);
+        jFrame.appendTextColorAndDisplayJournal(formatted, Color.GREEN);
+        jFrame.appendTextColorAndDisplayJournal(ghosts.toString() + "\n", Color.GREEN);
         formatted = " Rooms visited ";
-        appendToGameWindowsWithColorNoSound(formatted, Color.PINK);
-        appendWithColoredText(player.getRoomsVisited() + "\n", Color.YELLOW);
-        appendToGameWindowsWithColorNoSound(divider + "\n", Color.pink);
+        jFrame.appendTextColorAndDisplayJournal(formatted, Color.PINK);
+        jFrame.appendTextColorAndDisplayJournal(player.getRoomsVisited() + "\n", Color.YELLOW);
+        jFrame.appendTextColorAndDisplayJournal(divider + "\n", Color.pink);
     }
 
-    public void openNewWindowJournalWithUpdatedInfo() {
-
-        jFrame.textDisplayJournal.setText(
-                player + "\n" +
-                        "Possible Ghosts " +
-                        ghosts.toString() + "\n" +
-                        " Rooms visited " +
-                        player.getRoomsVisited() + "\n"
-        );
-    }
 
     void populateGhostList(ClassLoader cl) {
         this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl), "ghost"));
