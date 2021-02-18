@@ -306,7 +306,7 @@ public class Game implements java.io.Serializable {
         return result;
     }
 
-    private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws IOException {
+    private void CheckCommand(boolean isValidInput, String[] input, int attempt) throws IOException, InterruptedException {
         if (checkStringNorth(input) && !input[1].equals("north")) {
             int dirChoice = JOptionPane.showOptionDialog(new JFrame(),
                     "Did you mean to say north? ",
@@ -440,7 +440,7 @@ public class Game implements java.io.Serializable {
         return "";
     }
 
-    public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws IOException {
+    public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws IOException, InterruptedException {
         while (isValidInput) {
             String normalize = normalizeText(input[1]);
             try {
@@ -480,7 +480,12 @@ public class Game implements java.io.Serializable {
                     null,
                     new Object[]{"Fight", "Run"},
                     JOptionPane.YES_OPTION);
-            appendToGameWindowsWithColorNoSound(runCombat(Integer.toString(fightChoice), this, player), Color.WHITE);
+            String combatResult = runCombat(Integer.toString(fightChoice), this, player);
+            if (combatResult.contains("lost")) {
+                appendToGameWindowsWithColorNoSound(combatResult, Color.WHITE);
+                playAgain(this);
+            }
+            else appendToGameWindowsWithColorNoSound(combatResult, Color.WHITE);
         }
     }
 
