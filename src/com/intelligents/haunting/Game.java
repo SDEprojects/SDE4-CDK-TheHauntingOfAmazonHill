@@ -294,7 +294,7 @@ public class Game implements java.io.Serializable {
     private String addToInventory(String[] input) {
         List<Items> currentItems = world.getCurrentRoom().getRoomItems();
         List<Items> newList = new ArrayList<>();
-        String result = "";
+        String result = "I don't see what you're trying to get. ";
         for (Items item : currentItems) {
             if (item.getName().equalsIgnoreCase(input[1])) {
                 if (item.getType().equalsIgnoreCase("weapon")) {
@@ -305,8 +305,6 @@ public class Game implements java.io.Serializable {
                 newList.add(item);
                 result = "You pickup the " + item.getName() +
                         " and place it in your inventory.";
-            } else {
-                result = "I don't see what you're trying to get.";
             }
             break;
         }
