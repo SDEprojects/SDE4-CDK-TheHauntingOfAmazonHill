@@ -753,6 +753,7 @@ public class Game implements java.io.Serializable {
         setCurrentGhost(getRandomGhost());
         assignRandomEvidenceToMap();
         player.resetPlayer();
+        world.setCurrentRoom(world.getStartingRoom());
         jFrame.setControllerFlag();
     }
 
