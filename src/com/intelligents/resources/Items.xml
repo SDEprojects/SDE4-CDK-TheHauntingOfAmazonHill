@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
     <item>
-        <name>Iron Bar</name>
+        <name>Iron-Bar</name>
         <type>weapon</type>
         <description>A short and sturdy piece, this should disperse most minor ghosts with ease.</description>
         <damagepoints>50</damagepoints>
@@ -18,7 +18,7 @@
         <description>A sturdy wicker basket, capable of carrying three small things.</description>
     </item>
     <item>
-        <name>Health Potion</name>
+        <name>Health-Potion</name>
         <type>consumable</type>
         <description>Looks gross, smells worse, probably medicine.</description>
     </item>
