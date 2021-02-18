@@ -264,8 +264,11 @@ public class Game implements java.io.Serializable {
                     case "take":
                     case "grab":
                         String result = addToInventory(input);
-                        appendToGameWindowsWithColorNoSound(result, result.contains("pickup") ? Color.GREEN :
+                        UIManager.put("OptionPane.messageForeground", result.contains("pickup") ? Color.GREEN :
                                 Color.RED);
+                        UIManager.put("Panel.background", Color.DARK_GRAY);
+                        JOptionPane.showMessageDialog(null, result);
+                        processInput(true, new String[]{"look"}, 0);
                         break;
                     default:
                         replaceGameWindowWithColorText("Command not recognized! Please try again!", Color.RED);
