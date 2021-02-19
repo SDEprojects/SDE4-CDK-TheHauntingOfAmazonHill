@@ -68,6 +68,10 @@ public class Game implements java.io.Serializable {
         attemptCount = 0;
     }
 
+    public FileReader getFileReader() {
+        return fileReader;
+    }
+
     private void setMusic(String pathStart) {
         mp = new MusicPlayer(pathStart + "Haunted Mansion.wav", cl);
         soundEffect = new MusicPlayer(pathStart + "page-flip-4.wav", cl);
@@ -103,7 +107,7 @@ public class Game implements java.io.Serializable {
             }
 
         } else {
-            appendToGameWindowsWithColorNoSound("Invalid selection , please enter 1.", Color.pink);
+            appendToGameWindowsWithColorNoSound("\n\nInvalid selection , please enter 1.", Color.pink);
         }
     }
 
@@ -280,6 +284,21 @@ public class Game implements java.io.Serializable {
                         JOptionPane.showMessageDialog(null, result);
                         processInput(true, new String[]{"look"}, 0);
                         break;
+                    case "eat":
+                    case "drink":
+                        playerInventory = player.getPlayerInventory();
+                        for (Items item : playerInventory) {
+                            if (item.getName().equalsIgnoreCase(input[1]) && item.getType().equals("consumable")) {
+                                player.removeItem(item);
+                                player.playerGainsHealth(250);
+                                replaceGameWindowWithColorText("You have consumed " + input[1] + " and gained 250HP for your health for a total of: " + player.getPlayerHitPoints() + "!", Color.CYAN);
+                                break;
+                            } else {
+                                replaceGameWindowWithColorText("Take a look at your inventory.\n" +
+                                        "Only consumable items you are carrying can be consumed.", Color.YELLOW);
+                            }
+                        }
+                        break;
                     default:
                         replaceGameWindowWithColorText("Command not recognized! Please try again!", Color.RED);
                 }
@@ -306,8 +325,8 @@ public class Game implements java.io.Serializable {
                 newList.add(item);
                 result = "You pickup the " + item.getName() +
                         " and place it in your inventory.";
+                break;
             }
-            break;
         }
         currentItems.removeAll(newList);
         return result;
@@ -394,7 +413,7 @@ public class Game implements java.io.Serializable {
         } else if (ans.contains("inside")) {
             replaceGameWindowWithColorText("You are back inside", Color.WHITE);
         } else {
-            replaceGameWindowWithColorText("Invalid input, please decide whether you want to GUESS or go " +
+            replaceGameWindowWithColorText("\nInvalid input, please decide whether you want to GUESS or go " +
                     "back INSIDE.\n", Color.WHITE);
         }
     }
@@ -417,7 +436,6 @@ public class Game implements java.io.Serializable {
         }
     }
 
-
     private void stopSound() {
         mp.pauseMusic();
         soundEffect.stopSoundEffect();
@@ -426,7 +444,6 @@ public class Game implements java.io.Serializable {
         paperFalling.stopSoundEffect();
         isSound = false;
     }
-
 
     public String normalizeText(String input) {
         List<String> northOptions = Arrays.asList("north", "up");
@@ -501,7 +518,6 @@ public class Game implements java.io.Serializable {
         jFrame.showMap();
     }
 
-
     private void addEvidenceToJournal() {
         if (!world.getCurrentRoom().getRoomEvidence().isEmpty()) {
             String journalEntry = (world.getCurrentRoom().getRoomTitle() + ": " +
@@ -510,14 +526,13 @@ public class Game implements java.io.Serializable {
         }
     }
 
-
     void writeEntryInJournal(String journalEntry) {
         if (journalEntry.equals("no")) {
             appendWithColoredText("Journal Closed.\n", Color.WHITE);
         } else if (journalEntry.equalsIgnoreCase("yes")) {
             replaceGameWindowWithColorText("Your entry:\n ", Color.WHITE);
         } else {
-            appendWithColoredText("Invalid Journal entry. Please look/show again to document " +
+            appendWithColoredText("\nInvalid Journal entry. Please look/show again to document " +
                     "again.\n", Color.WHITE);
         }
     }
@@ -540,7 +555,6 @@ public class Game implements java.io.Serializable {
         jFrame.appendTextColorAndDisplayJournal(player.getRoomsVisited() + "\n", Color.YELLOW);
         jFrame.appendTextColorAndDisplayJournal(divider + "\n", Color.pink);
     }
-
 
     void populateGhostList(ClassLoader cl) {
         this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl),
@@ -653,62 +667,6 @@ public class Game implements java.io.Serializable {
         }
     }
 
-    // Getters / Setters
-
-
-    Player getPlayer() {
-        return player;
-    }
-
-    void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    List<Ghost> getGhosts() {
-        return ghosts;
-    }
-
-    List<MiniGhost> getMiniGhosts() {
-        return miniGhosts;
-    }
-
-    void setGhosts(List<Ghost> ghosts) {
-        this.ghosts = ghosts;
-    }
-
-    void setMiniGhosts(List<MiniGhost> miniGhosts) {
-        this.miniGhosts = miniGhosts;
-    }
-
-
-    private void setItems(Map<String, List<? extends Items>> items) {
-        this.items = items;
-    }
-
-    private void setWeapon(List<Weapon> weapons) {
-        this.weapons = weapons;
-    }
-
-    Ghost getCurrentGhost() {
-        return currentGhost;
-    }
-
-    void setCurrentGhost(Ghost ghost) {
-        this.currentGhost = ghost;
-    }
-
-    World getWorld() {
-        return world;
-    }
-
-    void setWorld(World world) {
-        this.world = world;
-    }
-
-    private String getGhostBackstory() {
-        return currentGhost.getBackstory();
-    }
-
     private boolean userAbleToExit() {
         // Is player currently in lobby? Has user visited any other rooms? Is so size of roomsVisited would
         // be greater than 1
@@ -723,15 +681,42 @@ public class Game implements java.io.Serializable {
         return true;
     }
 
+    private void removeAllEvidenceFromWorld() {
+        for (Room room : world.gameMap) {
+            if (!room.getRoomEvidence().isEmpty()) {
+                room.setRoomEvidence("");
+            }
+        }
+    }
+
+    private void removeAllMiniGhostsFromWorld() {
+        for (Room room : world.gameMap) {
+            if (room.getRoomMiniGhost() != null) {
+                room.setRoomMiniGhost(null);
+            }
+        }
+    }
+    private void removeAllItemsFromWorld() {
+        for (Room room : world.gameMap) {
+            if (!room.getRoomItems().isEmpty()) {
+                room.clearRoomItems();
+            }
+        }
+    }
+
     private void resetWorld() throws IOException, InterruptedException {
         //resets world and adds a new ghost. guessCounter is incremented with a maximum allowable guesses
         // set at 2.
         guessCounter++;
         if (guessCounter <= 1) {
             removeAllEvidenceFromWorld();
+            removeAllItemsFromWorld();
+            removeAllMiniGhostsFromWorld();
             setCurrentGhost(getRandomGhost());
+            populateMiniGhostList(cl);
+            assignRandomMiniGhostToMap();
             assignRandomEvidenceToMap();
-            player.resetPlayer();
+            player.resetPlayerRoundTwo();
             jFrame.setControllerFlag();
         } else {
             String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
@@ -741,19 +726,17 @@ public class Game implements java.io.Serializable {
         }
     }
 
-    private void removeAllEvidenceFromWorld() {
-        for (Room room : world.gameMap) {
-            if (!room.getRoomEvidence().isEmpty()) {
-                room.setRoomEvidence("");
-            }
-        }
-    }
-
     private void resetGame() {
         removeAllEvidenceFromWorld();
+        removeAllItemsFromWorld();
+        removeAllMiniGhostsFromWorld();
         setCurrentGhost(getRandomGhost());
+        populateMiniGhostList(cl);
+        assignRandomItemsToMap();
+        assignRandomMiniGhostToMap();
         assignRandomEvidenceToMap();
         player.resetPlayer();
+        world.setCurrentRoom(world.getStartingRoom());
         jFrame.setControllerFlag();
     }
 
@@ -814,6 +797,15 @@ public class Game implements java.io.Serializable {
         keyboardEffect.stopSoundEffect();
     }
 
+    // Appends to GUI without altering prior added text
+    public void appendToGameWindowsWithColorNoSound(String input, Color color) {
+        try {
+            jFrame.appendTextColorAndDisplay(input, color);
+        } catch (BadLocationException exc) {
+            exc.printStackTrace();
+        }
+    }
+
     // Add narration to the GUI by removing all prior text added
     public void replaceGameWindowWithColorText(String input, Color color) {
         if (isSound) {
@@ -833,13 +825,57 @@ public class Game implements java.io.Serializable {
         paperFalling.stopSoundEffect();
     }
 
-    // Appends to GUI without altering prior added text
-    public void appendToGameWindowsWithColorNoSound(String input, Color color) {
-        try {
-            jFrame.appendTextColorAndDisplay(input, color);
-        } catch (BadLocationException exc) {
-            exc.printStackTrace();
-        }
+    // Getters / Setters
+    Player getPlayer() {
+        return player;
+    }
+
+    void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    List<Ghost> getGhosts() {
+        return ghosts;
+    }
+
+    List<MiniGhost> getMiniGhosts() {
+        return miniGhosts;
+    }
+
+    void setGhosts(List<Ghost> ghosts) {
+        this.ghosts = ghosts;
+    }
+
+    void setMiniGhosts(List<MiniGhost> miniGhosts) {
+        this.miniGhosts = miniGhosts;
+    }
+
+    private void setItems(Map<String, List<? extends Items>> items) {
+        this.items = items;
+    }
+
+    private void setWeapon(List<Weapon> weapons) {
+        this.weapons = weapons;
+    }
+
+    Ghost getCurrentGhost() {
+        return currentGhost;
+    }
+
+    void setCurrentGhost(Ghost ghost) {
+        this.currentGhost = ghost;
+    }
+
+    World getWorld() {
+        return world;
+    }
+
+    void setWorld(World world) {
+        this.world = world;
+    }
+
+    private String getGhostBackstory() {
+        return currentGhost.getBackstory();
     }
 
     /*Disabling original developer easter egg for security, but leaving it in the code.

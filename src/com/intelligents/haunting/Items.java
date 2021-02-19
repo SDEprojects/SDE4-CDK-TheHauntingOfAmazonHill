@@ -3,7 +3,7 @@ package com.intelligents.haunting;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class Items {
+public class Items implements java.io.Serializable {
     private String name;
     private String description;
     private String type;
