@@ -99,8 +99,9 @@ public class Game implements java.io.Serializable {
                 mp.startMusic();
                 SaveGame.setGame(this);
                 replaceGameWindowWithColorText("Attempting to load game...", Color.YELLOW);
-                updateCurrentRoom();
+
                 String result = SaveGame.loadGame();
+                updateCurrentRoom();
                 if (result.contains("loaded")){
                         JOptionPane.showMessageDialog(null, result, "Load Successful", JOptionPane.INFORMATION_MESSAGE);
                 appendToGameWindowsWithColorNoSound("\n\nWelcome back, " + player.getName() + "!" +
