@@ -25,7 +25,7 @@
 2. User shall be able to encounter welcome screen on game launch
 3. User shall be able to traverse through rooms
 4. User shall be able to gather evidence to make a prediction on mystery ghost
-####----New---
+#### ----New---
 1. User will experience combat with randomly assigned minighosts on each play through
 2. User will be able to add notes to journal when needed, and critical notes are added automatically
 3. User will be able to view the rules from a menu whenever desired
@@ -53,7 +53,7 @@
 - Scrum Development Workflow
 - Javax.SoundSampled
 - AudioInputStream
-####New
+#### New
 - Swing
 - ClassLoader
 - ImageIO
