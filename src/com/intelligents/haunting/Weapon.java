@@ -3,7 +3,7 @@ package com.intelligents.haunting;
 import java.util.StringJoiner;
 
 public class Weapon extends Items implements java.io.Serializable {
-    private int damagePoints;
+    private final int damagePoints;
 
     Weapon(String name, String description, int damagePoints) {
         super(name, "weapon", description);
@@ -23,5 +23,4 @@ public class Weapon extends Items implements java.io.Serializable {
                 .add("Damage: " + damagePoints)
                 .toString();
     }
-
 }

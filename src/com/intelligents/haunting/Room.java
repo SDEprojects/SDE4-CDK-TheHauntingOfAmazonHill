@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 class Room implements java.io.Serializable {
-    private String roomTitle;
-    private String description;
+    private final String roomTitle;
+    private final String description;
     private String roomEvidence = "";
     private MiniGhost roomMiniGhost = null;
     Map<String, Room> roomExits = new HashMap<>();
-    private List<Items> roomItems = new ArrayList<>();
+    private final List<Items> roomItems = new ArrayList<>();
     public Map<String, String> directionList = new HashMap<>();
 
     Room(String title, String description) {
@@ -51,10 +51,6 @@ class Room implements java.io.Serializable {
         roomItems.add(item);
     }
 
-    void removeItemFromRoom(Items item) {
-        roomItems.remove(item);
-    }
-
     void clearRoomItems() {
         this.roomItems.clear();
     }
@@ -66,5 +62,4 @@ class Room implements java.io.Serializable {
         }
         return roomItems;
     }
-
 }

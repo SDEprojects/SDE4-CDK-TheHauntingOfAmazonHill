@@ -43,7 +43,7 @@ public class World implements java.io.Serializable {
     }
 
     void populateRoomList(ClassLoader cl, String resourcePath) {
-        this.setRooms(XMLParser.populateRooms(XMLParser.readXML(resourcePath + "Rooms",cl) , "room"));
+        this.setRooms(XMLParser.populateRooms(XMLParser.readXML(resourcePath + "Rooms",cl)));
     }
 
     void setRooms(List<Room> rooms) {
