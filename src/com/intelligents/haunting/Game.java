@@ -67,6 +67,10 @@ public class Game implements java.io.Serializable {
         this.jFrame = jFrame;
     }
 
+    public FileReader getFileReader() {
+        return fileReader;
+    }
+
     private void setMusic(String pathStart) {
         mp = new MusicPlayer(pathStart + "Haunted Mansion.wav", cl);
         soundEffect = new MusicPlayer(pathStart + "page-flip-4.wav", cl);

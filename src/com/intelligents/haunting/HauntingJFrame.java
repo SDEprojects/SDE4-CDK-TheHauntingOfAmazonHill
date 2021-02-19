@@ -37,8 +37,11 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     private MusicPlayer themeSong;
     private JFrame mapFrame;
     private JFrame journalFrame;
-    private JPanel gamePanel = new JPanel(new FlowLayout());
+    private JFrame rulesFrame;
+    private JPanel gamePanel = new JPanel(new BorderLayout(0,5));
+    private JPanel contentPanel = new JPanel(new FlowLayout());
     boolean playerWantsToContinuePlaying = true;
+    private JMenuBar menubar;
 
     public HauntingJFrame() throws IOException {
         cl = getClass().getClassLoader();
@@ -123,9 +126,29 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         playerLocationArea.setEditable(false);
         playerLocationPanel.add(playerLocationArea);
 
+        menubar = new JMenuBar();
+        JMenu utilities = new JMenu("Help");
+        JMenuItem rules = new JMenuItem(new AbstractAction("Rules") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    showRules();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
+        JMenuItem save = new JMenuItem("Save - Coming soon - for now type 'save'");
+        utilities.add(rules);
+        utilities.add(save);
+        menubar.add(utilities);
+        menubar.setPreferredSize(new Dimension(100, 50));
+        contentPanel.setBackground(Color.DARK_GRAY);
+        gamePanel.add(menubar, BorderLayout.PAGE_START);
+        gamePanel.add(contentPanel, BorderLayout.CENTER);
 
-        gamePanel.add(textDisplayPanel);
-        gamePanel.add(userInputPanel);
+        contentPanel.add(textDisplayPanel);
+        contentPanel.add(userInputPanel);
         gameFrame.add(gamePanel);
         gameFrame.pack();
 
@@ -232,6 +255,36 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         mapFrame.setVisible(true);
     }
 
+    void showRules() throws IOException {
+        // Closes old window if opened before
+        if (rulesFrame != null) rulesFrame.dispatchEvent(new WindowEvent(rulesFrame, WindowEvent.WINDOW_CLOSING));
+        // Opens new window at current room
+        rulesFrame = new JFrame("Rules");
+        rulesFrame.setSize(700, 500);
+
+        JTextPane textDisplayRules = new JTextPane();
+        DefaultCaret caret = (DefaultCaret) textDisplayRules.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        textDisplayRules.setCaretPosition(0);
+        textDisplayRules.setBorder(BorderFactory.createBevelBorder(1));
+        textDisplayRules.setForeground(new Color(255,255,255));
+        textDisplayRules.setFont(new Font("Comic Sans", Font.BOLD, 15));
+        textDisplayRules.setEditable(false);
+        textDisplayRules.setBackground(Color.DARK_GRAY);
+
+        // Allows for scrolling if text extends beyond panel
+        JScrollPane scrollPane = new JScrollPane(textDisplayRules);
+        scrollPane.setPreferredSize(new Dimension(700, 500));
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        String text = game.getFileReader().fileReader(pathStartResources, "Rules", cl);
+        textDisplayRules.setText(text);
+        rulesFrame.add(scrollPane, BorderLayout.CENTER);
+
+        rulesFrame.setLocationRelativeTo(null);
+        rulesFrame.setVisible(true);
+    }
+
     private void splashWindow(ClassLoader cl) {
         themeSong.playSoundEffect();
         themeSong.setVolume((float) -10.69);
@@ -290,6 +343,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         // Close outside windows
         if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
         if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
+       if (rulesFrame != null) rulesFrame.dispatchEvent(new WindowEvent(rulesFrame, WindowEvent.WINDOW_CLOSING));
         // Close main game window
         if (gameFrame != null) gameFrame.dispatchEvent(new WindowEvent(gameFrame, WindowEvent.WINDOW_CLOSING));
     }
