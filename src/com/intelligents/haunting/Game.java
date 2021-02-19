@@ -21,14 +21,13 @@ public class Game implements java.io.Serializable {
     private List<Ghost> ghosts = new ArrayList<>();
     private List<MiniGhost> miniGhosts = new ArrayList<>();
     private Map<String, List<? extends Items>> items = new HashMap<>();
-    private List<Weapon> weapons;
     private final SaveGame SaveGame = new SaveGame();
     private Ghost currentGhost;
     private final Random r = new Random();
     private final String divider = "***************************************" +
             "*********************************************************";
     private Player player;
-    private HauntingJFrame jFrame;
+    private final HauntingJFrame jFrame;
     SaveGame save = new SaveGame();
     private final transient FileReader fileReader = new FileReader();
     private MusicPlayer mp;
@@ -42,7 +41,7 @@ public class Game implements java.io.Serializable {
     String currentRoom;
     private String currentLoc;
     private boolean isSound = true;
-    private static int attemptCount;
+    private int attemptCount;
 
 
     public Game(HauntingJFrame jFrame,
@@ -65,7 +64,7 @@ public class Game implements java.io.Serializable {
         assignRandomMiniGhostToMap();
         assignRandomItemsToMap();
         this.jFrame = jFrame;
-        attemptCount = 0;
+        setAttemptCount(0);
     }
 
     public FileReader getFileReader() {
@@ -100,6 +99,7 @@ public class Game implements java.io.Serializable {
                 mp.startMusic();
                 SaveGame.setGame(this);
                 replaceGameWindowWithColorText("Loading game!!!", Color.YELLOW);
+                JOptionPane.showMessageDialog(null, SaveGame.loadGame());
                 updateCurrentRoom();
                 appendToGameWindowsWithColorNoSound("\n\nWelcome back, " + player.getName() + "!" +
                         "\nYou are currently in the " + currentRoom + ".", Color.GREEN);
@@ -191,11 +191,11 @@ public class Game implements java.io.Serializable {
                         break;
                     //Creates a save file that can be loaded
                     case "save":
-                        SaveGame.save(this);
+                        JOptionPane.showMessageDialog(null, SaveGame.save(this));
                         break;
                     //Reads the loaded usr.save file
                     case "load":
-                        SaveGame.loadGame();
+                        intro(new String[]{"4"});
                         break;
                     //
                     case "?":
@@ -481,9 +481,10 @@ public class Game implements java.io.Serializable {
                     Thread.sleep(1800);
                     narrateRooms(world.getCurrentRoom().getDescription(), Color.red);
                     updateCurrentRoom();
+                    setAttemptCount(0);
                 } else {
                     replaceGameWindowWithColorText("You hit a wall. Try again.\n ", Color.RED);
-                    attemptCount++;
+                    setAttemptCount(getAttemptCount()+1);
                     if (attemptCounter >= 1) {
                         appendToGameWindowsWithColorNoSound("\n", Color.WHITE);
                         openMap();
@@ -558,18 +559,18 @@ public class Game implements java.io.Serializable {
     }
 
     void populateGhostList(ClassLoader cl) {
-        this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl),
-                "ghost"));
+        this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl)
+        ));
     }
 
     void populateMiniGhostList(ClassLoader cl) {
-        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl),
-                "minighost"));
+        this.setMiniGhosts(XMLParser.populateMiniGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl)
+        ));
     }
 
     void populateItemsList(ClassLoader cl) {
         Map<String, List<? extends Items>> submitted =
-                XMLParser.populateItems(XMLParser.readXML(resourcePath + "Items", cl), "item");
+                XMLParser.populateItems(XMLParser.readXML(resourcePath + "Items", cl));
         this.setItems(submitted);
     }
 
@@ -718,6 +719,7 @@ public class Game implements java.io.Serializable {
             assignRandomMiniGhostToMap();
             assignRandomEvidenceToMap();
             player.resetPlayerRoundTwo();
+            setAttemptCount(0);
             jFrame.setControllerFlag();
         } else {
             String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
@@ -739,6 +741,7 @@ public class Game implements java.io.Serializable {
         player.resetPlayer();
         world.setCurrentRoom(world.getStartingRoom());
         resetGuessCounter();
+        setAttemptCount(0);
         jFrame.setControllerFlag();
     }
 
@@ -861,7 +864,6 @@ public class Game implements java.io.Serializable {
     }
 
     private void setWeapon(List<Weapon> weapons) {
-        this.weapons = weapons;
     }
 
     Ghost getCurrentGhost() {

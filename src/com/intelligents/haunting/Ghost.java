@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Ghost implements java.io.Serializable {
-    private String name;
-    private String type;
+    private final String name;
+    private final String type;
     private String background;
     private ArrayList<String> evidence;
     private String backstory;
