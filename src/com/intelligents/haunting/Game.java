@@ -100,6 +100,7 @@ public class Game implements java.io.Serializable {
                 mp.startMusic();
                 SaveGame.setGame(this);
                 replaceGameWindowWithColorText("Loading game!!!", Color.YELLOW);
+                updateCurrentRoom();
                 appendToGameWindowsWithColorNoSound("\n\nWelcome back, " + player.getName() + "!" +
                         "\nYou are currently in the " + currentRoom + ".", Color.GREEN);
             } catch (NullPointerException e) {
