@@ -279,6 +279,21 @@ public class Game implements java.io.Serializable {
                         JOptionPane.showMessageDialog(null, result);
                         processInput(true, new String[]{"look"}, 0);
                         break;
+                    case "eat":
+                    case "drink":
+                        playerInventory = player.getPlayerItems();
+                        for (Items item : playerInventory) {
+                            if (item.getName().equalsIgnoreCase(input[1]) && item.getType().equals("consumable")) {
+                                player.removeItem(item);
+                                player.playerGainsHealth(250);
+                                replaceGameWindowWithColorText("You have consumed " + input[1] + " and gained 250HP for your health!", Color.CYAN);
+                            } else if (item.getName().equalsIgnoreCase(input[1]) && !item.getType().equals("consumable")) {
+                                replaceGameWindowWithColorText("You can't eat that!", Color.YELLOW);
+                            } else {
+                                replaceGameWindowWithColorText("You should take a look at your inventory first.", Color.YELLOW);
+                            }
+                        }
+                        break;
                     default:
                         replaceGameWindowWithColorText("Command not recognized! Please try again!", Color.RED);
                 }
