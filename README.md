@@ -65,6 +65,6 @@
 2. **Open project in IDE**
 4. **Run Commands run main.java!**
 5. **Enjoy!**
-####NEW
+#### NEW
 1. **Download release - optionally download only the complete jar in the main out production artifcat folder**
 2. **Run the jar with java -jar The_Haunting_of_Amazon_Hill.jar from the downloaded directory**
