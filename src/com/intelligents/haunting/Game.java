@@ -292,10 +292,9 @@ public class Game implements java.io.Serializable {
                                 player.playerGainsHealth(250);
                                 replaceGameWindowWithColorText("You have consumed " + input[1] + " and gained 250HP for your health for a total of: " + player.getPlayerHitPoints() + "!", Color.CYAN);
                                 break;
-                            } else if (item.getName().equalsIgnoreCase(input[1]) && !item.getType().equals("consumable")) {
-                                replaceGameWindowWithColorText("You can't consume that!", Color.YELLOW);
                             } else {
-                                replaceGameWindowWithColorText("You should take a look at your inventory first.", Color.YELLOW);
+                                replaceGameWindowWithColorText("Take a look at your inventory.\n" +
+                                        "Only consumable items you are carrying can be consumed.", Color.YELLOW);
                             }
                         }
                         break;
