@@ -42,7 +42,7 @@ public class Game implements java.io.Serializable {
     String currentRoom;
     private String currentLoc;
     private boolean isSound = true;
-    int attemptCount = 0;
+    private static int attemptCount;
 
 
     public Game(HauntingJFrame jFrame,
@@ -65,6 +65,7 @@ public class Game implements java.io.Serializable {
         assignRandomMiniGhostToMap();
         assignRandomItemsToMap();
         this.jFrame = jFrame;
+        attemptCount = 0;
     }
 
     public FileReader getFileReader() {
@@ -464,7 +465,7 @@ public class Game implements java.io.Serializable {
         return "";
     }
 
-    public void changeRoom(boolean isValidInput, String[] input, int attemptCount) throws
+    public void changeRoom(boolean isValidInput, String[] input, int attemptCounter) throws
             IOException, InterruptedException {
         while (isValidInput) {
             String normalize = normalizeText(input[1]);
@@ -482,7 +483,7 @@ public class Game implements java.io.Serializable {
                 } else {
                     replaceGameWindowWithColorText("You hit a wall. Try again.\n ", Color.RED);
                     attemptCount++;
-                    if (attemptCount >= 2) {
+                    if (attemptCounter >= 1) {
                         appendToGameWindowsWithColorNoSound("\n", Color.WHITE);
                         openMap();
                         appendToGameWindowsWithColorNoSound("Where would you like to go?\n ", Color.WHITE);
