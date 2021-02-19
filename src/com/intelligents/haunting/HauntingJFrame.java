@@ -243,7 +243,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
         // Opens new window at current room
         mapFrame = new JFrame("Map");
-        mapFrame.setSize(500, 500);
+        mapFrame.setSize(450, 500);
 
         JLabel picLabel = new JLabel();
         picLabel.setIcon(new ImageIcon(Objects.requireNonNull(cl.getResource(pathStartImages + "Map(" + currentRoom + ").png"))));
