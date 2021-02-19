@@ -736,6 +736,7 @@ public class Game implements java.io.Serializable {
         assignRandomEvidenceToMap();
         player.resetPlayer();
         world.setCurrentRoom(world.getStartingRoom());
+        resetGuessCounter();
         jFrame.setControllerFlag();
     }
 
@@ -762,6 +763,10 @@ public class Game implements java.io.Serializable {
             jFrame.playerWantsToContinuePlaying = false;
             jFrame.quitGame();
         }
+    }
+
+    private void resetGuessCounter(){
+        this.guessCounter = 0;
     }
 
     private boolean checkIfHasAllEvidenceIsInJournal() {
