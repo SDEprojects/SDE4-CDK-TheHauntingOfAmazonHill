@@ -98,11 +98,19 @@ public class Game implements java.io.Serializable {
                 jFrame.stopThemeSong();
                 mp.startMusic();
                 SaveGame.setGame(this);
-                replaceGameWindowWithColorText("Loading game!!!", Color.YELLOW);
-                JOptionPane.showMessageDialog(null, SaveGame.loadGame());
+                replaceGameWindowWithColorText("Attempting to load game...", Color.YELLOW);
+
+                String result = SaveGame.loadGame();
                 updateCurrentRoom();
+                if (result.contains("loaded")){
+                        JOptionPane.showMessageDialog(null, result, "Load Successful", JOptionPane.INFORMATION_MESSAGE);
                 appendToGameWindowsWithColorNoSound("\n\nWelcome back, " + player.getName() + "!" +
-                        "\nYou are currently in the " + currentRoom + ".", Color.GREEN);
+                        "\nYou are currently in the " + currentRoom + ".", Color.GREEN);}
+                else {
+                    JOptionPane.showMessageDialog(null, result, "Load failed", JOptionPane.ERROR_MESSAGE);
+                appendToGameWindowsWithColorNoSound("\n\nThere was a problem loading your saved game. " +
+                        "\nYou are still in the " +currentRoom + ".", Color.GREEN);
+                }
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
