@@ -13,18 +13,16 @@ class Player implements java.io.Serializable {
     private int hitPoints = 1000;
     private final List<String> journal = new ArrayList<>();
     private final List<String> roomsVisited = new ArrayList<>();
-    private List<Items> playerWeapons = new ArrayList<>();
-    private List<Items> playerItems = new ArrayList<>();
-    private List<Items> playerInventory = new ArrayList<>();
+    private final List<Items> playerWeapons = new ArrayList<>();
+    private final List<Items> playerItems = new ArrayList<>();
+    private final List<Items> playerInventory = new ArrayList<>();
 
 
     private Player() {
         if (playerSingleton != null) {
             throw new RuntimeException("Need to use getInstance()");
         }
-//        addWeapon(new Weapon("Sword", "Long and heavy; with a point that can pierce through any solid object!", 100));
     }
-
 
     static Player getInstance() {
         if (playerSingleton == null) {

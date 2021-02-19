@@ -12,39 +12,32 @@ import java.util.concurrent.TimeUnit;
 
 public class HauntingJFrame extends JWindow implements ActionListener {
 
-    private JWindow window = new JWindow();
+    private final JWindow window = new JWindow();
 
-    private String[] userResponse;
-    private JTextField userInput = new JTextField();
-    private JButton showJournal = new JButton("Journal");
-    private JButton showMap = new JButton("Map");
-    private JTextPane textDisplayGameWindow = new JTextPane();
+    private final JTextField userInput = new JTextField();
+    private final JButton showJournal = new JButton("Journal");
+    private final JButton showMap = new JButton("Map");
+    private final JTextPane textDisplayGameWindow = new JTextPane();
     private JTextPane textDisplayJournal;
     private JFrame gameFrame;
     private boolean calledOnce=false;
-    private String currentRoom;
-    private Game game;
-    private Controller controller;
-    private ClassLoader cl;
+    private final Game game;
+    private final Controller controller;
+    private final ClassLoader cl;
     private final String pathStartResources = "com/intelligents/resources/";
-    private final String pathStartSounds = pathStartResources + "Sounds/";
     private final String pathStartImages = pathStartResources + "Images/";
     JTextArea playerLocationArea = new JTextArea();
-    private JPanel textDisplayPanel;
-    private JPanel userInputPanel;
-    private JPanel buttonsAndInfoPanel;
-    private JPanel playerLocationPanel;
-    private MusicPlayer themeSong;
+    private final MusicPlayer themeSong;
     private JFrame mapFrame;
     private JFrame journalFrame;
     private JFrame rulesFrame;
-    private JPanel gamePanel = new JPanel(new BorderLayout(0,5));
-    private JPanel contentPanel = new JPanel(new FlowLayout());
+    private final JPanel gamePanel = new JPanel(new BorderLayout(0,5));
+    private final JPanel contentPanel = new JPanel(new FlowLayout());
     boolean playerWantsToContinuePlaying = true;
-    private JMenuBar menubar;
 
-    public HauntingJFrame() throws IOException {
+    public HauntingJFrame() {
         cl = getClass().getClassLoader();
+        String pathStartSounds = pathStartResources + "Sounds/";
         themeSong = new MusicPlayer(pathStartSounds + "VIKINGS THEME SONG.wav", cl);
         splashWindow(cl);
         gameWindow();
@@ -62,10 +55,10 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         gameFrame.setMinimumSize(new Dimension(1000, 800));
         gamePanel.setBackground(Color.DARK_GRAY);
 
-        textDisplayPanel = new JPanel();
-        userInputPanel = new JPanel(new GridLayout());
-        buttonsAndInfoPanel = new JPanel();
-        playerLocationPanel = new JPanel(new BorderLayout());
+        JPanel textDisplayPanel = new JPanel();
+        JPanel userInputPanel = new JPanel(new GridLayout());
+        JPanel buttonsAndInfoPanel = new JPanel();
+        JPanel playerLocationPanel = new JPanel(new BorderLayout());
 
 
         textDisplayPanel.setBackground(Color.black);
@@ -76,7 +69,6 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         buttonsAndInfoPanel.add(Box.createHorizontalGlue());
         buttonsAndInfoPanel.add(showMap);
         buttonsAndInfoPanel.add(Box.createHorizontalGlue());
-//        buttonsAndInfoPanel.add(playerLocationPanel);
 
         showJournal.addActionListener(this);
         showMap.addActionListener(this);
@@ -126,7 +118,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         playerLocationArea.setEditable(false);
         playerLocationPanel.add(playerLocationArea);
 
-        menubar = new JMenuBar();
+        JMenuBar menubar = new JMenuBar();
         JMenu utilities = new JMenu("Help");
         JMenuItem rules = new JMenuItem(new AbstractAction("Rules") {
             @Override
@@ -138,9 +130,25 @@ public class HauntingJFrame extends JWindow implements ActionListener {
                 }
             }
         });
-        JMenuItem save = new JMenuItem("Save - Coming soon - for now type 'save'");
+        JMenuItem save = new JMenuItem(new AbstractAction("Save Game") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.processInput(true, new String[]{"save"}, 0);
+            }
+        });
+        JMenuItem load = new JMenuItem(new AbstractAction("Load Game") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    game.intro(new String[]{"4"});
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
         utilities.add(rules);
         utilities.add(save);
+        utilities.add(load);
         menubar.add(utilities);
         menubar.setPreferredSize(new Dimension(100, 50));
         contentPanel.setBackground(Color.DARK_GRAY);
@@ -173,7 +181,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
             game.processInput(true, new String[]{"open"}, 0);
         }
         if (e.getSource() == userInput) {
-            userResponse = userInput.getText().strip().toLowerCase().split(" ");
+            String[] userResponse = userInput.getText().strip().toLowerCase().split(" ");
             userInput.setText("");
             try {
                 controller.kickoffResponse(userResponse, textDisplayGameWindow.getText());
@@ -237,7 +245,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     }
 
     void showMap() {
-        currentRoom = game.currentRoom.replaceAll("\\s", "");
+        String currentRoom = game.currentRoom.replaceAll("\\s", "");
 
         // Closes old window if opened before
         if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));

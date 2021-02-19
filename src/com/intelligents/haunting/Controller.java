@@ -9,7 +9,7 @@ public class Controller implements java.io.Serializable {
     private boolean nameSet;
     private boolean readyToGuess;
     private boolean loadedGame = false;
-    private Game game;
+    private final Game game;
 
     public Controller(Game game) {
         introScreen = true;

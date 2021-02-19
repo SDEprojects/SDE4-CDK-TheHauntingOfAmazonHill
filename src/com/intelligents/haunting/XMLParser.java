@@ -15,8 +15,8 @@ import java.util.Map;
 
 class XMLParser implements java.io.Serializable {
 
-    static ArrayList<Ghost> populateGhosts(Document document, String element) {
-        NodeList nList = document.getElementsByTagName(element);
+    static ArrayList<Ghost> populateGhosts(Document document) {
+        NodeList nList = document.getElementsByTagName("ghost");
         //Instantiate new Ghost list
         ArrayList<Ghost> ghosts = new ArrayList<>();
         // With node list find each element and construct ghost object
@@ -42,8 +42,8 @@ class XMLParser implements java.io.Serializable {
         return ghosts;
     }
 
-    static ArrayList<MiniGhost> populateMiniGhosts(Document document, String element) {
-        NodeList nList = document.getElementsByTagName(element);
+    static ArrayList<MiniGhost> populateMiniGhosts(Document document) {
+        NodeList nList = document.getElementsByTagName("minighost");
         //Instantiate new MiniGhost list
         ArrayList<MiniGhost> miniGhosts = new ArrayList<>();
         // With node list find each element and construct MiniGhost object
@@ -63,8 +63,8 @@ class XMLParser implements java.io.Serializable {
         return miniGhosts;
     }
 
-    static ArrayList<Room> populateRooms(Document document, String element) {
-        NodeList nList = document.getElementsByTagName(element);
+    static ArrayList<Room> populateRooms(Document document) {
+        NodeList nList = document.getElementsByTagName("room");
         //Instantiate new Room list
         ArrayList<Room> rooms = new ArrayList<>();
         // With node list find each element and construct room object
@@ -95,8 +95,8 @@ class XMLParser implements java.io.Serializable {
         return rooms;
     }
 
-    static Map<String, List<? extends Items>> populateItems(Document document, String element) {
-        NodeList nList = document.getElementsByTagName(element);
+    static Map<String, List<? extends Items>> populateItems(Document document) {
+        NodeList nList = document.getElementsByTagName("item");
         //Instantiate new Items list
         Map<String, List<? extends Items>> allItems = new HashMap<>();
         ArrayList<Items> items = new ArrayList<>();

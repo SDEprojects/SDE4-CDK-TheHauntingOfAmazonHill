@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class CombatEngine {
-    private static Items fists = new Weapon("Fists",
+    private static final Items fists = new Weapon("Fists",
             "Decent for a fist fight; not much help against ghosts.", 10);
 
     public static String runCombat(String userChoice, Game game, Player player) throws IOException, InterruptedException {
@@ -15,10 +15,6 @@ public class CombatEngine {
         switch (userChoice) {
             case "0":
                 userChoice = "fight";
-                break;
-            case "1":
-            case "-1":
-                userChoice = "run";
                 break;
             default:
                 userChoice = "run";
@@ -90,7 +86,7 @@ public class CombatEngine {
             String result;
             switch (fightChoice) {
                 case "1":
-                    battleGhost.lowerHitPoints(((Weapon) optionOneItem).getDamage());
+                    battleGhost.lowerHitPoints((optionOneItem).getDamage());
                     result = "\n\nYou swing your " + optionOneItem.getName() +
                             ", and the " + battleGhost.getName() + " dissipates, but reappears behind you.\n";
                     break;
@@ -103,7 +99,7 @@ public class CombatEngine {
                             battleGhost.getName() + ", but in turn, dehydrating yourself took some major damage too.\n";
                     break;
                 case "3":
-                    battleGhost.lowerHitPoints(((Weapon) optionThreeItem).getDamage());
+                    battleGhost.lowerHitPoints((optionThreeItem).getDamage());
                     if (optionThreeItem.getName().equals("Sword"))
                         result = "\n\nYou jab your " + optionThreeItem.getName() + " at the " + battleGhost.getName() + ", and your " + optionThreeItem.getName() + " passes right through. " +
                                 "But something in the " + optionThreeItem.getName() + " lights up like magic, forcing the " + battleGhost.getName() + " to dissipate forever.\n";
