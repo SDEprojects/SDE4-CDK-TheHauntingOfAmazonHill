@@ -547,8 +547,9 @@ public class Game implements java.io.Serializable {
         }
     }
 
-    void inputEntryInJournal(String journalEntry) {
-        player.setJournal(journalEntry);
+    void inputEntryInJournal(String[] journalEntry) {
+        String entry = String.join(" ", journalEntry);
+        player.setJournal(entry);
         replaceGameWindowWithColorText("Entry Saved!", Color.YELLOW);
     }
 
