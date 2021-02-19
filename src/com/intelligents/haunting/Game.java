@@ -106,7 +106,7 @@ public class Game implements java.io.Serializable {
             }
 
         } else {
-            appendToGameWindowsWithColorNoSound("Invalid selection , please enter 1.", Color.pink);
+            appendToGameWindowsWithColorNoSound("\n\nInvalid selection , please enter 1.", Color.pink);
         }
     }
 
@@ -285,14 +285,15 @@ public class Game implements java.io.Serializable {
                         break;
                     case "eat":
                     case "drink":
-                        playerInventory = player.getPlayerItems();
+                        playerInventory = player.getPlayerInventory();
                         for (Items item : playerInventory) {
                             if (item.getName().equalsIgnoreCase(input[1]) && item.getType().equals("consumable")) {
                                 player.removeItem(item);
                                 player.playerGainsHealth(250);
-                                replaceGameWindowWithColorText("You have consumed " + input[1] + " and gained 250HP for your health!", Color.CYAN);
+                                replaceGameWindowWithColorText("You have consumed " + input[1] + " and gained 250HP for your health for a total of: " + player.getPlayerHitPoints() + "!", Color.CYAN);
+                                break;
                             } else if (item.getName().equalsIgnoreCase(input[1]) && !item.getType().equals("consumable")) {
-                                replaceGameWindowWithColorText("You can't eat that!", Color.YELLOW);
+                                replaceGameWindowWithColorText("You can't consume that!", Color.YELLOW);
                             } else {
                                 replaceGameWindowWithColorText("You should take a look at your inventory first.", Color.YELLOW);
                             }
@@ -412,7 +413,7 @@ public class Game implements java.io.Serializable {
         } else if (ans.contains("inside")) {
             replaceGameWindowWithColorText("You are back inside", Color.WHITE);
         } else {
-            replaceGameWindowWithColorText("Invalid input, please decide whether you want to GUESS or go " +
+            replaceGameWindowWithColorText("\nInvalid input, please decide whether you want to GUESS or go " +
                     "back INSIDE.\n", Color.WHITE);
         }
     }
@@ -535,7 +536,7 @@ public class Game implements java.io.Serializable {
         } else if (journalEntry.equalsIgnoreCase("yes")) {
             replaceGameWindowWithColorText("Your entry:\n ", Color.WHITE);
         } else {
-            appendWithColoredText("Invalid Journal entry. Please look/show again to document " +
+            appendWithColoredText("\nInvalid Journal entry. Please look/show again to document " +
                     "again.\n", Color.WHITE);
         }
     }
