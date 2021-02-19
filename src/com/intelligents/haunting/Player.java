@@ -105,8 +105,14 @@ class Player implements java.io.Serializable {
         playerItems.add(item);
     }
 
+    public void removeItem(Items item) {
+        playerInventory.remove(item);
+        playerItems.remove(item);
+    }
+
     public void removeWeapon(Items weapon) {
         playerInventory.remove(weapon);
+        playerWeapons.remove(weapon);
     }
 
     public List<Items> getAllWeapons() {
@@ -138,6 +144,13 @@ class Player implements java.io.Serializable {
 
     public List<Items> getPlayerItems() {
         return playerItems;
+    }
+
+    public Items getSpecificItem(String itemName) {
+        for (Items playerItem : playerItems) {
+            if (playerItem.getName().equals(itemName)) return playerItem;
+        }
+        return null;
     }
 
     private void resetPlayerItems() {
