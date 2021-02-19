@@ -324,8 +324,8 @@ public class Game implements java.io.Serializable {
                 newList.add(item);
                 result = "You pickup the " + item.getName() +
                         " and place it in your inventory.";
+                break;
             }
-            break;
         }
         currentItems.removeAll(newList);
         return result;
@@ -435,7 +435,6 @@ public class Game implements java.io.Serializable {
         }
     }
 
-
     private void stopSound() {
         mp.pauseMusic();
         soundEffect.stopSoundEffect();
@@ -444,7 +443,6 @@ public class Game implements java.io.Serializable {
         paperFalling.stopSoundEffect();
         isSound = false;
     }
-
 
     public String normalizeText(String input) {
         List<String> northOptions = Arrays.asList("north", "up");
@@ -519,7 +517,6 @@ public class Game implements java.io.Serializable {
         jFrame.showMap();
     }
 
-
     private void addEvidenceToJournal() {
         if (!world.getCurrentRoom().getRoomEvidence().isEmpty()) {
             String journalEntry = (world.getCurrentRoom().getRoomTitle() + ": " +
@@ -527,7 +524,6 @@ public class Game implements java.io.Serializable {
             player.setJournal(journalEntry);
         }
     }
-
 
     void writeEntryInJournal(String journalEntry) {
         if (journalEntry.equals("no")) {
@@ -558,7 +554,6 @@ public class Game implements java.io.Serializable {
         jFrame.appendTextColorAndDisplayJournal(player.getRoomsVisited() + "\n", Color.YELLOW);
         jFrame.appendTextColorAndDisplayJournal(divider + "\n", Color.pink);
     }
-
 
     void populateGhostList(ClassLoader cl) {
         this.setGhosts(XMLParser.populateGhosts(XMLParser.readXML(resourcePath + "Ghosts", cl),
@@ -671,62 +666,6 @@ public class Game implements java.io.Serializable {
         }
     }
 
-    // Getters / Setters
-
-
-    Player getPlayer() {
-        return player;
-    }
-
-    void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    List<Ghost> getGhosts() {
-        return ghosts;
-    }
-
-    List<MiniGhost> getMiniGhosts() {
-        return miniGhosts;
-    }
-
-    void setGhosts(List<Ghost> ghosts) {
-        this.ghosts = ghosts;
-    }
-
-    void setMiniGhosts(List<MiniGhost> miniGhosts) {
-        this.miniGhosts = miniGhosts;
-    }
-
-
-    private void setItems(Map<String, List<? extends Items>> items) {
-        this.items = items;
-    }
-
-    private void setWeapon(List<Weapon> weapons) {
-        this.weapons = weapons;
-    }
-
-    Ghost getCurrentGhost() {
-        return currentGhost;
-    }
-
-    void setCurrentGhost(Ghost ghost) {
-        this.currentGhost = ghost;
-    }
-
-    World getWorld() {
-        return world;
-    }
-
-    void setWorld(World world) {
-        this.world = world;
-    }
-
-    private String getGhostBackstory() {
-        return currentGhost.getBackstory();
-    }
-
     private boolean userAbleToExit() {
         // Is player currently in lobby? Has user visited any other rooms? Is so size of roomsVisited would
         // be greater than 1
@@ -739,28 +678,6 @@ public class Game implements java.io.Serializable {
             return false;
         }
         return true;
-    }
-
-    private void resetWorld() throws IOException, InterruptedException {
-        //resets world and adds a new ghost. guessCounter is incremented with a maximum allowable guesses
-        // set at 2.
-        guessCounter++;
-        if (guessCounter <= 1) {
-            removeAllEvidenceFromWorld();
-            removeAllItemsFromWorld();
-            removeAllMiniGhostsFromWorld();
-            setCurrentGhost(getRandomGhost());
-            populateMiniGhostList(cl);
-            assignRandomMiniGhostToMap();
-            assignRandomEvidenceToMap();
-            player.resetPlayerRoundTwo();
-            jFrame.setControllerFlag();
-        } else {
-            String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
-            appendToGameWindowsWithColorNoSound(formatted, Color.YELLOW);
-            isGameRunning = false;
-            playAgain(this);
-        }
     }
 
     private void removeAllEvidenceFromWorld() {
@@ -783,6 +700,28 @@ public class Game implements java.io.Serializable {
             if (!room.getRoomItems().isEmpty()) {
                 room.clearRoomItems();
             }
+        }
+    }
+
+    private void resetWorld() throws IOException, InterruptedException {
+        //resets world and adds a new ghost. guessCounter is incremented with a maximum allowable guesses
+        // set at 2.
+        guessCounter++;
+        if (guessCounter <= 1) {
+            removeAllEvidenceFromWorld();
+            removeAllItemsFromWorld();
+            removeAllMiniGhostsFromWorld();
+            setCurrentGhost(getRandomGhost());
+            populateMiniGhostList(cl);
+            assignRandomMiniGhostToMap();
+            assignRandomEvidenceToMap();
+            player.resetPlayerRoundTwo();
+            jFrame.setControllerFlag();
+        } else {
+            String formatted = "Sorry, you've made too many incorrect guesses. GAME OVER.";
+            appendToGameWindowsWithColorNoSound(formatted, Color.YELLOW);
+            isGameRunning = false;
+            playAgain(this);
         }
     }
 
@@ -857,6 +796,15 @@ public class Game implements java.io.Serializable {
         keyboardEffect.stopSoundEffect();
     }
 
+    // Appends to GUI without altering prior added text
+    public void appendToGameWindowsWithColorNoSound(String input, Color color) {
+        try {
+            jFrame.appendTextColorAndDisplay(input, color);
+        } catch (BadLocationException exc) {
+            exc.printStackTrace();
+        }
+    }
+
     // Add narration to the GUI by removing all prior text added
     public void replaceGameWindowWithColorText(String input, Color color) {
         if (isSound) {
@@ -876,13 +824,57 @@ public class Game implements java.io.Serializable {
         paperFalling.stopSoundEffect();
     }
 
-    // Appends to GUI without altering prior added text
-    public void appendToGameWindowsWithColorNoSound(String input, Color color) {
-        try {
-            jFrame.appendTextColorAndDisplay(input, color);
-        } catch (BadLocationException exc) {
-            exc.printStackTrace();
-        }
+    // Getters / Setters
+    Player getPlayer() {
+        return player;
+    }
+
+    void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    List<Ghost> getGhosts() {
+        return ghosts;
+    }
+
+    List<MiniGhost> getMiniGhosts() {
+        return miniGhosts;
+    }
+
+    void setGhosts(List<Ghost> ghosts) {
+        this.ghosts = ghosts;
+    }
+
+    void setMiniGhosts(List<MiniGhost> miniGhosts) {
+        this.miniGhosts = miniGhosts;
+    }
+
+    private void setItems(Map<String, List<? extends Items>> items) {
+        this.items = items;
+    }
+
+    private void setWeapon(List<Weapon> weapons) {
+        this.weapons = weapons;
+    }
+
+    Ghost getCurrentGhost() {
+        return currentGhost;
+    }
+
+    void setCurrentGhost(Ghost ghost) {
+        this.currentGhost = ghost;
+    }
+
+    World getWorld() {
+        return world;
+    }
+
+    void setWorld(World world) {
+        this.world = world;
+    }
+
+    private String getGhostBackstory() {
+        return currentGhost.getBackstory();
     }
 
     /*Disabling original developer easter egg for security, but leaving it in the code.
