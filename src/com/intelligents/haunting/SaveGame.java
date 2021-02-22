@@ -10,11 +10,11 @@ import java.util.List;
 
 class SaveGame {
     private Game game;
-
+    private String result = "";
     SaveGame() {
     }
 
-    void save(Game game) {
+    String save(Game game) {
         // NOTE: classes you want to be able to save must implement java.io.Serializable. Without implementing, you will be
         // hit with exception type NotSerializableException.
 
@@ -35,19 +35,19 @@ class SaveGame {
             // make sure any buffered data is written before i close the stream
             oos.flush();
             oos.close();
-            System.out.println("Game saved\n");
+            result = "Game saved\n";
         } catch (Exception e) {
             //System.out.println("Serialization Error! Can not save data.\n" + e.getClass() + ": " + e.getMessage() + "\n");
-            System.out.println("Sorry currently cannot save game. **coming Soon!**");
+            result = "Game not saved - something went wrong. Apologies.";
             e.printStackTrace();
         }
-
+return result;
 
     }
 
     @SuppressWarnings("unchecked")
         //i wrote this code, so i can guarantee this is an array of objects
-    void loadGame() {
+    String loadGame() {
         try {
             //pulling data from file with FileInputStream
             FileInputStream fis = new FileInputStream("usr.save");
@@ -62,13 +62,14 @@ class SaveGame {
             game.setPlayer(player);
             game.setWorld(world);
             game.setCurrentGhost(ghost);
-            // // TODO: 2/10/2021 next line throws an exception cannot cast an arraylist to a player - need to troubleshoot 
             game.setGhosts(ghosts);
             game.setMiniGhosts(miniGhosts);
             ois.close();
+            result = "Saved game loaded.";
         } catch (Exception e) {
-            System.out.println("Could not load saved game");
+            result = "Could not load saved game";
         }
+        return result;
     }
 
     void setGame(Game game) {

@@ -24,9 +24,17 @@ Happy hunting!!
 
 - look/view/show = displays any evidence located in your current room
 
+- inventory = displays a list of items and weapons in your inventory
+
 - move/go + direction e.g. "move north" or "go west"
 
+- get/grab/take + item e.g. "grab basket" or "get basket"
+
+- eat/drink + consumable item e.g. "drink moss-water" or "eat peanut-butter"
+
 - save = save game progress
+
+- load = load saved game
 
 - play = start music
 

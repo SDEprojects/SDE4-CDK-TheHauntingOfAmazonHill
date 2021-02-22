@@ -2,14 +2,14 @@ package com.intelligents.haunting;
 
 import java.io.IOException;
 
-public class Controller {
+public class Controller implements java.io.Serializable {
 
 
     private boolean introScreen;
     private boolean nameSet;
     private boolean readyToGuess;
     private boolean loadedGame = false;
-    private Game game;
+    private final Game game;
 
     public Controller(Game game) {
         introScreen = true;
@@ -18,7 +18,11 @@ public class Controller {
         this.game = game;
     }
 
-    public void kickoffResponse(String[] response, String promptToUser) throws IOException {
+    public void setReadyToGuess(boolean readyToGuess) {
+        this.readyToGuess = readyToGuess;
+    }
+
+    public void kickoffResponse(String[] response, String promptToUser) throws IOException, InterruptedException {
         // Get what chapter the user wants
         if (introScreen) {
             game.intro(response);
@@ -31,10 +35,7 @@ public class Controller {
             game.createPlayer(response);
             nameSet = true;
         // If the user is trying to exit, get if they want to guess or stay inside
-        } else if (promptToUser.equals("It seems your journal does not have all of the evidence needed to determine the ghost." +
-                " Would you like to GUESS the ghost anyway or go back INSIDE?\n") || promptToUser.equals("Invalid input, please decide whether you want to GUESS or go back INSIDE.\n")
-                || promptToUser.equals("It seems like you could be ready to determine the ghost." +
-                " Would you like to GUESS the ghost or go back INSIDE to continue exploring?\n")){
+        } else if (promptToUser.contains("GUESS")){
             if (response[0].contains("guess")) {
                 readyToGuess = true;
             }
@@ -46,9 +47,9 @@ public class Controller {
         } else if (promptToUser.equals("Would you like to document anything in your journal? [Yes/No]\n") || promptToUser.equals("Invalid Journal entry. Please look/show again to document again.\n")) {
             game.writeEntryInJournal(response[0]);
         } else if (promptToUser.equals("Your entry:\n ")) {
-            game.inputEntryInJournal(response[0]);
+            game.inputEntryInJournal(response);
         } else {
-            game.processInput(true, response, game.attemptCount);
+            game.processInput(true, response, game.getAttemptCount());
         }
     }
 

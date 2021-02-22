@@ -12,35 +12,32 @@ import java.util.concurrent.TimeUnit;
 
 public class HauntingJFrame extends JWindow implements ActionListener {
 
-    private JWindow window = new JWindow();
+    private final JWindow window = new JWindow();
 
-    private String[] userResponse;
-    private JTextField userInput = new JTextField();
-    private JButton showJournal = new JButton("Journal");
-    private JButton showMap = new JButton("Map");
-    private JTextPane textDisplayGameWindow = new JTextPane();
-    JTextArea textDisplayJournal = new JTextArea();
+    private final JTextField userInput = new JTextField();
+    private final JButton showJournal = new JButton("Journal");
+    private final JButton showMap = new JButton("Map");
+    private final JTextPane textDisplayGameWindow = new JTextPane();
+    private JTextPane textDisplayJournal;
     private JFrame gameFrame;
     private boolean calledOnce=false;
-    private String currentRoom;
-    private Game game;
-    private Controller controller;
-    private FileReader p = new FileReader();
-    private ClassLoader cl;
+    private final Game game;
+    private final Controller controller;
+    private final ClassLoader cl;
     private final String pathStartResources = "com/intelligents/resources/";
-    private final String pathStartSounds = pathStartResources + "Sounds/";
     private final String pathStartImages = pathStartResources + "Images/";
     JTextArea playerLocationArea = new JTextArea();
-    private JPanel textDisplayPanel;
-    private JPanel userInputPanel;
-    private JPanel buttonsAndInfoPanel;
-    private JPanel playerLocationPanel;
-    private MusicPlayer themeSong;
+    private final MusicPlayer themeSong;
     private JFrame mapFrame;
     private JFrame journalFrame;
+    private JFrame rulesFrame;
+    private final JPanel gamePanel = new JPanel(new BorderLayout(0,5));
+    private final JPanel contentPanel = new JPanel(new FlowLayout());
+    boolean playerWantsToContinuePlaying = true;
 
-    public HauntingJFrame() throws IOException {
+    public HauntingJFrame() {
         cl = getClass().getClassLoader();
+        String pathStartSounds = pathStartResources + "Sounds/";
         themeSong = new MusicPlayer(pathStartSounds + "VIKINGS THEME SONG.wav", cl);
         splashWindow(cl);
         gameWindow();
@@ -48,25 +45,30 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         controller = new Controller(game);
     }
 
+    public void setControllerFlag() {
+        controller.setReadyToGuess(false);
+    }
+
 
     private void gameWindow() {
         gameFrame = new JFrame("The Haunting of Amazon Hill");
-        gameFrame.setSize(800, 700);
+        gameFrame.setMinimumSize(new Dimension(1000, 800));
+        gamePanel.setBackground(Color.DARK_GRAY);
 
-        textDisplayPanel = new JPanel();
-        userInputPanel = new JPanel();
-        buttonsAndInfoPanel = new JPanel();
-        playerLocationPanel = new JPanel();
+        JPanel textDisplayPanel = new JPanel();
+        JPanel userInputPanel = new JPanel(new GridLayout());
+        JPanel buttonsAndInfoPanel = new JPanel();
+        JPanel playerLocationPanel = new JPanel(new BorderLayout());
 
 
         textDisplayPanel.setBackground(Color.black);
         buttonsAndInfoPanel.setBackground(Color.DARK_GRAY);
+        buttonsAndInfoPanel.setPreferredSize(new Dimension(200, 300));
         buttonsAndInfoPanel.setLayout(new FlowLayout());
         buttonsAndInfoPanel.add(showJournal);
         buttonsAndInfoPanel.add(Box.createHorizontalGlue());
         buttonsAndInfoPanel.add(showMap);
         buttonsAndInfoPanel.add(Box.createHorizontalGlue());
-        buttonsAndInfoPanel.add(playerLocationPanel);
 
         showJournal.addActionListener(this);
         showMap.addActionListener(this);
@@ -89,30 +91,74 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayGameWindow);
-        scrollPane.setPreferredSize(new Dimension(700, 500));
+        scrollPane.setPreferredSize(new Dimension(700, 600));
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Text field for user to input
-        userInput.setSize(new Dimension(500, 100));
+        userInputPanel.setPreferredSize(new Dimension(200, 150));
+        userInput.setPreferredSize(new Dimension(200, 50));
         userInput.setFont(new Font("Consolas", Font.CENTER_BASELINE, 15));
         userInput.setForeground(Color.white);
         userInput.setBackground(Color.DARK_GRAY);
-        userInput.setCaretColor(Color.BLACK);
+        userInput.setCaretColor(Color.YELLOW);
+
 
         userInputPanel.setBackground(Color.BLACK);
         textDisplayPanel.add(scrollPane);
-        userInputPanel.setLayout(new GridLayout(1, 2));
+        userInputPanel.setLayout(new GridLayout(3, 1));
         userInputPanel.add(userInput);
+        userInputPanel.add(buttonsAndInfoPanel);
+        userInputPanel.add(playerLocationPanel);
+
 
         playerLocationPanel.setBackground(Color.white);
-        playerLocationArea.setSize(200,75);
+        playerLocationPanel.setLayout(new GridBagLayout());
+        playerLocationArea.setPreferredSize(new Dimension(200, 75));
         playerLocationArea.setForeground(Color.blue);
         playerLocationArea.setEditable(false);
         playerLocationPanel.add(playerLocationArea);
 
-        gameFrame.add(textDisplayPanel, BorderLayout.NORTH);
-        gameFrame.add(userInputPanel, BorderLayout.CENTER);
-        gameFrame.add(buttonsAndInfoPanel, BorderLayout.SOUTH);
+        JMenuBar menubar = new JMenuBar();
+        JMenu utilities = new JMenu("Help");
+        JMenuItem rules = new JMenuItem(new AbstractAction("Rules") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    showRules();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
+        JMenuItem save = new JMenuItem(new AbstractAction("Save Game") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.processInput(true, new String[]{"save"}, 0);
+            }
+        });
+        JMenuItem load = new JMenuItem(new AbstractAction("Load Game") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    game.intro(new String[]{"4"});
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
+        utilities.add(rules);
+        utilities.add(save);
+        utilities.add(load);
+        menubar.add(utilities);
+        menubar.setPreferredSize(new Dimension(100, 50));
+        contentPanel.setBackground(Color.DARK_GRAY);
+        gamePanel.add(menubar, BorderLayout.PAGE_START);
+        gamePanel.add(contentPanel, BorderLayout.CENTER);
+
+        contentPanel.add(textDisplayPanel);
+        contentPanel.add(userInputPanel);
+        gameFrame.add(gamePanel);
+        gameFrame.pack();
 
 
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -129,17 +175,17 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Journal")) {
-            showJournal();
+            game.processInput(true, new String[]{"read"}, 0);
         }
         if (e.getActionCommand().equals("Map")) {
             game.processInput(true, new String[]{"open"}, 0);
         }
         if (e.getSource() == userInput) {
-            userResponse = userInput.getText().strip().toLowerCase().split(" ");
+            String[] userResponse = userInput.getText().strip().toLowerCase().split(" ");
             userInput.setText("");
             try {
                 controller.kickoffResponse(userResponse, textDisplayGameWindow.getText());
-            } catch (IOException ioException) {
+            } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
             }
         }
@@ -150,7 +196,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         textDisplayGameWindow.setText(text);
     }
 
-    public void setTextColorAndDisplay(String textToDisplay, Color color) throws BadLocationException {
+    public void appendTextColorAndDisplay(String textToDisplay, Color color) throws BadLocationException {
         StyledDocument doc = textDisplayGameWindow.getStyledDocument();
         Style style = textDisplayGameWindow.addStyle("", null);
         StyleConstants.setForeground(style, color);
@@ -161,22 +207,18 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         // Closes old window if opened before
         if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
         // Opens new window at current room
-
         journalFrame = new JFrame("Journal");
-        journalFrame.setSize(500, 500);
+        journalFrame.setSize(700, 700);
 
-        textDisplayJournal = new JTextArea();
+        textDisplayJournal = new JTextPane();
         DefaultCaret caret = (DefaultCaret) textDisplayJournal.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         textDisplayJournal.setCaretPosition(0);
-        game.openNewWindowJournalWithUpdatedInfo();
-        textDisplayJournal.setLineWrap(true);
-        textDisplayJournal.setWrapStyleWord(true);
         textDisplayJournal.setBorder(BorderFactory.createBevelBorder(1));
         textDisplayJournal.setForeground(new Color(0, 60, 70));
         textDisplayJournal.setFont(new Font("Comic Sans", Font.BOLD, 15));
         textDisplayJournal.setEditable(false);
-        textDisplayJournal.setBackground(new Color(196, 223, 230));
+        textDisplayJournal.setBackground(Color.DARK_GRAY);
 
         // Allows for scrolling if text extends beyond panel
         JScrollPane scrollPane = new JScrollPane(textDisplayJournal);
@@ -189,14 +231,27 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         journalFrame.setVisible(true);
     }
 
+    public void setTextBoxJournal(String text, Color color) {
+        showJournal();
+        textDisplayJournal.setForeground(color);
+        textDisplayJournal.setText(text);
+    }
+
+    public void appendTextColorAndDisplayJournal(String textToDisplay, Color color) throws BadLocationException {
+        StyledDocument doc = textDisplayJournal.getStyledDocument();
+        Style style = textDisplayJournal.addStyle("", null);
+        StyleConstants.setForeground(style, color);
+        doc.insertString(doc.getLength(), textToDisplay, style);
+    }
+
     void showMap() {
-        currentRoom = game.currentRoom.replaceAll("\\s", "");
+        String currentRoom = game.currentRoom.replaceAll("\\s", "");
 
         // Closes old window if opened before
         if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
         // Opens new window at current room
         mapFrame = new JFrame("Map");
-        mapFrame.setSize(500, 500);
+        mapFrame.setSize(450, 500);
 
         JLabel picLabel = new JLabel();
         picLabel.setIcon(new ImageIcon(Objects.requireNonNull(cl.getResource(pathStartImages + "Map(" + currentRoom + ").png"))));
@@ -206,6 +261,36 @@ public class HauntingJFrame extends JWindow implements ActionListener {
 
         mapFrame.setLocationRelativeTo(null);
         mapFrame.setVisible(true);
+    }
+
+    void showRules() throws IOException {
+        // Closes old window if opened before
+        if (rulesFrame != null) rulesFrame.dispatchEvent(new WindowEvent(rulesFrame, WindowEvent.WINDOW_CLOSING));
+        // Opens new window at current room
+        rulesFrame = new JFrame("Rules");
+        rulesFrame.setSize(700, 500);
+
+        JTextPane textDisplayRules = new JTextPane();
+        DefaultCaret caret = (DefaultCaret) textDisplayRules.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        textDisplayRules.setCaretPosition(0);
+        textDisplayRules.setBorder(BorderFactory.createBevelBorder(1));
+        textDisplayRules.setForeground(new Color(255,255,255));
+        textDisplayRules.setFont(new Font("Comic Sans", Font.BOLD, 15));
+        textDisplayRules.setEditable(false);
+        textDisplayRules.setBackground(Color.DARK_GRAY);
+
+        // Allows for scrolling if text extends beyond panel
+        JScrollPane scrollPane = new JScrollPane(textDisplayRules);
+        scrollPane.setPreferredSize(new Dimension(700, 500));
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        String text = game.getFileReader().fileReader(pathStartResources, "Rules", cl);
+        textDisplayRules.setText(text);
+        rulesFrame.add(scrollPane, BorderLayout.CENTER);
+
+        rulesFrame.setLocationRelativeTo(null);
+        rulesFrame.setVisible(true);
     }
 
     private void splashWindow(ClassLoader cl) {
@@ -237,6 +322,12 @@ public class HauntingJFrame extends JWindow implements ActionListener {
     }
 
     boolean quitGame() throws InterruptedException {
+        if (!playerWantsToContinuePlaying) {
+            // Disable from continuing the game
+            userInput.setEditable(false);
+            closeWindows();
+        }
+
         int result = JOptionPane.showConfirmDialog(null,
                 "Are you sure you would like to quit?\n" +
                         "Click yes to quit and close game.\n" +
@@ -260,6 +351,7 @@ public class HauntingJFrame extends JWindow implements ActionListener {
         // Close outside windows
         if (mapFrame != null) mapFrame.dispatchEvent(new WindowEvent(mapFrame, WindowEvent.WINDOW_CLOSING));
         if (journalFrame != null) journalFrame.dispatchEvent(new WindowEvent(journalFrame, WindowEvent.WINDOW_CLOSING));
+       if (rulesFrame != null) rulesFrame.dispatchEvent(new WindowEvent(rulesFrame, WindowEvent.WINDOW_CLOSING));
         // Close main game window
         if (gameFrame != null) gameFrame.dispatchEvent(new WindowEvent(gameFrame, WindowEvent.WINDOW_CLOSING));
     }
